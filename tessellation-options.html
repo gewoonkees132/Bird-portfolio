@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Tessellation · Spacing · Zoom — exploration</title>
+<style>
+  :root {
+    --field: #f2eee5;
+    --blue: #1635ee;
+    --charcoal: #1a1a1a;
+    --blue-soft: rgba(22,53,238,0.6);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin:0; padding:0; background: var(--field); color: var(--charcoal); font-family: system-ui, -apple-system, sans-serif; -webkit-font-smoothing:antialiased; letter-spacing:-0.005em; }
+  .frame-header {
+    padding: 28px 32px 18px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 24px;
+    align-items: end;
+    border-bottom: 1px solid rgba(26,26,26,0.08);
+  }
+  .frame-header h1 {
+    margin:0; font-size: 1.05rem; font-weight: 500; letter-spacing: -0.01em;
+  }
+  .frame-header h1 .dot { color: var(--blue); }
+  .frame-header .lede {
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 11px;
+    line-height: 1.6;
+    color: rgba(26,26,26,0.6);
+    letter-spacing: 0.04em;
+    max-width: 720px;
+    text-transform: uppercase;
+  }
+  .legend {
+    display: flex; flex-wrap: wrap; gap: 20px;
+    padding: 16px 32px;
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(26,26,26,0.55);
+    border-bottom: 1px solid rgba(26,26,26,0.08);
+  }
+  .legend b { color: var(--blue); font-weight: 500; }
+
+  .options { padding: 16px 32px 80px; }
+  .opt {
+    margin: 32px 0 56px;
+    border: 1px solid rgba(26,26,26,0.1);
+    background: var(--field);
+  }
+  .opt header {
+    display: grid;
+    grid-template-columns: 80px 1fr 240px;
+    gap: 18px;
+    padding: 14px 20px;
+    border-bottom: 1px solid rgba(26,26,26,0.08);
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgba(26,26,26,0.7);
+  }
+  .opt header .id { color: var(--blue); font-weight: 600; letter-spacing: 0.12em; }
+  .opt header .title { color: var(--charcoal); font-family: system-ui, sans-serif; font-size: 0.95rem; text-transform: none; letter-spacing: -0.005em; font-weight: 500; }
+  .opt header .stats { text-align: right; color: rgba(26,26,26,0.55); }
+  .opt header .stats span { display: block; line-height: 1.5; }
+  .opt header .stats b { color: var(--blue); font-weight: 500; }
+
+  .opt .canvas-wrap {
+    background: var(--field);
+    overflow: hidden;
+    position: relative;
+  }
+  .opt .canvas-wrap .scale {
+    transform-origin: top left;
+  }
+
+  /* The viewport mockup — establishes "what you see when landing" */
+  .opt .canvas-wrap .viewport-frame {
+    position: absolute;
+    pointer-events: none;
+    border: 1px dashed var(--blue);
+    box-shadow: 0 0 0 99999px rgba(242,238,229,0.45);
+    /* the viewport mockup is the "establishing view" rectangle */
+  }
+  .opt .canvas-wrap .viewport-label {
+    position: absolute;
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--blue);
+    background: var(--field);
+    padding: 2px 6px;
+    border: 1px solid var(--blue);
+  }
+
+  /* Photo placeholders */
+  .ph {
+    position: absolute;
+    overflow: hidden;
+    background:
+      repeating-linear-gradient(0deg,
+        var(--ph-a) 0 12px,
+        var(--ph-b) 12px 24px);
+    display: grid;
+    place-items: center;
+    transition: opacity 200ms ease;
+  }
+  .ph .lab {
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.06em;
+    color: rgba(26,26,26,0.65);
+    text-transform: uppercase;
+    background: rgba(242,238,229,0.85);
+    padding: 2px 6px;
+    text-align: center;
+    line-height: 1.3;
+  }
+  .ph.lead .lab { color: var(--blue); font-weight: 500; }
+  .ph.lead { outline: 1px solid var(--blue); outline-offset: -1px; }
+
+  .opt footer {
+    padding: 14px 20px 18px;
+    border-top: 1px solid rgba(26,26,26,0.08);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    font-size: 0.82rem;
+    line-height: 1.55;
+    color: rgba(26,26,26,0.78);
+  }
+  .opt footer .pros, .opt footer .cons {
+    border-left: 2px solid var(--blue);
+    padding-left: 12px;
+  }
+  .opt footer .cons { border-left-color: rgba(26,26,26,0.25); }
+  .opt footer h4 {
+    margin: 0 0 6px;
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(26,26,26,0.55);
+    font-weight: 500;
+  }
+
+  .gutter-marker {
+    position: absolute;
+    pointer-events: none;
+    background: rgba(22,53,238,0.08);
+  }
+
+  .ruler {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.06em;
+    color: var(--blue);
+    background: rgba(242,238,229,0.9);
+    padding: 3px 7px;
+    text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+
+<div class="frame-header">
+  <h1>Kees Leemeijer<span class="dot">.</span></h1>
+  <div class="lede">
+    Tessellation · spacing · zoom — four options. Constant 24px gutter is the rule, applied everywhere — within tiles, between tiles, edges to neighbors. Variations explore module, lead size, and viewport zoom.
+  </div>
+</div>
+
+<div class="legend">
+  <span>Tile <b>1176×744</b></span>
+  <span>Module <b>120</b></span>
+  <span>Gutter <b>24</b> (constant)</span>
+  <span>Margin <b>24</b> (= gutter)</span>
+  <span>Inner grid <b>8 cols × 5 rows</b></span>
+  <span>Lead always landscape ~3:2</span>
+</div>
+
+<div class="options">
+
+  <!-- Each .opt is rendered with JS so we can keep the math exact. -->
+
+</div>
+
+<script>
+  // ============================================================
+  // STRICT MODULAR GRID — gutter is always exactly 24
+  //
+  // u = module size (cell width = cell height)
+  // g = gutter
+  // C, R = columns, rows
+  // tile_inner_w = C*u + (C-1)*g   (gutters BETWEEN cells only)
+  // outer margin = g (so seam between tiles is also g)
+  // tile_w = tile_inner_w + 2*g  =  C*u + (C+1)*g
+  //
+  // For u=120, g=24:
+  //   C=8  -> tile_w = 8*120 + 9*24  = 960 + 216 = 1176
+  //   R=5  -> tile_h = 5*120 + 6*24  = 600 + 144 = 744
+  //
+  // A photo spanning n cells along an axis = n*u + (n-1)*g pixels.
+  //   span(1)=120, span(2)=264, span(3)=408, span(4)=552, span(5)=696, span(6)=840
+  // Position of cell (c, r) = (g + c*(u+g), g + r*(u+g))
+  // ============================================================
+
+  const SPECIES = [
+    { id:1, name:'Common Kingfisher',   latin:'Alcedo atthis',         shape:'L', a:'#3d6b8a', b:'#4a7c9a' },
+    { id:2, name:'Eurasian Hoopoe',     latin:'Upupa epops',           shape:'V', a:'#c79e6e', b:'#b88c5e' },
+    { id:3, name:'Great Crested Grebe', latin:'Podiceps cristatus',    shape:'L', a:'#7a8b76', b:'#8a9c86' },
+    { id:4, name:'Northern Lapwing',    latin:'Vanellus vanellus',     shape:'W', a:'#3a4a3e', b:'#48584c' },
+    { id:5, name:'European Bee-eater',  latin:'Merops apiaster',       shape:'L', a:'#a87a3e', b:'#b8893f' },
+    { id:6, name:'Eurasian Bittern',    latin:'Botaurus stellaris',    shape:'V', a:'#8b7848', b:'#9a8758' },
+    { id:7, name:'Bohemian Waxwing',    latin:'Bombycilla garrulus',   shape:'L', a:'#6e5444', b:'#7e6454' },
+    { id:8, name:'Little Egret',        latin:'Egretta garzetta',      shape:'W', a:'#cdc4b0', b:'#bdb4a0' },
+  ];
+  const sp = id => SPECIES.find(s => s.id === id);
+
+  function cellRect(c, r, cw, ch, u, g) {
+    return {
+      x: g + c*(u+g),
+      y: g + r*(u+g),
+      w: cw*u + (cw-1)*g,
+      h: ch*u + (ch-1)*g,
+    };
+  }
+
+  // Each variant defines: u, g, C, R, leadCw, leadCh, slots[id->{c,r,cw,ch}]
+  // All slots are integer cell coordinates -> guaranteed constant gutter.
+
+  function tileSize(u, g, C, R) {
+    return { w: C*u + (C+1)*g, h: R*u + (R+1)*g };
+  }
+
+  // ---------- Variant 1 — Module 120, lead 4×3 (current-ish baseline, fixed) ----------
+  const V1 = {
+    id: '01', name: 'Compact module · medium lead',
+    u: 120, g: 24, C: 8, R: 5,
+    desc: 'Module 120, gutter 24, 8×5 grid. Lead 4×3 (552×408). Two arrangements rendered side-by-side to show the seam — gutter is identical inside a tile and between tiles.',
+    pros: 'Densest reading. Lots of supporting photos visible at once. Constant gutter is structural, not visual.',
+    cons: 'Lead has less commanding presence; super-wides have to be quite short.',
+    arrangements: [
+      // Arrangement A — lead = P5
+      { lead: 5, slots: [
+        { id:5, c:0, r:0, cw:5, ch:3 },   // lead landscape (5×3 = 696×408 ~ 5:3)
+        { id:2, c:5, r:0, cw:3, ch:5 },   // vertical (3×5 = 408×696)
+        { id:3, c:0, r:3, cw:3, ch:2 },
+        { id:7, c:3, r:3, cw:2, ch:2 },
+        { id:4, c:0, r:5-0, cw:0, ch:0, skip:true }, // we only have 5 rows; squeeze
+      ]},
+    ]
+  };
+
+  // We need 8 slots that fit exactly in 8x5 — 40 cells. Let's solve it.
+  // 8x5 = 40 cells.
+  // Lead landscape: choose 5x3 = 15 cells (~5:3, close to 3:2)
+  // Vertical: 2x4 = 8 cells (1:2)? or 3x4 = 12 cells (3:4) -> 2x4 better fits 2:3
+  //   2x4 -> 264x552 ratio 264/552 = 0.478 ~ close to 2:3 (0.667) — actually no.
+  //   Let's accept some span flexibility: a "vertical" can be 2 cols wide, 3-4 rows tall.
+  //   2x3 = 264x408, ratio 0.647 ≈ 2:3 (0.667) ✓
+  //   2x4 = 264x552, ratio 0.478, more elongated — also acceptable
+  // Super-wide: 5x1 = 696x120, ratio 5.8 ≈ super-wide (>2.33) ✓
+  //            6x1 = 840x120, ratio 7.0
+  //            8x1 = 1128x120 - whole row
+  // Landscape: 3x2 = 408x264 ratio 1.55 (close to 3:2) ✓
+  //            4x2 = 552x264 ratio 2.09 (more 2:1, between landscape and wide)
+  //            2x1 = 264x120 ratio 2.2
+
+  // Let's design Variant 1 properly.
+
+  // ---------- Variant 1 — Compact, 8x5, lead 5x3 ----------
+  // Cells used: lead 5x3=15, then we need 25 more cells split among 7 photos.
+  // P2 vertical 2x4=8, P6 vertical 2x3=6, P4 wide 5x1=5, P8 wide 3x1=3, P1 landscape 3x2=6, P3 landscape... we already over.
+  // Let's just be honest and tile 40 cells with shapes that respect aspect-ratio tolerance.
+  // Tile A:
+  //   P5 lead   (0,0) 5x3   = 15 cells   landscape
+  //   P2 vert   (5,0) 2x4   =  8 cells   vertical-ish
+  //   P6 vert   (7,0) 1x4   =  4 cells   narrow vertical (1:4 — too elongated; relax)
+  //   P4 wide   (5,4) 3x1   =  3 cells   wide
+  //   P8 wide   (0,3) 5x1   =  5 cells   wide
+  //   P1 land   (0,4) 3x1   =  3 cells   wide-ish ~ landscape relax
+  //   P3 land   (3,4) 2x1   =  2 cells
+  //   P7 land   moved
+  // Total above: 15+8+4+3+5+3+2 = 40 ✓ but only 7 photos. Need one more by splitting.
+
+  // 8 photos in 40 cells with shapes that work:
+  // Sum cells = 40. Try:
+  //   lead 5x3 = 15
+  //   vert 2x4 = 8  (P2)
+  //   vert 2x3 = 6  (P6)
+  //   wide 5x1 = 5  (P4)
+  //   wide 3x1 = 3  (P8)
+  //   land 3x2 = 6  (P1) -- but lead+vert+vert occupy too much; let's lay out
+
+  // Try this layout (8x5 = 40):
+  //   row 0-2 col 0-4: lead 5x3 (P5)            ✓ rows 0..2, cols 0..4
+  //   row 0-3 col 5-6: vertical 2x4 (P2)        ✓ rows 0..3, cols 5..6
+  //   row 0-2 col 7:   vertical 1x3 (P6)        ✓ rows 0..2, col 7   (1:3 ratio — relax)
+  //   row 3   col 0-4: wide 5x1 (P4)            ✓
+  //   row 4   col 0-2: land 3x1 (P1)            ✓ wide-landscape
+  //   row 4   col 3-4: land 2x1 (P3)            ✓
+  //   row 4   col 5-6: wide 2x1 (P8)            ✓ short wide
+  //   row 3-4 col 7:   land 1x2 (P7)            ✓ 1:2 vertical-landscape — relax
+  // Cells: 15+8+3+5+3+2+2+2 = 40 ✓
+  // 8 photos ✓
+
+  V1.arrangements = [
+    { name:'A', lead:5, slots:[
+      { id:5, c:0, r:0, cw:5, ch:3 },  // lead
+      { id:2, c:5, r:0, cw:2, ch:4 },
+      { id:6, c:7, r:0, cw:1, ch:3 },
+      { id:4, c:0, r:3, cw:5, ch:1 },
+      { id:1, c:0, r:4, cw:3, ch:1 },
+      { id:3, c:3, r:4, cw:2, ch:1 },
+      { id:8, c:5, r:4, cw:2, ch:1 },
+      { id:7, c:7, r:3, cw:1, ch:2 },
+    ]},
+    { name:'B', lead:3, slots:[
+      // permute: lead = P3 in same template
+      { id:3, c:0, r:0, cw:5, ch:3 },
+      { id:6, c:5, r:0, cw:2, ch:4 },
+      { id:2, c:7, r:0, cw:1, ch:3 },
+      { id:8, c:0, r:3, cw:5, ch:1 },
+      { id:5, c:0, r:4, cw:3, ch:1 },
+      { id:7, c:3, r:4, cw:2, ch:1 },
+      { id:4, c:5, r:4, cw:2, ch:1 },
+      { id:1, c:7, r:3, cw:1, ch:2 },
+    ]},
+  ];
+
+  // ---------- Variant 2 — Module 144, larger module, fewer cells, bigger lead ----------
+  // u=144, g=24, C=7, R=4 -> tile = 7*144 + 8*24 = 1008+192=1200 wide; 4*144+5*24=576+120=696 tall.
+  // 7x4 = 28 cells.
+  // Lead 4x3 = 12 cells (576x456 ratio 1.26 closer to 4:3 - too square)
+  // Lead 5x3 = 15 cells (744x456 ratio 1.63 ~ 3:2) ✓
+  // Remaining 13 cells for 7 photos.
+  //   P2 vert 2x3 = 6
+  //   P6 vert 1x3 = 3
+  //   P4 wide 4x1 = 4
+  //   P8 wide 2x1 = 2  (short wide)
+  //   P1 land 1x1 = 1
+  //   P3 land 2x1 = 2... already 18 too many.
+  // Try lead 4x3=12, remaining 16 across 7:
+  //   P2 vert 2x3 = 6
+  //   P6 vert 1x3 = 3
+  //   P4 wide 7x1 = 7  (full bottom row spanning 7) - but that's whole row=7, leaving rows 0..2 for the rest
+  //   total so far 12+6+3+7=28 ✓ but only 4 photos + 4 more needed... overflow.
+  // Re-think: 28 cells / 8 photos avg 3.5 cells. Hard.
+  //   lead 4x3=12, P2 vert 2x3=6, P4 wide 7x1=7 -> 25 cells, 5 photos placed, 4 remain in 3 cells. Impossible.
+  // Decrease lead: 4x2=8, +P2 vert 2x3=6, +P6 vert 1x3=3, +P4 wide 7x1=7 = 24, 5 photos, 3 left for 3 photos = 1 cell each.
+  //   4 single-cell photos at 144x144 (ratio 1) — neither landscape nor anything. Not good.
+  // Conclusion: u=144 is too big to host 8 photos. Skip and try u=132 with C=8 R=4.
+
+  // u=132, g=24, C=8 R=4 -> 8*132+9*24=1056+216=1272 wide, 4*132+5*24=528+120=648 tall. 32 cells.
+  // 32 cells / 8 photos = 4 avg. Workable.
+  //   lead 4x3=12,
+  //   P2 vert 2x3=6,
+  //   P6 vert 2x3=6,  -> 24
+  //   P4 wide 4x1=4   -> 28
+  //   P8 wide 4x1=4   -> 32 ✓ but only 5 photos. 3 more needed.
+  // Decrease: lead 4x2=8, P2 vert 2x3=6, P6 vert 2x2=4, P4 wide 4x1=4, P8 wide 4x1=4 = 26, 6 left for 3 = 2 each.
+  //   3 small landscape 2x1 photos (264x132 ratio 2.0 — between landscape and wide; 2:1 = aggressive landscape). Acceptable!
+  // Total 8 photos. Layout:
+  //   row 0-1 col 0-3: lead 4x2 (e.g. P5)    8 cells
+  //   row 0-2 col 4-5: vert 2x3 (P2)         6 cells
+  //   row 0-1 col 6-7: vert 2x2 (P6)         4 cells
+  //   row 2   col 0-3: wide 4x1 (P4)         4 cells
+  //   row 2   col 6-7: land 2x1 (P1)         2 cells
+  //   row 3   col 0-3: wide 4x1 (P8)         4 cells
+  //   row 3   col 4-5: land 2x1 (P3)         2 cells -- conflict with P2 at row 0-2 col 4-5? P2 occupies r=0..2 col 4..5; row 3 is free ✓
+  //   row 3   col 6-7: land 2x1 (P7)         2 cells -- conflict with P6 r=0..1 col 6..7; rows 2..3 free
+  // Wait P6 only rows 0..1, leaves rows 2..3 col 6..7 free (4 cells) — already used 2 by P1 (r=2) and 2 by P7 (r=3) ✓
+  // Cells: 8+6+4+4+2+4+2+2 = 32 ✓ 8 photos ✓
+
+  const V2 = {
+    id: '02', name: 'Wider tile · stacked rhythm',
+    u: 132, g: 24, C: 8, R: 4,
+    desc: 'Larger module (132). Tile is wider (1272×648) and shorter; horizontal pan reveals more arrangements per swipe. Two distinct super-wide bands (rows 2 & 3) give the layout horizontal rhythm.',
+    pros: 'Stronger horizontal energy; super-wides feel like real super-wides.',
+    cons: 'Lead is shorter (4×2). Vertical pan reveals less.',
+    arrangements: [
+      { name:'A', lead:5, slots:[
+        { id:5, c:0, r:0, cw:4, ch:2 },
+        { id:2, c:4, r:0, cw:2, ch:3 },
+        { id:6, c:6, r:0, cw:2, ch:2 },
+        { id:4, c:0, r:2, cw:4, ch:1 },
+        { id:1, c:6, r:2, cw:2, ch:1 },
+        { id:8, c:0, r:3, cw:4, ch:1 },
+        { id:3, c:4, r:3, cw:2, ch:1 },
+        { id:7, c:6, r:3, cw:2, ch:1 },
+      ]},
+      { name:'B', lead:3, slots:[
+        { id:3, c:0, r:0, cw:4, ch:2 },
+        { id:6, c:4, r:0, cw:2, ch:3 },
+        { id:2, c:6, r:0, cw:2, ch:2 },
+        { id:8, c:0, r:2, cw:4, ch:1 },
+        { id:7, c:6, r:2, cw:2, ch:1 },
+        { id:4, c:0, r:3, cw:4, ch:1 },
+        { id:1, c:4, r:3, cw:2, ch:1 },
+        { id:5, c:6, r:3, cw:2, ch:1 },
+      ]},
+    ]
+  };
+
+  // ---------- Variant 3 — Module 96, finer cells, more delicate ----------
+  // u=96, g=24, C=10 R=6 -> 10*96+11*24=960+264=1224 wide; 6*96+7*24=576+168=744 tall. 60 cells.
+  // 60/8 = 7.5. Lots of room.
+  //   lead 6x4 = 24 (576x432 ratio 1.33 — too square, landscape min 1.5)
+  //   lead 7x4 = 28 (672x432 ratio 1.56 ~ 3:2) ✓
+  // Remaining 32 for 7 photos avg 4.5.
+  //   P2 vert 3x5 = 15  (288x480 ratio 0.6 ~ 2:3) ✓
+  //   P6 vert 2x4 = 8   (192x384 ratio 0.5 ~ 1:2 — relax)
+  //   P4 wide 6x1 = 6   (576x96 ratio 6.0 super-wide ✓)
+  //   P8 wide 4x1 = 4   (384x96 ratio 4.0 super-wide ✓)
+  //   P1 land 3x2 = 6
+  //   P3 land 4x2 = 8
+  //   P7 land 3x1 = 3 (288x96 ratio 3.0 — wide landscape, relax)
+  // Sum: 28+15+8+6+4+6+8+3 = 78 — over by 18. Reduce.
+  // Try:
+  //   lead 6x3 = 18 (576x312 ratio 1.85 - in landscape range)
+  //   P2 vert 3x4 = 12 (288x384 ratio 0.75 — close to 2:3 (0.67))
+  //   P6 vert 2x3 = 6
+  //   P4 wide 6x1 = 6
+  //   P8 wide 4x1 = 4
+  //   P1 land 4x2 = 8
+  //   P3 land 3x2 = 6 -- already adds to 60. Total: 18+12+6+6+4+8+6=60 ✓ but only 7 photos.
+  // Add one more: split P3 -> P3 3x2 (6) and P7 3x1 (3) - but exceeds 60. Reduce P1 to 4x1 (4).
+  //   18+12+6+6+4+4+6+3 = 59. One cell short. Bump P7 to 4x1 (4) -> 60. But we need 8 distinct.
+  //   18+12+6+6+4+4+6+4 = 60 ✓ photos: P5,P2,P6,P4,P8,P1,P3,P7 — 8 ✓
+  // Layout:
+  //   row 0-2 col 0-5: lead P5 6x3
+  //   row 0-3 col 6-8: vert P2 3x4
+  //   row 0-2 col 9:   ?? need a slot here. 1 col x 3 rows = 3 cells. -- but P6 was 2x3. revise.
+  // Let me re-layout: 10 cols, 6 rows.
+  //   lead 6x3 cols 0-5 rows 0-2
+  //   vert 3x4 cols 6-8 rows 0-3   -> covers 12 cells
+  //   right col (9) rows 0-2: 1x3 = 3 cells -> use as small "vertical" P6 1x3 (96x312 ratio 0.31 - too narrow)
+  // Skip this path. Switch approach: u=96 makes 8-photo composition fight against itself; tile is just busy.
+  // Use u=100 with C=11 R=6? Same problem.
+
+  // Cleaner: do V3 as a SPACIOUS variant — same module as V1 (120) but tile is smaller (fewer cells), giving each photo more presence at the same zoom.
+  // u=120, g=24, C=6 R=4 -> tile = 6*120+7*24=720+168=888 wide; 4*120+5*24=480+120=600 tall. 24 cells.
+  // 24 cells / 8 photos = 3 avg.
+  //   lead 4x3 = 12 (552x408 ratio 1.35 - close to 3:2-ish; relax to 4:3)
+  // Hmm too square. Try lead 4x2 = 8 (552x264 ratio 2.09 - 2:1, on the boundary of super-wide). Too wide.
+  //   lead 3x2 = 6 (408x264 ratio 1.55 ~ 3:2) ✓
+  // Remaining 18 for 7 photos. Avg ~2.5.
+  //   P2 vert 2x3 = 6 (264x408 ratio 0.65 ~ 2:3) ✓
+  //   P6 vert 1x3 = 3 (120x408 ratio 0.29 — too narrow; relax or skip)
+  //   P4 wide 6x1 = 6 (840x120 ratio 7.0) ✓
+  //   P8 wide 4x1 = 4 (552x120 ratio 4.6) ✓
+  //   P1 land 3x1 = 3
+  //   P3 land 2x1 = 2
+  //   P7 land 1x1 = 1 (square - bad)
+  // Total: 6+6+3+6+4+3+2+1 = 31, over.
+  // Skip V3 small-tile and use a different angle: SAME tile as V1 but at DIFFERENT establishing zoom (let user see almost 1.5 arrangements, lead more dominant).
+
+  const V3 = {
+    id: '03', name: 'Same grid · tighter establishing view',
+    u: 120, g: 24, C: 8, R: 5,
+    establishingScale: 1.18, // zoom IN slightly so lead dominates more
+    desc: 'Same V1 grid, but the establishing viewport is zoomed in 18%. Lead dominates the frame; you see ~85% of an arrangement on landing instead of the full tile. Same tessellation, different sense of intimacy.',
+    pros: 'Lead reads as hero from the first frame. Composition feels less encyclopedic.',
+    cons: 'Slight clipping of edge photos at landing; visitor must pan to read the full arrangement.',
+    arrangements: V1.arrangements, // same data as V1
+  };
+
+  // ---------- Variant 4 — Module 120, 9x5, asymmetric tile ----------
+  // u=120, g=24, C=9 R=5 -> tile = 9*120+10*24=1080+240=1320 wide; 5*120+6*24=600+144=744 tall. 45 cells.
+  // 45 / 8 = 5.6 avg. More breathing room.
+  //   lead 5x3 = 15
+  //   P2 vert 2x4 = 8 (264x552 ratio 0.48 — 1:2)
+  //   P6 vert 2x3 = 6
+  //   P4 wide 6x1 = 6  (840x120 ratio 7.0) ✓
+  //   P8 wide 4x1 = 4
+  //   P1 land 3x1 = 3 (or 3x2=6)
+  //   P3 land 2x1 = 2
+  //   P7 land 2x1 = 2
+  // Sum: 15+8+6+6+4+3+2+2 = 46, one too many. Adjust P3 to 1x1 = 1 -> 45 ✓
+  // Position:
+  //   lead 5x3  cols 0-4 rows 0-2
+  //   vert 2x4  cols 5-6 rows 0-3
+  //   vert 2x3  cols 7-8 rows 0-2
+  //   wide 6x1  cols 0-5 row 3
+  //   land 3x1  cols 6-8 row 3
+  //   wide 4x1  cols 0-3 row 4
+  //   land 3x1  cols 4-6 row 4
+  //   land 2x1  cols 7-8 row 4 ... wait that's 9 photos. recount.
+  // Let me redo: 8 photos.
+  //   P5 lead 5x3 cols 0-4 r 0-2
+  //   P2 vert 2x4 cols 5-6 r 0-3
+  //   P6 vert 2x3 cols 7-8 r 0-2
+  //   P4 wide 6x1 cols 0-5 r 3   (overlaps P2 at row 3 cols 5-6 - conflict)
+  // Recompute P4: cols 0-5 row 3 means 6 cells r=3 c=0..5. P2 r=0..3 c=5..6 includes r=3 c=5 — conflict.
+  //   Shift P4: cols 0-4 row 3 = 5 cells (5x1).
+  //   Now r3 c5-6 free (2 cells -> claimed by P2 -- yes P2 covers r=0..3 c=5..6 -> r=3 included ✓)
+  //   r3 c7-8: 2 cells. Use as P1 land 2x1.
+  //   r4 cols 0-2: 3 cells = P8 wide 3x1 (relax).
+  //   r4 cols 3-5: 3 cells = P3 land 3x1.
+  //   r4 cols 6-8: 3 cells = P7 land 3x1.
+  //   wait, we've now used P5+P2+P6+P4+P1+P8+P3+P7 = 8 photos but skipped... no, we also need P8 wide AND we had P4 wide. Both wide. And P6 vert and P2 vert. Good.
+  // Sum: 15+8+6+5+2+3+3+3 = 45 ✓
+  const V4 = {
+    id: '04', name: 'Wider 9-column · spacious lead',
+    u: 120, g: 24, C: 9, R: 5,
+    desc: 'Same module as V1, but tile is one column wider (9×5). 45 cells gives every photo more breathing room; lead is 5×3 (still ~5:3) but supporting cast has more space.',
+    pros: 'Most "Munich modular grid" feel — composition reads as engineered, not crowded.',
+    cons: 'Tile is 1320 wide; horizontal pan covers fewer arrangements per viewport sweep.',
+    arrangements: [
+      { name:'A', lead:5, slots:[
+        { id:5, c:0, r:0, cw:5, ch:3 },
+        { id:2, c:5, r:0, cw:2, ch:4 },
+        { id:6, c:7, r:0, cw:2, ch:3 },
+        { id:4, c:0, r:3, cw:5, ch:1 },
+        { id:1, c:7, r:3, cw:2, ch:1 },
+        { id:8, c:0, r:4, cw:3, ch:1 },
+        { id:3, c:3, r:4, cw:3, ch:1 },
+        { id:7, c:6, r:4, cw:3, ch:1 },
+      ]},
+      { name:'B', lead:3, slots:[
+        { id:3, c:0, r:0, cw:5, ch:3 },
+        { id:6, c:5, r:0, cw:2, ch:4 },
+        { id:2, c:7, r:0, cw:2, ch:3 },
+        { id:8, c:0, r:3, cw:5, ch:1 },
+        { id:7, c:7, r:3, cw:2, ch:1 },
+        { id:4, c:0, r:4, cw:3, ch:1 },
+        { id:1, c:3, r:4, cw:3, ch:1 },
+        { id:5, c:6, r:4, cw:3, ch:1 },
+      ]},
+    ]
+  };
+
+  const VARIANTS = [V1, V2, V3, V4];
+
+  // ---------- Render ----------
+  const root = document.querySelector('.options');
+  const TARGET_W = 1280; // visual width of each option's canvas in the page
+  const VIEWPORT_RATIO = 1440/900; // target desktop landing viewport aspect
+
+  VARIANTS.forEach(V => {
+    const ts = tileSize(V.u, V.g, V.C, V.R);
+    // We render TWO arrangements side-by-side (with a single 24px gutter between them) to make the seam visible.
+    const arrCount = V.arrangements.length;
+    const worldW = arrCount * ts.w + (arrCount - 1) * V.g;
+    const worldH = ts.h;
+    // Add one extra gutter on top and bottom to show the vertical-duplicate seam
+    const drawH = worldH + V.g*2;
+    const drawW = worldW + V.g*2;
+
+    const scale = TARGET_W / drawW;
+
+    const opt = document.createElement('div');
+    opt.className = 'opt';
+
+    const ratio = (V.u && V.g) ? `u=${V.u} · g=${V.g}` : '';
+    opt.innerHTML = `
+      <header>
+        <span class="id">${V.id}</span>
+        <span class="title">${V.name} <span style="color:rgba(26,26,26,0.45);font-family:ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;margin-left:10px;">${ratio} · tile ${ts.w}×${ts.h} · ${V.C}×${V.R} = ${V.C*V.R} cells</span></span>
+        <span class="stats">
+          <span>Lead: <b>${(V.arrangements[0].slots.find(s=>s.id===V.arrangements[0].lead).cw)}×${(V.arrangements[0].slots.find(s=>s.id===V.arrangements[0].lead).ch)} cells</b></span>
+          <span>Establishing zoom: <b>${V.establishingScale ? 'x'+V.establishingScale : '1.00 (full)'}</b></span>
+        </span>
+      </header>
+      <div class="canvas-wrap" style="height:${Math.round(drawH * scale)}px;">
+        <div class="scale" style="transform:scale(${scale}); width:${drawW}px; height:${drawH}px; position:relative;">
+        </div>
+        <div class="ruler">u ${V.u} · g ${V.g} (constant)</div>
+      </div>
+      <footer>
+        <div class="pros"><h4>Direction</h4>${V.desc}</div>
+        <div class="cons"><h4>Trade</h4><strong>Pros — </strong>${V.pros}<br><strong>Cons — </strong>${V.cons}</div>
+      </footer>
+    `;
+    root.appendChild(opt);
+
+    const canvas = opt.querySelector('.scale');
+    // Render two arrangements side-by-side, with leading + trailing gutter
+    V.arrangements.forEach((arr, ai) => {
+      const tileX = V.g + ai * (ts.w + V.g);
+      const tileY = V.g;
+
+      arr.slots.forEach(s => {
+        if (s.skip) return;
+        const r = cellRect(s.c, s.r, s.cw, s.ch, V.u, V.g);
+        const SP = sp(s.id);
+        const isLead = (s.id === arr.lead);
+        const el = document.createElement('div');
+        el.className = 'ph' + (isLead ? ' lead' : '');
+        el.style.setProperty('--ph-a', SP.a);
+        el.style.setProperty('--ph-b', SP.b);
+        el.style.left = (tileX + r.x) + 'px';
+        el.style.top  = (tileY + r.y) + 'px';
+        el.style.width = r.w + 'px';
+        el.style.height = r.h + 'px';
+        el.innerHTML = `<div class="lab">P${SP.id}${isLead ? ' · LEAD' : ''}<br>${SP.name.toUpperCase()}</div>`;
+        canvas.appendChild(el);
+      });
+
+      // Tile boundary marker (subtle)
+      const marker = document.createElement('div');
+      marker.style.cssText = `position:absolute;left:${tileX-V.g/2}px;top:${tileY-V.g/2}px;width:${ts.w+V.g}px;height:${ts.h+V.g}px;border:1px dashed rgba(26,26,26,0.12);pointer-events:none;`;
+      canvas.appendChild(marker);
+
+      // Arrangement letter
+      const letter = document.createElement('div');
+      letter.style.cssText = `position:absolute;left:${tileX + V.g}px;top:${tileY - V.g - 4}px;font-family:ui-monospace,Menlo,monospace;font-size:12px;letter-spacing:0.12em;color:var(--blue);text-transform:uppercase;`;
+      letter.textContent = `Arrangement ${arr.name}`;
+      canvas.appendChild(letter);
+    });
+
+    // Establishing viewport overlay (16:10-ish) centered on arrangement A's lead
+    const arrA = V.arrangements[0];
+    const leadSlot = arrA.slots.find(s => s.id === arrA.lead);
+    const leadRect = cellRect(leadSlot.c, leadSlot.r, leadSlot.cw, leadSlot.ch, V.u, V.g);
+    const leadCx = V.g + leadRect.x + leadRect.w/2;
+    const leadCy = V.g + leadRect.y + leadRect.h/2;
+    // Establishing view sized to fit the tile (or zoomed by establishingScale)
+    const estZoom = V.establishingScale || 1.0;
+    const estVW = ts.w / estZoom;
+    const estVH = estVW / VIEWPORT_RATIO;
+    const vbX = leadCx - estVW/2;
+    const vbY = leadCy - estVH/2;
+    const vp = document.createElement('div');
+    vp.className = 'viewport-frame';
+    vp.style.left = vbX + 'px';
+    vp.style.top  = vbY + 'px';
+    vp.style.width = estVW + 'px';
+    vp.style.height = estVH + 'px';
+    canvas.appendChild(vp);
+
+    const vpLab = document.createElement('div');
+    vpLab.className = 'viewport-label';
+    vpLab.textContent = `Establishing viewport (~${Math.round(estVW)}×${Math.round(estVH)})`;
+    vpLab.style.left = (vbX + 6) + 'px';
+    vpLab.style.top  = (vbY + 6) + 'px';
+    canvas.appendChild(vpLab);
+  });
+</script>
+</body>
+</html>

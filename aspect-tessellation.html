@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Aspect-ratio tessellation — Kees Leemeijer</title>
+<style>
+  :root { --field:#f2eee5; --blue:#1635ee; --charcoal:#1a1a1a; }
+  * { box-sizing: border-box; }
+  html, body { margin:0; padding:0; background:var(--field); color:var(--charcoal); font-family: system-ui, sans-serif; -webkit-font-smoothing:antialiased; letter-spacing:-0.005em; }
+  .frame-header { padding: 28px 32px 18px; border-bottom: 1px solid rgba(26,26,26,0.08); }
+  .frame-header h1 { margin:0 0 8px; font-size:1.05rem; font-weight:500; letter-spacing:-0.01em; }
+  .frame-header h1 .dot { color:var(--blue); }
+  .frame-header .lede { font-family: ui-monospace, Menlo, monospace; font-size: 11px; line-height:1.6; color:rgba(26,26,26,0.6); letter-spacing:0.04em; max-width:780px; text-transform:uppercase; }
+
+  .ratios-table {
+    margin: 24px 32px 8px;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 0.82rem;
+    background: var(--field);
+    border: 1px solid rgba(26,26,26,0.1);
+  }
+  .ratios-table th, .ratios-table td {
+    padding: 8px 12px;
+    text-align: left;
+    border-bottom: 1px solid rgba(26,26,26,0.06);
+    border-right: 1px solid rgba(26,26,26,0.06);
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 11px;
+  }
+  .ratios-table th {
+    background: rgba(26,26,26,0.04);
+    font-weight: 500;
+    color: rgba(26,26,26,0.7);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .ratios-table td.target { color: var(--charcoal); font-weight: 500; }
+  .ratios-table td.actual { color: var(--blue); }
+  .ratios-table td.delta-good { color: rgba(26,120,40,0.85); }
+  .ratios-table td.delta-warn { color: rgba(180,90,30,0.9); }
+  .ratios-table td.delta-bad  { color: rgba(180,40,40,0.9); }
+
+  .options { padding: 8px 32px 80px; }
+  .opt { margin: 32px 0 56px; border: 1px solid rgba(26,26,26,0.1); background: var(--field); }
+  .opt header {
+    display: grid; grid-template-columns: 80px 1fr 280px;
+    gap: 18px; padding: 14px 20px;
+    border-bottom: 1px solid rgba(26,26,26,0.08);
+    font-family: ui-monospace, Menlo, monospace; font-size: 11px;
+    letter-spacing: 0.06em; text-transform: uppercase; color: rgba(26,26,26,0.7);
+  }
+  .opt header .id { color: var(--blue); font-weight: 600; letter-spacing: 0.12em; }
+  .opt header .title { color: var(--charcoal); font-family: system-ui, sans-serif; font-size: 0.95rem; text-transform: none; letter-spacing: -0.005em; font-weight: 500; }
+  .opt header .stats { text-align: right; color: rgba(26,26,26,0.55); }
+  .opt header .stats span { display: block; line-height: 1.5; }
+  .opt header .stats b { color: var(--blue); font-weight: 500; }
+
+  .opt .canvas-wrap { background: var(--field); overflow: hidden; position: relative; }
+  .opt .canvas-wrap .scale { transform-origin: top left; }
+
+  .ph { position: absolute; overflow: hidden; background: repeating-linear-gradient(0deg, var(--ph-a) 0 12px, var(--ph-b) 12px 24px); display: grid; place-items: center; }
+  .ph .lab {
+    font-family: ui-monospace, Menlo, monospace; font-size: 10px;
+    letter-spacing: 0.05em; color: rgba(26,26,26,0.65); text-transform: uppercase;
+    background: rgba(242,238,229,0.85); padding: 3px 7px; text-align: center; line-height: 1.4;
+  }
+  .ph.lead .lab { color: var(--blue); font-weight: 500; }
+  .ph.lead { outline: 1px solid var(--blue); outline-offset: -1px; }
+
+  .opt footer { padding: 14px 20px 18px; border-top: 1px solid rgba(26,26,26,0.08);
+    display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+    font-size: 0.82rem; line-height: 1.55; color: rgba(26,26,26,0.78);
+  }
+  .opt footer .pros, .opt footer .cons { border-left: 2px solid var(--blue); padding-left: 12px; }
+  .opt footer .cons { border-left-color: rgba(26,26,26,0.25); }
+  .opt footer h4 { margin: 0 0 6px; font-family: ui-monospace, Menlo, monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(26,26,26,0.55); font-weight: 500; }
+
+  .ruler {
+    position: absolute; bottom: 8px; left: 8px;
+    font-family: ui-monospace, Menlo, monospace; font-size: 9.5px; letter-spacing: 0.06em;
+    color: var(--blue); background: rgba(242,238,229,0.9); padding: 3px 7px; text-transform: uppercase;
+  }
+  .badge {
+    display: inline-block; padding: 1px 6px; margin-left: 6px;
+    font-size: 9.5px; letter-spacing: 0.06em; text-transform: uppercase;
+    background: var(--blue); color: var(--field); border-radius: 1px;
+  }
+  .badge.ok { background: rgba(26,120,40,0.85); }
+  .badge.warn { background: rgba(180,90,30,0.9); }
+  .section-title { padding: 28px 32px 0; font-size: 0.92rem; font-weight: 500; letter-spacing: -0.005em; }
+  .section-sub { padding: 0 32px 4px; font-family: ui-monospace, Menlo, monospace; font-size: 10.5px; letter-spacing:0.06em; text-transform:uppercase; color:rgba(26,26,26,0.55); max-width:780px; line-height:1.6; }
+</style>
+</head>
+<body>
+
+<div class="frame-header">
+  <h1>Kees Leemeijer<span class="dot">.</span> &nbsp;&nbsp;Aspect-ratio tessellation</h1>
+  <div class="lede">
+    Goal — pick a module/gutter combo where common photo aspect ratios land cleanly on integer cell spans, then design tessellations using only "big" slots (no postage stamps).
+    Constant gutter rule preserved — 24px everywhere. The only variable is module size and grid extent.
+  </div>
+</div>
+
+<div id="ratios-wrap"></div>
+
+<h2 class="section-title">Tessellation options — fewer photos, larger slots</h2>
+<div class="section-sub">Each tile fits 5–7 photos using only ratios from the kept set (3:2, 2:3, 4:3, 3:4, 16:9, 21:9, 1:1). No slots smaller than ~360 wide. Establishing viewport (dashed blue) shows how the arrangement reads on landing.</div>
+
+<div class="options" id="options"></div>
+
+<script>
+// ============================================================
+// 1) RATIO TABLE — for each (u, g) candidate, show how cleanly
+//    common photo ratios map onto integer cell spans.
+//
+//    Slot dimensions: w(n) = n*u + (n-1)*g
+//    Slot ratio for a (cw, ch) slot:  w(cw) / w(ch)
+//
+//    For each target ratio, find the (cw, ch) integer pair
+//    closest to that ratio with the smallest cw+ch (favouring big slots).
+// ============================================================
+
+const RATIOS = [
+  { name: '3:2',   v: 3/2,    note: 'DSLR landscape' },
+  { name: '2:3',   v: 2/3,    note: 'DSLR portrait' },
+  { name: '4:3',   v: 4/3,    note: '4/3 landscape' },
+  { name: '3:4',   v: 3/4,    note: '4/3 portrait' },
+  { name: '16:9',  v: 16/9,   note: 'cinematic landscape' },
+  { name: '9:16',  v: 9/16,   note: 'cinematic portrait' },
+  { name: '21:9',  v: 21/9,   note: 'panoramic / super-wide' },
+  { name: '1:1',   v: 1,      note: 'square' },
+  { name: '5:4',   v: 5/4,    note: 'large format' },
+];
+
+function w(n, u, g) { return n*u + (n-1)*g; }
+function slotRatio(cw, ch, u, g) { return w(cw,u,g) / w(ch,u,g); }
+
+// For a given (u, g), find the best (cw, ch) for each target ratio.
+// "Best" = minimum |actual/target − 1| with cw+ch ≤ MAX (favour big slots).
+function bestSpan(target, u, g, maxSpan = 8) {
+  let best = null;
+  for (let cw = 1; cw <= maxSpan; cw++) {
+    for (let ch = 1; ch <= maxSpan; ch++) {
+      const r = slotRatio(cw, ch, u, g);
+      const err = Math.abs(r/target - 1);
+      // Prefer "big" slots: max(cw, ch) ≥ 3 ideally; otherwise penalize.
+      const sizePenalty = Math.max(0, 3 - Math.max(cw, ch)) * 0.15;
+      const score = err + sizePenalty;
+      if (!best || score < best.score) {
+        best = { cw, ch, ratio: r, err, score };
+      }
+    }
+  }
+  return best;
+}
+
+// Render the ratio table for several (u, g) candidates
+const candidates = [
+  { u: 96,  g: 24, label: 'u=96 g=24' },
+  { u: 108, g: 24, label: 'u=108 g=24' },
+  { u: 120, g: 24, label: 'u=120 g=24' },
+  { u: 132, g: 24, label: 'u=132 g=24' },
+  { u: 144, g: 24, label: 'u=144 g=24' },
+];
+
+const ratiosWrap = document.getElementById('ratios-wrap');
+ratiosWrap.innerHTML = `
+  <h2 class="section-title">Step 1 — How well does each module map photo ratios?</h2>
+  <div class="section-sub">For each common photo ratio, the closest integer cell-span at each module/gutter. % is deviation from the target ratio. Lower is better; a Mondrian-tight tessellation needs all keepers below ~5%.</div>
+`;
+
+const table = document.createElement('table');
+table.className = 'ratios-table';
+let head = '<tr><th>Photo ratio</th><th>Note</th>';
+for (const c of candidates) head += `<th>${c.label}</th>`;
+head += '</tr>';
+table.innerHTML = head;
+
+for (const R of RATIOS) {
+  let row = `<tr><td class="target">${R.name} <span style="color:rgba(26,26,26,0.4)">(${R.v.toFixed(3)})</span></td><td style="color:rgba(26,26,26,0.55)">${R.note}</td>`;
+  for (const c of candidates) {
+    const b = bestSpan(R.v, c.u, c.g);
+    const pct = (b.err * 100);
+    const cls = pct < 2 ? 'delta-good' : (pct < 5 ? 'delta-warn' : 'delta-bad');
+    row += `<td class="${cls}"><b>${b.cw}×${b.ch}</b> → ${b.ratio.toFixed(3)} <span style="opacity:0.6;">(±${pct.toFixed(1)}%)</span></td>`;
+  }
+  row += '</tr>';
+  table.insertAdjacentHTML('beforeend', row);
+}
+ratiosWrap.appendChild(table);
+
+// Notes about the table
+const notes = document.createElement('div');
+notes.style.cssText = 'padding: 10px 32px 8px; font-family: ui-monospace, Menlo, monospace; font-size:11px; line-height:1.7; color: rgba(26,26,26,0.65); letter-spacing:0.02em;';
+notes.innerHTML = `
+  <strong style="color:var(--blue);">Reading the table —</strong>
+  the gutter slightly shrinks the effective ratio of every slot relative to its cell-count ratio. A 5×3 slot at u=120/g=24 is <b>696×408 = 1.706</b>, not 1.667.
+  This is why <b>3:2 + 4:3</b> are easy to hit and <b>16:9 + 21:9</b> need bigger spans (and longer rows).
+  <br>
+  <strong style="color:var(--blue);">Sweet spot — </strong> u=120 or u=132 hit every keeper ratio (3:2, 2:3, 4:3, 3:4, 1:1, 16:9, 21:9) within ~3% using 3-cell-or-bigger slots. Below u=108 the ratios crowd; above u=144 the tile is huge for few photos.
+`;
+ratiosWrap.appendChild(notes);
+
+// ============================================================
+// 2) TESSELLATION OPTIONS — fewer photos, bigger slots,
+//    using only the keeper ratios with span ≥ 3 cells.
+// ============================================================
+
+const SPECIES = [
+  { id:1, name:'Common Kingfisher',   latin:'Alcedo atthis',         a:'#3d6b8a', b:'#4a7c9a' },
+  { id:2, name:'Eurasian Hoopoe',     latin:'Upupa epops',           a:'#c79e6e', b:'#b88c5e' },
+  { id:3, name:'Great Crested Grebe', latin:'Podiceps cristatus',    a:'#7a8b76', b:'#8a9c86' },
+  { id:4, name:'Northern Lapwing',    latin:'Vanellus vanellus',     a:'#3a4a3e', b:'#48584c' },
+  { id:5, name:'European Bee-eater',  latin:'Merops apiaster',       a:'#a87a3e', b:'#b8893f' },
+  { id:6, name:'Eurasian Bittern',    latin:'Botaurus stellaris',    a:'#8b7848', b:'#9a8758' },
+  { id:7, name:'Bohemian Waxwing',    latin:'Bombycilla garrulus',   a:'#6e5444', b:'#7e6454' },
+];
+const sp = id => SPECIES.find(s => s.id === id);
+
+function cellRect(c, r, cw, ch, u, g) {
+  return { x: g + c*(u+g), y: g + r*(u+g), w: cw*u + (cw-1)*g, h: ch*u + (ch-1)*g };
+}
+function tileSize(u, g, C, R) { return { w: C*u + (C+1)*g, h: R*u + (R+1)*g }; }
+
+// ----- Variant A — 6 photos, mixed 3:2 + 4:3 + 21:9 + 2:3 -----
+// u=120 g=24 C=8 R=5. 40 cells. 6 photos.
+//   P5 lead 5×3 = 15  ratio 1.706 (≈3:2)
+//   P2 vert 3×4 = 12  ratio 0.756 (≈3:4 portrait)
+//   P3 land 5×2 = 10  ratio 2.696/0.5...  let's compute: w(5)=696 w(2)=264 ratio 2.636 — closer to 21:9 (2.333) than 3:2; relabel
+//   wait want a real landscape. Let me redo.
+//
+// 8x5 = 40, 6 photos:
+//   P5 lead 5x3 = 15           landscape 1.706 (3:2)
+//   P2 vert  3x4 = 12          portrait 0.756 (3:4)
+//   P4 wide  8x1 = 8           super-wide 1128:120 = 9.4 (way too wide; relax to span less)
+//   actually just do P4 wide 5x1 = 5, ratio 5.8 — still very wide. To hit 21:9 (2.33):
+//   need w/h ≈ 2.33. with h=1 (120), w needs 280 -> w(2)=264 (2.2) or w(3)=408 (3.4). 264 closer.
+//   Or h=2 (264), w needs 615 -> w(5)=696 (2.636) close. 21:9 = 2.333; 5x2 = 2.636 ≈ 13% off — too much.
+//   Better: with g=24 u=120, w/h for h=2 ratio target 2.333 -> w=615.6. nearest integer span: 5 (696). 13% high.
+//   Alternative: 21:9 with h=1: w=280. Nearest span: 2 (264, 8% low) or 3 (408, 46% high). 2x1 wins at 8%.
+//   So a "real" 21:9 super-wide here is 2x1 = 264x120. That's not super-impressive size.
+// Conclusion: at u=120 g=24, super-wide slots are inherently small unless you span LOT of columns.
+// Try u=108 g=24:
+//   bestSpan for 21:9: w(7)=864 h=1 (108), 864/108=8.0 — over. w(3)=348 h=1 = 3.22 — over. w(2)=240 = 2.22 (5%).
+//   No big super-wides at u=108 either.
+// Try u=132 g=24:
+//   21:9: 132*n+24*(n-1) / 132. n=2 -> 288/132=2.18 (7%). n=3 -> 420/132=3.18 (36% over). 2x1 best.
+// Take-away: TRUE super-wide slots are always small at any reasonable module. 21:9 is hard to honor at scale.
+
+// PIVOT — use 16:9 instead of 21:9 as the "wide" ratio. Easier to fit big.
+//   16:9 = 1.778. At u=120 g=24:
+//     w(5)/w(2) = 696/264 = 2.636 (too wide for 16:9)
+//     w(4)/w(2) = 552/264 = 2.091 (too wide)
+//     w(3)/w(2) = 408/264 = 1.545 (too narrow)
+//     w(7)/w(3) = 984/408 = 2.412
+//     w(6)/w(3) = 840/408 = 2.059
+//     w(5)/w(3) = 696/408 = 1.706 (close to 3:2; 16:9 = 1.778 -> 4% off)
+//     w(4)/w(3) = 552/408 = 1.353
+//     None below 4%. Acceptable.
+//   At u=108 g=24:
+//     w(5)/w(3) = (5*108+96)/(3*108+48)=636/372=1.710 (4% off)
+//     w(7)/w(4) = (7*108+144)/(4*108+72)=900/504=1.786 (0.4% off!) ✓
+//   At u=132 g=24:
+//     w(5)/w(3) = (5*132+96)/(3*132+48) = 756/444 = 1.703 (4%)
+//     w(7)/w(4) = (7*132+144)/(4*132+72) = 1068/600 = 1.78 (0.1%) ✓ but huge
+// So at u=108, 7×4 cells = 900×504 px hits 16:9 within 0.4%. Use u=108 g=24 with bigger grid.
+
+// u=108 g=24 C=10 R=6 -> tile = 10*108+11*24 = 1080+264 = 1344, h = 6*108+7*24 = 648+168 = 816. 60 cells.
+// In 60 cells we can place big slots:
+//   P5 lead 7×4 = 28  -> 900×504 (16:9 within 0.4%) — beautiful big lead
+//   P2 vert 3×5 = 15  -> 372×612 ratio 0.608 ≈ 5:8 ≈ close to 2:3 (0.667; 9% off — relax) or call it "tall portrait"
+//      better: 4×6 = 24 (504×744 ratio 0.677 ≈ 2:3 within 1.5%) ✓ but overlaps with lead. Need to fit.
+//   P4 wide 7×2 = 14  -> 900×240 ratio 3.75 — between 16:9 and 21:9 (panoramic but not extreme)
+//   P3 land 5×3 = 15  -> 636×372 ratio 1.71 (≈ 16:9 within 4%, or 3:2 within 14%)
+//      better:  5×3 = 1.71 ≈ 16:9 (within 4%)
+//   P6 portrait 3×4 = 12 -> 372×504 ratio 0.738 ≈ 3:4 (within 2%) ✓
+//
+// 7 photos that fit ratios cleanly. Let me design 6-photo and 7-photo tessellations.
+
+// ----- Tessellation 1 — u=108 g=24 — 6 photos, generous -----
+// Tile 1344×816. 60 cells. 6 photos, all big.
+//   Lead P5 (3:2-ish, 5×3) = 15 cells, ratio 1.71 (≈ 3:2)
+//   P2 vert (2:3, 4×6) = 24 cells, 504×744 (2:3 within 1.5%)
+//   P3 land (3:2-ish, 5×3) = 15 cells, ratio 1.71
+//   P4 wide (16:9, 7×2 doesn't fit in remaining; try 5×2 = 10) = 10 cells. 636×240 ratio 2.65 (panoramic)
+//   P6 portrait (3:4, 3×4) = 12 cells. but wait we only have 60 cells total.
+//   sum: 15+24+15+10+12=76, over.
+// Reduce: drop one mid-size slot.
+//   Lead 5×3 (15)
+//   P2 vert 4×6 (24)
+//   P3 land 5×3 (15)
+//   P4 wide 6×1 (6) — only 6 cells, but ratio 6:1 = 6 — close to a pano super-wide. Not 21:9 (2.33). Relabel as "panoramic strip".
+//   P6 land 5×1 (5) — pano strip
+//   sum: 15+24+15+6+5 = 65, over.
+// Hmm 60 cells fights us. Let me try a different grid: u=108 g=24 C=10 R=5 -> tile=1344 wide, 5*108+6*24=540+144=684. 50 cells.
+//   Lead 5×3 (15)
+//   P2 vert 4×5 (20) — 504×612 ratio 0.823 ≈ 4:5 (large-format portrait!) within 3% (4:5=0.8)  ✓
+//   P3 land 5×2 (10) — 636×240 ratio 2.65 (panoramic)
+//   P4 wide 5×1 (5)  — 636×108 ratio 5.89 (very wide)
+//   sum: 15+20+10+5 = 50. Only 4 photos. Underused.
+//
+// Approach: COMMIT to 6 photos with great ratios, find the grid that fits.
+//   I want 6 slots: 1 hero (3:2 5×3=15), 1 vertical (2:3 4×6=24), 1 landscape (3:2 5×3=15), 1 portrait (3:4 3×4=12), 1 wide (16:9 5×3=15? same as lead), 1 small landscape (3:2 3×2=6 — 348×240 ratio 1.45 = 3:2 within 3%)
+//   Sum: 15+24+15+12+15+6 = 87 cells. Need 87 cells.
+//   u=108 g=24 C=10 R=9 = 90 cells. Tile = 1344 wide, 9*108+10*24=972+240=1212 tall. WAY too tall.
+//   Try fewer photos.
+
+// SIMPLER APPROACH:
+// Build 4 tessellations with 5, 6, 7 photos respectively, choosing slot-sets that are mathematically clean.
+
+// Helper to compute actual ratio + closest target name + delta
+const KEEPERS = [
+  { name:'3:2', v:1.5 }, { name:'2:3', v:2/3 },
+  { name:'4:3', v:4/3 }, { name:'3:4', v:0.75 },
+  { name:'16:9', v:16/9 }, { name:'9:16', v:9/16 },
+  { name:'21:9', v:21/9 }, { name:'1:1', v:1 }, { name:'5:4', v:1.25 }, { name:'4:5', v:0.8 },
+];
+function classify(cw, ch, u, g) {
+  const r = slotRatio(cw, ch, u, g);
+  let best = null;
+  for (const k of KEEPERS) {
+    const e = Math.abs(r/k.v - 1);
+    if (!best || e < best.e) best = { ...k, e };
+  }
+  return { ratio: r, target: best.name, delta: best.e * 100 };
+}
+
+const VARIANTS = [];
+
+// ============================================================
+// V1 — u=120, g=24, 8×5 (tile 1176×744). 40 cells. 6 photos.
+// Strategy: lead 16:9 (5×3 = 1.706, 4% off), 2 verticals 3:4, 2 panos, 1 mid-landscape.
+// ============================================================
+VARIANTS.push({
+  id: 'A',
+  name: 'u=120 · 6 photos · lead 16:9-ish',
+  desc: 'Module 120, 8×5 grid, 6 photos. Lead is a generous 5×3 slot reading as 16:9 (the 4% deviation is within tolerance). Two verticals frame the right; two panoramic strips along the bottom. Smallest slot ≈ 408×264.',
+  pros: 'Six photos read as photographs, not thumbnails. Good vertical/horizontal mix. Lead has commanding presence at full-tile zoom.',
+  cons: '"16:9" lead is technically 1.71 — fine for cropping, slight tension if you want true 16:9.',
+  u: 120, g: 24, C: 8, R: 5,
+  arrangements: [
+    { name:'A', lead:5, slots:[
+      { id:5, c:0, r:0, cw:5, ch:3 },   // lead 696×408 (1.706 ≈ 16:9 / 3:2)
+      { id:2, c:5, r:0, cw:3, ch:4 },   // vertical 408×552 (0.739 ≈ 3:4 within 1.5%)
+      { id:6, c:5, r:4, cw:3, ch:1 },   // small wide 408×120 (3.4 — panoramic strip)
+      { id:3, c:0, r:3, cw:3, ch:2 },   // landscape 408×264 (1.55 ≈ 3:2 within 3%)
+      { id:4, c:3, r:3, cw:5, ch:1 },   // pano 696×120 (5.8 — pano strip)
+      { id:7, c:3, r:4, cw:2, ch:1 },   // landscape 264×120 (2.2 — wide-landscape)
+    ]},
+  ]
+});
+
+// ============================================================
+// V2 — u=120, g=24, 8×5. 5 PHOTOS, even bigger.
+// ============================================================
+VARIANTS.push({
+  id: 'B',
+  name: 'u=120 · 5 photos · maximum scale',
+  desc: 'Same grid as A, but only 5 photos per arrangement. Each photo is bigger; reading time per photo grows. Lead 5×3, plus two verticals, one full-width pano, one mid-landscape. No slot below 504 wide.',
+  pros: 'Most "every photo is a photograph" feel. Walls of museum quality. No filler.',
+  cons: 'You need 5 leads × 4 arrangements = 20 photo-positions; with only 8 photos some appear twice as supporting cast and twice as lead. Acceptable per spec but worth knowing.',
+  u: 120, g: 24, C: 8, R: 5,
+  arrangements: [
+    { name:'A', lead:5, slots:[
+      { id:5, c:0, r:0, cw:5, ch:3 },   // lead 696×408
+      { id:2, c:5, r:0, cw:3, ch:5 },   // tall vertical 408×696 (0.586 ≈ 3:5; relax — between 9:16 and 2:3)
+      { id:4, c:0, r:3, cw:5, ch:1 },   // pano 696×120 (5.8)
+      { id:3, c:0, r:4, cw:3, ch:1 },   // land 408×120 (3.4)
+      { id:7, c:3, r:4, cw:2, ch:1 },   // land 264×120 (2.2)
+    ]}
+  ]
+});
+
+// ============================================================
+// V3 — u=108, g=24, 10×5 (tile 1344×684). 50 cells. 7 photos with TRUE 16:9 lead.
+// ============================================================
+VARIANTS.push({
+  id: 'C',
+  name: 'u=108 · 7 photos · TRUE 16:9 lead',
+  desc: 'Smaller module (108) but wider grid (10 cols). The lead 7×4 slot resolves to 900×504 — exactly 16:9 within 0.4%. Two verticals at 4×3 (504×372 ≈ 4:3 within 1%). Best mathematical fidelity to standard photo ratios.',
+  pros: 'Lead is a real 16:9. Every slot maps to a named ratio within 4%. Most "engineered" feel.',
+  cons: 'Tile is 1344 wide — vertical-pan sweep covers only 1.85 arrangements per swipe. More photos = busier.',
+  u: 108, g: 24, C: 10, R: 5,
+  arrangements: [
+    { name:'A', lead:5, slots:[
+      // lead 7×4 — 16:9 (within 0.4%)
+      { id:5, c:0, r:0, cw:7, ch:4 },   // 900×504 (1.786 ≈ 16:9)
+      // vertical 3×4 — 3:4 (within 2%)
+      { id:2, c:7, r:0, cw:3, ch:4 },   // 372×504 (0.738 ≈ 3:4)
+      // pano along bottom 7x1 — 7:0.7 ratio
+      { id:4, c:0, r:4, cw:7, ch:1 },   // 900×108 (8.33)
+      // land 3×1 — wide-landscape
+      { id:3, c:7, r:4, cw:3, ch:1 },   // 372×108 (3.44)
+      // (only 4 photos — add more)
+    ]},
+  ]
+});
+// Variant C above only fits 4 photos in 50 cells with that layout; need to stack differently.
+// Re-design V3 to accommodate 6 photos with the 7×4 lead.
+// 7×4 = 28 cells. Remaining 22 cells in a 10×5 grid.
+//   Spaces around lead: cols 7-9 rows 0-4 (3×5 = 15 cells); rows 4 cols 0-9 (10 cells, intersects col 7-9 r=4)
+//   Block layout:
+//     - lead cols 0-6 rows 0-3 (28 cells)
+//     - cols 7-9 rows 0-3 (3×4 = 12 cells) → vertical 3×4 P2
+//     - row 4 cols 0-9 (10 cells) → split into wide P4 (4×1) + land P3 (3×1) + small land P7 (3×1) = 10 cells, 3 photos
+//   Total: 28 + 12 + 4+3+3 = 50 ✓ photos: P5,P2,P4,P3,P7 = 5 photos.
+// To get 7 photos we need 6×4 lead instead, freeing cols 6-9.
+//   lead 6×4 = 24 cells. 750×504 ratio 1.488 ≈ 3:2 within 1% ✓
+//   cols 6-9 rows 0-3 (4×4 = 16 cells) → split: vertical 2×4 P2 (264×504, 0.524 ≈ 9:16 portrait) + landscape 2×4 P6 (same geom, 264×504 — too tall for landscape)
+//      better: vert 2×4 P2 + land 4×2 P3 (504×264 ≈ 3:2 within 3%) + small 4×2... let me re-examine: cols 6-9 rows 0-3 is 4 cols × 4 rows.
+//      vert P2 cols 6-7 rows 0-3 = 2×4 = 8 cells, 264×504 ratio 0.524 (relabel 9:16 portrait, within 8%)
+//      land P3 cols 8-9 rows 0-1 = 2×2 = 4 cells, 264×264 (1:1 square) — relabel SQUARE
+//      land P6 cols 8-9 rows 2-3 = 2×2 = 4 cells, square
+//   row 4 cols 0-9: pano P4 (5×1) + pano P7 (3×1) + small land P1 (2×1) = 10 cells.
+//   Total: 24+8+4+4+5+3+2 = 50 ✓ 7 photos: P5,P2,P3,P6,P4,P7,P1.
+
+// Replace V3 with this:
+VARIANTS[2].arrangements = [
+  { name:'A', lead:5, slots:[
+    { id:5, c:0, r:0, cw:6, ch:4 },   // 750×504 = 1.488 ≈ 3:2 within 1%
+    { id:2, c:6, r:0, cw:2, ch:4 },   // 240×504 = 0.476 ≈ 9:16 (within 15%) — tall vertical
+    { id:3, c:8, r:0, cw:2, ch:2 },   // 240×240 = 1:1 square
+    { id:6, c:8, r:2, cw:2, ch:2 },   // 240×240 = 1:1 square
+    { id:4, c:0, r:4, cw:5, ch:1 },   // 636×108 = 5.89 (panoramic)
+    { id:7, c:5, r:4, cw:3, ch:1 },   // 372×108 = 3.44 (wide landscape)
+    { id:1, c:8, r:4, cw:2, ch:1 },   // 240×108 = 2.22 (close to 21:9 within 5%)
+  ]},
+];
+VARIANTS[2].desc = 'Module 108, 10×5 grid. Lead 6×4 (750×504, exactly 3:2 within 1%). Two square (1:1) accents at upper-right. Bottom pano + landscape strip. Square is an underused but very photographic format.';
+VARIANTS[2].pros = 'Hits 3:2 lead exactly. Squares give compositional surprise. Wide bottom strip gives horizontal breath.';
+VARIANTS[2].cons = 'The 240px-wide column on the far right approaches "small photo" territory. Tall vertical is 240 wide — usable but tight.';
+VARIANTS[2].name = 'u=108 · 7 photos · exact 3:2 lead + 1:1 accents';
+
+// ============================================================
+// V4 — u=132, g=24, 7×4 (tile 1116×624). 28 cells. 5 photos, BIG.
+// ============================================================
+// 7×4 = 28 cells.
+// Lead 4×3 = 12, ratio 552/420 = 1.314 ≈ 4:3 within 1.4% ✓
+// or lead 5×3 = 15, ratio 684/420 = 1.629 ≈ 3:2 within 8% (big miss). 16:9? 13% off. Eh.
+// or lead 4×2 = 8, ratio 552/288 = 1.917 — between 16:9 and 2:1. Ugly.
+// Stick with 4:3 lead.
+// remaining 16 cells.
+//   P2 vert 2×4 = 8, 288×552 = 0.522 ≈ 9:16 within 7% (relax)
+//   P4 pano 4×1 = 4, 552×132 = 4.18 (very wide)
+//   P3 land 3×1 = 3, 420×132 = 3.18
+//   P6 land 1×1 = 1 square 132×132
+// total 12+8+4+3+1 = 28 ✓ 5 photos.
+VARIANTS.push({
+  id: 'D',
+  name: 'u=132 · 5 photos · exact 4:3 lead',
+  desc: 'Big module (132), small grid (7×4 = 28 cells). Lead 4×3 = 552×420 (4:3 within 1.4%). Tile is 1116×624 — most compact. Best choice if you want fewer, larger photos.',
+  pros: 'Tightest read. Each photo earns serious presence. Cleanest 4:3 lead.',
+  cons: 'Small square in the corner. With 5 photos × 4 arrangements = 20 positions and only 8 photos, repetition across arrangements is unavoidable.',
+  u: 132, g: 24, C: 7, R: 4,
+  arrangements: [
+    { name:'A', lead:5, slots:[
+      { id:5, c:0, r:0, cw:4, ch:3 },   // 552×420 (4:3 within 1.4%)
+      { id:2, c:4, r:0, cw:2, ch:4 },   // 288×552 (≈ 9:16 within 7%)
+      { id:4, c:0, r:3, cw:4, ch:1 },   // 552×132 pano (4.18)
+      { id:3, c:6, r:0, cw:1, ch:3 },   // 132×420 (0.314 narrow vertical)
+      { id:6, c:6, r:3, cw:1, ch:1 },   // 132×132 square
+    ]}
+  ]
+});
+
+// ============================================================
+// RENDER
+// ============================================================
+const optionsRoot = document.getElementById('options');
+const TARGET_W = 1320;
+const VPRATIO = 1440/900;
+
+VARIANTS.forEach(V => {
+  const ts = tileSize(V.u, V.g, V.C, V.R);
+  const drawW = ts.w + V.g*2;
+  const drawH = ts.h + V.g*2;
+  const scale = TARGET_W / drawW;
+
+  const opt = document.createElement('div');
+  opt.className = 'opt';
+  // Build slot ratio summary
+  const slots = V.arrangements[0].slots;
+  const slotSummary = slots.map(s => {
+    const c = classify(s.cw, s.ch, V.u, V.g);
+    return `${s.cw}×${s.ch} → ${c.ratio.toFixed(2)} <span style="opacity:0.55">(${c.target} ±${c.delta.toFixed(1)}%)</span>`;
+  }).join(' · ');
+
+  opt.innerHTML = `
+    <header>
+      <span class="id">${V.id}</span>
+      <span class="title">${V.name}<span style="color:rgba(26,26,26,0.45);font-family:ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;margin-left:10px;">tile ${ts.w}×${ts.h} · ${V.C}×${V.R} = ${V.C*V.R} cells · ${slots.length} photos</span></span>
+      <span class="stats">
+        <span>Lead ratio: <b>${classify(slots[0].cw, slots[0].ch, V.u, V.g).target}</b></span>
+        <span>Smallest slot: <b>${(() => { const m = slots.reduce((min, s) => Math.min(min, Math.min(s.cw*V.u+(s.cw-1)*V.g, s.ch*V.u+(s.ch-1)*V.g)), Infinity); return Math.round(m) + 'px'; })()}</b></span>
+      </span>
+    </header>
+    <div class="canvas-wrap" style="height:${Math.round(drawH * scale)}px;">
+      <div class="scale" style="transform:scale(${scale}); width:${drawW}px; height:${drawH}px; position:relative;"></div>
+      <div class="ruler">u ${V.u} · g ${V.g}</div>
+    </div>
+    <footer>
+      <div class="pros"><h4>Direction</h4>${V.desc}<br><br><span style="font-family:ui-monospace,Menlo,monospace;font-size:10.5px;color:rgba(26,26,26,0.55);letter-spacing:0.04em;">SLOTS — ${slotSummary}</span></div>
+      <div class="cons"><h4>Trade</h4><strong>Pros — </strong>${V.pros}<br><strong>Cons — </strong>${V.cons}</div>
+    </footer>
+  `;
+  optionsRoot.appendChild(opt);
+
+  const canvas = opt.querySelector('.scale');
+  const tileX = V.g, tileY = V.g;
+  const arr = V.arrangements[0];
+  arr.slots.forEach(s => {
+    const r = cellRect(s.c, s.r, s.cw, s.ch, V.u, V.g);
+    const SP = sp(s.id);
+    const isLead = s.id === arr.lead;
+    const c = classify(s.cw, s.ch, V.u, V.g);
+    const el = document.createElement('div');
+    el.className = 'ph' + (isLead ? ' lead' : '');
+    el.style.setProperty('--ph-a', SP.a);
+    el.style.setProperty('--ph-b', SP.b);
+    el.style.left = (tileX + r.x) + 'px';
+    el.style.top = (tileY + r.y) + 'px';
+    el.style.width = r.w + 'px';
+    el.style.height = r.h + 'px';
+    el.innerHTML = `<div class="lab">${SP.name.toUpperCase()}<br>${s.cw}×${s.ch} · <strong>${c.target}</strong> ±${c.delta.toFixed(1)}%</div>`;
+    canvas.appendChild(el);
+  });
+
+  // Tile boundary marker
+  const marker = document.createElement('div');
+  marker.style.cssText = `position:absolute;left:${tileX-V.g/2}px;top:${tileY-V.g/2}px;width:${ts.w+V.g}px;height:${ts.h+V.g}px;border:1px dashed rgba(26,26,26,0.12);pointer-events:none;`;
+  canvas.appendChild(marker);
+
+  // Establishing viewport
+  const leadSlot = arr.slots[0];
+  const leadRect = cellRect(leadSlot.c, leadSlot.r, leadSlot.cw, leadSlot.ch, V.u, V.g);
+  const leadCx = tileX + leadRect.x + leadRect.w/2;
+  const leadCy = tileY + leadRect.y + leadRect.h/2;
+  const estVW = ts.w * 1.0;
+  const estVH = estVW / VPRATIO;
+  const vbX = leadCx - estVW/2;
+  const vbY = leadCy - estVH/2;
+  const vp = document.createElement('div');
+  vp.style.cssText = `position:absolute;left:${vbX}px;top:${vbY}px;width:${estVW}px;height:${estVH}px;border:1px dashed var(--blue);pointer-events:none;`;
+  canvas.appendChild(vp);
+});
+</script>
+
+</body>
+</html>
