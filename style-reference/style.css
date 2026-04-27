@@ -1506,8 +1506,12 @@ body.show-grid::after {
   aspect-ratio: 3 / 2;
   /* Warm dark placeholder bands — stand-in for a golden-hour photograph,
      intentionally darker than --placeholder-band-a/b so the white-on-photo
-     overlay treatment (text-shadow rule) is demonstrable. Local to this
-     demo; not promoted to tokens. */
+     overlay treatment (text-shadow rule) is demonstrable. Demo-local
+     fixtures, not brand colors. PROMOTION TRIGGER: if a second warm-dark
+     photographic stand-in appears anywhere in the brand, that is the
+     moment to promote --placeholder-band-warm-a/b and rename the existing
+     --placeholder-band-a/b to --placeholder-band-cool-a/b. Until then,
+     these two hexes do not earn a token. */
   background: repeating-linear-gradient(
     0deg,
     #4a3520 0 14px,
