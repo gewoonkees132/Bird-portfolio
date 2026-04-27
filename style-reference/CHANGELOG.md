@@ -2,6 +2,14 @@
 
 Reverse-chronological. One entry per dated revision; each entry one line summarizing the change.
 
+## 2026-04-27 — v1 · audit remediation (R-Phase 2, Recommended)
+
+R-Phase 2 (Recommended) closes thirteen findings from the 2026-04-27 CSS audit. **Architecture:** R-1 adopted `@layer reset, tokens, runtime, specimen, debug;` to encode the runtime/specimen contract in CSS — the specimen-side `html, body { overflow: auto }` override now wins by layer order, not source order, and the boundary the `END RUNTIME · BEGIN SPECIMEN` banner names is structural. R-2 added a top-of-file preamble (file map, conventions, edit rules) so a 1639-line single-file specimen orients an editor in seconds. R-7 reordered the specimen blocks to match HTML render order (00 Masthead → §1.1 → §1.2 → §1.3 → §1.4 → §1.5 → §1.6 → §1.7 → §1.8 → §2.x → §3.1 → §99 → below-1336 fallback); the `?grid` debug overlay sits last in its own layer. **Token discipline:** R-3 extracted `--mono-stack` and replaced 38 callsites — including 2 short-variant drifts that silently lacked Consolas; R-4 replaced 34 `rgba(26, 26, 26, …)` literals with `color-mix(in srgb, var(--charcoal) …%, transparent)`; R-5 did the same for 9 raw blue-rgba callsites (`--blue-soft` token kept as the canonical 60% alias); R-10 for 4 field-rgba literals at 0.85 / 0.92 (`--field-overlay` token kept at 0.95); R-11 replaced one `0.78rem` literal with `var(--label-size-m)`. **Naming:** R-8 renamed `.ind-dot` → `.sr-overlay-primitive__dot`, `.live` → `.sr-overlay-applied__layer__live`, `.overlay--backdrop` → `.sr-overlay-applied__layer--backdrop`; R-9 collapsed six scoped `.dot { color: var(--blue) }` re-declarations into one global rule (`.brand-dot` deliberately preserved as a distinct concept). **Cleanup:** R-6 removed dead `.sr-section__head`; R-12 removed the file's lone `!important`; R-13 merged the two adjacent `.mobile-edition .mcell .mphoto` blocks into one rule.
+
+Spec: `docs/specs/2026-04-27-css-audit-design.md`.
+Audit: `docs/audits/2026-04-27-css-audit.md`.
+Plan: `docs/plans/2026-04-27-css-audit-remediation.md`.
+
 ## 2026-04-27 — v1 · audit remediation (R-Phase 1, Critical)
 
 R-Phase 1 (Critical) closes three findings from the 2026-04-27 CSS audit. C-1 aligned `--pan-lerp` between the CSS token and the §1.8 Motion specimen — Kees ratified `0.02` (keep CSS, fix specimen); the heavier-feel runtime value is preserved and the specimen now documents it accurately. C-2 aligned `--focus-fade` — Kees ratified `200ms` (keep CSS, fix specimen); the snappier runtime value remains and the specimen's `360ms` caption is corrected. `--focus-fade` is load-bearing on `.photo` transitions, so the runtime feel is unchanged. C-3 replaced the stale `Grid ruleset — first specimen on the page` banner with an accurate `§1.3 specimen — token chips + page-anatomy diagram` header.
