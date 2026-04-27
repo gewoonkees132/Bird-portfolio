@@ -480,9 +480,9 @@
           <div class="sr-anatomy__legend">
             <div class="sr-anatomy__legend-row"><span class="sr-anatomy__num">1</span> line-name — sans 500, charcoal</div>
             <div class="sr-anatomy__legend-row"><span class="sr-anatomy__num">2</span> latin — italic blue (sole italic accent)</div>
-            <div class="sr-anatomy__legend-row"><span class="sr-anatomy__num">3</span> meta — mono utility, blue-soft</div>
+            <div class="sr-anatomy__legend-row"><span class="sr-anatomy__num">3</span> meta — mono utility, --blue</div>
           </div>
-          <p class="sr-anatomy__usage">Captions a single bird photograph. One per cell, anchored bottom-left.</p>
+          <p class="sr-anatomy__usage">Captions a single bird photograph. One per cell, anchored bottom-left. <b>Formula —</b> line-name in English title-case; latin in lowercase scientific binomial form (Genus species, italic, --blue); meta as <code>Photo X / N</code> with non-breaking spaces. If no settled binomial exists, use the most-recent published name; never coin one.</p>
         </div>
       </div>
 
@@ -514,10 +514,10 @@
         <span class="sr-cell__label">ANATOMY</span>
         <div class="sr-cell__body">
           <div class="sr-anatomy__legend">
-            <div class="sr-anatomy__legend-row"><span class="sr-anatomy__num">1</span> instruction — mono utility, charcoal-soft</div>
-            <div class="sr-anatomy__legend-row"><span class="sr-anatomy__num">2</span> state — arrangement letter in blue</div>
+            <div class="sr-anatomy__legend-row"><span class="sr-anatomy__num">1</span> instruction — mono utility, --blue</div>
+            <div class="sr-anatomy__legend-row"><span class="sr-anatomy__num">2</span> state — arrangement letter in --blue, +0.04em letter-spacing</div>
           </div>
-          <p class="sr-anatomy__usage">Tells the visitor how to navigate the photo plane and where they currently are.</p>
+          <p class="sr-anatomy__usage">Tells the visitor how to navigate the photo plane and where they currently are. <b>Formula —</b> instruction line: imperative verbs separated by a middle-dot (<code>Drag · arrow keys</code>); state line: <code>Arrangement {single uppercase letter}</code> with the letter in <code>.arr</code> at the wider tracking. No emoji; no icons.</p>
         </div>
       </div>
 
@@ -711,6 +711,8 @@
           </div>
         </div>
       </div>
+
+      <p class="sr-cell sr-cell--9 sr-anatomy__usage" style="margin-top:0"><b>Mono-utility formulas —</b> coordinates: <code>52.37°N · 4.89°E</code> (decimal, ° suffix, middle-dot separator); gear: <code>nikon z9 · 600mm f/4</code> (lowercase, middle-dot separator); time-codes: <code>banded 06:12</code> (lowercase verb · 24h time). Default contrast over photographs: <code>color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.4);</code>. Backdrop-blur opt-in via <code>.overlay--backdrop</code> only when text-shadow is insufficient.</p>
 
       <hr class="sr-rule" />
     </section>
