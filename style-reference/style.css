@@ -631,9 +631,7 @@ html, body {
 .sr-section__stats b { color: var(--blue); font-weight: 500; }
 
 /* Masthead */
-.sr-masthead { align-items: end; }
 .sr-masthead__wordmark {
-  grid-column: span 4;
   display: inline-flex;
   align-items: center;
   gap: 14px;
@@ -641,6 +639,8 @@ html, body {
   font-size: var(--wm-size-d);
   font-weight: 500;
   letter-spacing: -0.01em;
+  align-self: center;
+  text-decoration: none;
 }
 .sr-masthead__wordmark img {
   width: 22px;
@@ -648,23 +648,26 @@ html, body {
   border-radius: 1px;
 }
 .sr-masthead__wordmark .dot { color: var(--blue); }
-.sr-masthead__title {
-  grid-column: span 6;
+
+.sr-masthead__title-display {
   font-size: 56px;
   line-height: 1;
   letter-spacing: -0.02em;
   font-weight: 500;
   color: var(--charcoal);
   margin: 0;
+  align-self: center;
 }
+
 .sr-masthead__meta {
-  grid-column: span 2;
   text-align: right;
   font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   font-size: 11px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: rgba(26, 26, 26, 0.6);
+  line-height: 1.5;
+  align-self: center;
 }
 
 /* Philosophy */
