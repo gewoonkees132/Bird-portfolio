@@ -885,7 +885,7 @@ html, body {
   display: inline-flex;
   align-items: baseline;
   width: 96px;
-  font-size: 0.78rem;
+  font-size: var(--label-size-m);
   font-weight: 500;
   letter-spacing: -0.01em;
   color: var(--charcoal);
