@@ -4,6 +4,11 @@
    (was: "alectear-feel craft" — undefined coined term, substituted)
    ============================================================ */
 
+/* Cascade layers — encodes the runtime/specimen contract in CSS.
+   Specimen wins over runtime by layer order, not source order.
+   Debug overlay is opt-in via the ?grid URL flag. */
+@layer reset, tokens, runtime, specimen, debug;
+
 /* ============================================================
    Grid — single source of truth
    Modular system inherited from the portfolio's photo plane
@@ -11,6 +16,7 @@
    The reference page renders inside this same grid.
    Edit only this block to retune the system.
    ============================================================ */
+@layer tokens {
 :root {
   /* Grid — the photo-plane tessellation V4. u=120, g=24, 9 cols × 5 rows
      hold an integer count of 3:2 photographs at the brand's intended
@@ -85,7 +91,9 @@
   --viewport-edge-d:      18px;   /* identity (top-left) */
   --viewport-edge-corner: 22px;   /* species (bottom-left), compass (bottom-right) */
 }
+}
 
+@layer reset {
 * { box-sizing: border-box; }
 
 html, body {
@@ -101,7 +109,9 @@ html, body {
   overflow: hidden;
   letter-spacing: -0.005em;
 }
+}
 
+@layer runtime {
 /* ============================================================
    Stage — the 2D pannable plane
    ============================================================ */
@@ -453,6 +463,7 @@ html, body {
 :focus:not(:focus-visible) {
   outline: none;
 }
+}
 
 /* ============================================================
    ============================================================
@@ -472,6 +483,7 @@ html, body {
    ============================================================
    ============================================================ */
 
+@layer specimen {
 html, body {
   /* Reference page is a scrolling document; override the portfolio's
      overflow:hidden so the specimen sheet can be read top-to-bottom. */
@@ -1188,7 +1200,9 @@ html, body {
   text-transform: uppercase;
   border: 1px solid rgba(22, 53, 238, 0.35);
 }
+}
 
+@layer debug {
 /* ============================================================
    ?grid debug overlay — opt-in via URL flag
    ============================================================ */
@@ -1237,7 +1251,9 @@ body.show-grid::after {
   z-index: 60;
   pointer-events: none;
 }
+}
 
+@layer specimen {
 /* ============================================================
    Below-1336 fallback — single-column flow when the 1320 grid
    can't fit. The reference is authored for 1336; below that, the
@@ -1588,4 +1604,5 @@ body.show-grid::after {
   background: rgba(0, 0, 0, 0.25);
   backdrop-filter: blur(8px);
   border-radius: 1px;
+}
 }
