@@ -302,7 +302,7 @@
   }/*EDITMODE-END*/;
 
   // ---------- Persist tweaks internally (localStorage) ----------
-  const LS_KEY = 'kl-portfolio.tweaks.v1';
+  const LS_KEY = 'kl-portfolio.tweaks.v2';
   try {
     const saved = JSON.parse(localStorage.getItem(LS_KEY) || 'null');
     if (saved && typeof saved === 'object') Object.assign(TWEAKS, saved);
