@@ -50,10 +50,9 @@
 
   /* Motion — fast start, gentle settle: the photograph emerges before
      the chrome resolves. --pan-lerp tuned empirically: low enough to
-     feel weighty, high enough not to lag the user's intent.
-     [edit: Kees] confirm 360ms / 0.08 are the right values, not 320/0.1. */
-  --pan-lerp:        0.08;
-  --focus-fade:      360ms;
+     feel weighty, high enough not to lag the user's intent. */
+  --pan-lerp:        0.02;
+  --focus-fade:      200ms;
   --focus-easing:    cubic-bezier(0.22, 0.61, 0.36, 1);
   --label-in:        200ms;
   --label-out:       150ms;
@@ -82,7 +81,7 @@
   /* Viewport edges — the runtime's identity/species/compass offsets from
      the viewport edge. Not on the page-edge / gutter ladder; the runtime
      wanted a softer offset than the canonical 32 (page-edge + gutter)
-     would give. [edit: Kees] confirm 18 / 22 are the right values. */
+     would give. */
   --viewport-edge-d:      18px;   /* identity (top-left) */
   --viewport-edge-corner: 22px;   /* species (bottom-left), compass (bottom-right) */
 }
