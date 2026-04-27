@@ -319,7 +319,7 @@ html, body {
   flex-shrink: 0;
 }
 .identity .name { color: var(--charcoal); }
-.identity .dot  { color: var(--blue); }
+.dot { color: var(--blue); } /* brand-atomic — every wordmark surface */
 
 /* ============================================================
    Species label — pinned bottom-left of viewport
@@ -750,7 +750,6 @@ html, body {
   height: 22px;
   border-radius: 1px;
 }
-.sr-masthead__wordmark .dot { color: var(--blue); }
 
 .sr-masthead__title-display {
   font-size: 56px;
@@ -839,7 +838,6 @@ html, body {
   width: 32px;
   height: 32px;
 }
-.sr-identity-mark__wordmark .dot { color: var(--blue); }
 .sr-identity-mark__dot-only {
   width: 18px;
   height: 18px;
@@ -858,7 +856,6 @@ html, body {
   font-weight: 500;
   color: var(--charcoal);
 }
-.sr-identity-clearspace .dot { color: var(--blue); }
 .sr-identity-clearspace__edge {
   position: absolute;
   font-family: var(--mono-stack);
@@ -891,7 +888,6 @@ html, body {
   color: var(--charcoal);
   white-space: nowrap;
 }
-.sr-identity-min__wordmark .dot { color: var(--blue); }
 .sr-identity-min__dot {
   width: 8px;
   height: 8px;
@@ -1540,7 +1536,6 @@ html, body {
   font-weight: 500;
   letter-spacing: -0.01em;
 }
-.sr-colophon__signature .dot { color: var(--blue); }
 
 /* ============================================================
    Below-1336 fallback — single-column flow when the 1320 grid
