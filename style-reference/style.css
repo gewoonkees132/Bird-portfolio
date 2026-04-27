@@ -1348,10 +1348,9 @@ body.show-grid::after {
   width: 5px;
   height: 5px;
   border-radius: 999px;
-  background: #d72b2b;
+  background: var(--blue);
   margin-right: 6px;
   vertical-align: middle;
-  box-shadow: 0 0 6px rgba(215, 43, 43, 0.6);
 }
 
 .sr-overlay-applied {
@@ -1407,8 +1406,7 @@ body.show-grid::after {
   width: 5px;
   height: 5px;
   border-radius: 999px;
-  background: #d72b2b;
-  box-shadow: 0 0 6px rgba(215, 43, 43, 0.7);
+  background: var(--blue);
 }
 .sr-overlay-applied__layer--br {
   bottom: var(--overlay-edge);
