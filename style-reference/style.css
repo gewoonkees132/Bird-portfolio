@@ -1,7 +1,6 @@
 /* ============================================================
    Bird Photography Portfolio — Kees Leemeijer
    Munich '72 spirited inheritance · hand-crafted
-   (was: "alectear-feel craft" — undefined coined term, substituted)
    ============================================================ */
 
 /* ============================================================
@@ -51,11 +50,11 @@
 :root {
   /* Grid — the photo-plane tessellation V4. u=120, g=24, 9 cols × 5 rows
      hold an integer count of 3:2 photographs at the brand's intended
-     scale. Tile is 1320 × 744; 744 = 5·u + 6·g (was 760, off-by-16
-     math bug fixed). All other spacing on the page derives from these. */
+     scale. Tile is 1320 × 744; 744 = 5·u + 6·g. All other spacing on
+     the page derives from these. */
   --page-width:   1336px;    /* tile + 2 × edge */
   --tile-width:   1320px;    /* V4 tile — matches photo plane */
-  --tile-height:   744px;    /* 5·u + 6·g — was 760 (math bug, off by 16) */
+  --tile-height:   744px;    /* 5·u + 6·g */
   --tile-margin:     0px;    /* no margin between tiles in the photo plane */
   --page-edge:       8px;    /* outer boundary on all four sides */
   --gutter:         24px;    /* g — constant inside-tile and between-tile */
@@ -476,7 +475,7 @@ html, body {
 }
 
 /* ============================================================
-   Print / reduced motion
+   Reduced motion
    ============================================================ */
 @media (prefers-reduced-motion: reduce) {
   .photo, .species { transition-duration: 0ms; }
@@ -561,7 +560,8 @@ html, body {
   text-decoration: none;
   border-radius: 1px;
   z-index: 100;
-  /* The global :focus-visible rule at style.css:449 supplies the outline. */
+  /* The global :focus-visible rule (in the runtime Focus block above)
+     supplies the outline. */
 }
 
 .sr-page {
@@ -721,7 +721,9 @@ html, body {
 .sr-section__stats span { display: block; }
 .sr-section__stats b { color: var(--blue); font-weight: 500; }
 
-/* Masthead */
+/* ============================================================
+   Masthead
+   ============================================================ */
 .sr-masthead__wordmark {
   display: inline-flex;
   align-items: center;
@@ -760,7 +762,9 @@ html, body {
   align-self: center;
 }
 
-/* Principles */
+/* ============================================================
+   Principles
+   ============================================================ */
 .sr-principles__quote {
   font-size: 28px;
   line-height: 1.25;
@@ -954,7 +958,9 @@ html, body {
   border: 1px solid color-mix(in srgb, var(--blue) 35%, transparent);
 }
 
-/* Color */
+/* ============================================================
+   Color
+   ============================================================ */
 .sr-swatch { display: flex; flex-direction: column; gap: 10px; }
 .sr-swatch__chip {
   width: 100%;
@@ -1035,7 +1041,9 @@ html, body {
   color: color-mix(in srgb, var(--charcoal) 65%, transparent);
 }
 
-/* Typography */
+/* ============================================================
+   Typography
+   ============================================================ */
 .sr-type__label {
   font-family: var(--mono-stack);
   font-size: 10px;
@@ -1067,7 +1075,9 @@ html, body {
   letter-spacing: 0.02em;
 }
 
-/* Spacing */
+/* ============================================================
+   Spacing
+   ============================================================ */
 .sr-ruler {
   display: flex;
   flex-direction: column;
@@ -1110,7 +1120,9 @@ html, body {
   margin-left: 8px;
 }
 
-/* Elevation note */
+/* ============================================================
+   Elevation note
+   ============================================================ */
 .sr-elevation__body {
   font-size: 16px;
   line-height: 1.5;
@@ -1165,7 +1177,9 @@ html, body {
   color: var(--charcoal);
 }
 
-/* Motion */
+/* ============================================================
+   Motion
+   ============================================================ */
 .sr-motion__value {
   font-family: var(--mono-stack);
   font-size: 11px;
@@ -1505,7 +1519,9 @@ html, body {
   border-radius: 1px;
 }
 
-/* Colophon */
+/* ============================================================
+   Colophon
+   ============================================================ */
 .sr-colophon__body {
   display: flex;
   justify-content: space-between;
