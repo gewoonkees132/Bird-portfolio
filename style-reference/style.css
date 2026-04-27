@@ -1093,3 +1093,43 @@ body.show-grid::after {
   z-index: 60;
   pointer-events: none;
 }
+
+/* ============================================================
+   Mobile fallback — single-column flow below 720px
+   ============================================================ */
+@media (max-width: 720px) {
+  .sr-page {
+    width: 100%;
+    padding: var(--page-edge);
+  }
+
+  .sr-section {
+    display: block;
+  }
+
+  .sr-section__id,
+  .sr-section__title,
+  .sr-section__stats {
+    display: block;
+    text-align: left;
+    margin: 0 0 8px;
+  }
+  .sr-section__title { font-size: 18px; }
+  .sr-section__stats { margin-top: 4px; }
+
+  .sr-cell,
+  [class*="sr-cell--"] {
+    display: block;
+    width: 100% !important;
+    margin-bottom: var(--gutter);
+  }
+
+  .sr-rule {
+    display: block;
+    margin: 12px 0;
+  }
+
+  /* Disable the ?grid overlay on mobile — it doesn't make sense without the cell grid */
+  body.show-grid::after { display: none; }
+  .show-grid .sr-section { background-image: none; }
+}
