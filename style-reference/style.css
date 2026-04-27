@@ -1226,16 +1226,12 @@ body.show-grid::after {
   font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   font-size: 11px;
   line-height: 1.5;
-  color: var(--charcoal);
-  opacity: 0.75;
+  color: rgba(26, 26, 26, 0.75);
 }
 .sr-anatomy__legend-row {
   display: flex;
   align-items: center;
   gap: 4px;
-}
-.sr-anatomy__legend .sr-anatomy__num {
-  opacity: 1;
 }
 .sr-anatomy__usage {
   margin-top: 12px;
@@ -1247,7 +1243,7 @@ body.show-grid::after {
   font-style: normal;
 }
 
-/* Mobile: hide the inline callouts; legend rows stay so the parts are still named */
+/* Mobile: anatomy callouts collapse to legend-only; overlay edge tightens to 12px */
 @media (max-width: 720px) {
   :root {
     --overlay-edge: 12px;
