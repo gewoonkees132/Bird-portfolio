@@ -614,18 +614,6 @@ html, body {
   opacity: 0.45;
 }
 
-.sr-section__head {
-  grid-column: 1 / -1;
-  font-family: var(--mono-stack);
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: color-mix(in srgb, var(--charcoal) 60%, transparent);
-  margin: 0;
-  font-weight: 500;
-  align-self: end;
-}
-
 .sr-rule {
   grid-column: 1 / -1;
   height: 1px;
