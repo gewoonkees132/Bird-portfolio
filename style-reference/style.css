@@ -672,13 +672,13 @@ html, body {
 
 /* Philosophy */
 .sr-philosophy__quote {
-  grid-column: span 8;
   font-size: 28px;
   line-height: 1.25;
   letter-spacing: -0.01em;
   font-weight: 500;
   color: var(--charcoal);
   margin: 0;
+  align-self: start;
 }
 .sr-philosophy__quote em {
   font-style: italic;
@@ -686,7 +686,6 @@ html, body {
   font-weight: 400;
 }
 .sr-philosophy__principles {
-  grid-column: 9 / -1;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -697,6 +696,7 @@ html, body {
   line-height: 1.4;
   color: var(--charcoal);
   counter-reset: principle;
+  align-self: start;
 }
 .sr-philosophy__principles li {
   counter-increment: principle;
