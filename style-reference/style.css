@@ -1229,6 +1229,9 @@ body.show-grid::after {
   align-items: center;
   gap: 4px;
 }
+.sr-anatomy__legend .sr-anatomy__num {
+  opacity: 1;
+}
 .sr-anatomy__usage {
   margin-top: 12px;
   font-size: 12px;
