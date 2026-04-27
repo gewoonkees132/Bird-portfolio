@@ -589,3 +589,47 @@ html, body {
   text-transform: uppercase;
   color: rgba(26, 26, 26, 0.6);
 }
+
+/* Philosophy */
+.sr-philosophy__quote {
+  grid-column: span 8;
+  font-size: 28px;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  font-weight: 500;
+  color: var(--charcoal);
+  margin: 0;
+}
+.sr-philosophy__quote em {
+  font-style: italic;
+  color: var(--blue);
+  font-weight: 400;
+}
+.sr-philosophy__principles {
+  grid-column: 9 / -1;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--charcoal);
+  counter-reset: principle;
+}
+.sr-philosophy__principles li {
+  counter-increment: principle;
+  padding-left: 28px;
+  position: relative;
+}
+.sr-philosophy__principles li::before {
+  content: counter(principle, decimal-leading-zero);
+  position: absolute;
+  left: 0;
+  top: 1px;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--blue-soft);
+}
