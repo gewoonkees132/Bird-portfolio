@@ -57,7 +57,8 @@
   --page-width:   1336px;    /* tile + 2 × edge */
   --tile-width:   1320px;    /* V4 tile — matches photo plane */
   --tile-height:   744px;    /* 5·u + 6·g */
-  --tile-margin:     0px;    /* no margin between tiles in the photo plane */
+  --tile-margin:     0px;    /* no margin between tiles; doc-only token —
+                                rendered in §1.6 spec, not consumed in CSS */
   --page-edge:       8px;    /* outer boundary on all four sides */
   --gutter:         24px;    /* g — constant inside-tile and between-tile */
   --cell:          120px;    /* u — square module */
@@ -489,8 +490,8 @@ html, body {
    2px solid --blue, 2px offset, 1px corner radius (matches the system).
    ============================================================ */
 :focus-visible {
-  outline: 2px solid var(--blue);
-  outline-offset: 2px;
+  outline: var(--tick) solid var(--blue);
+  outline-offset: var(--tick);
   border-radius: 1px;
 }
 :focus:not(:focus-visible) {
