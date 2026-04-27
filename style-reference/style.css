@@ -443,6 +443,35 @@ html, body {
   margin-top: var(--gutter);
 }
 
+/* ============================================================
+   Group marker — divides top-level trinity (Foundations / Components / Patterns)
+   Full-bleed row, one cell tall, hairline rule, mono uppercase label
+   ============================================================ */
+.sr-group {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 0 8px 0;
+  margin: 32px 0 8px 0;
+  border-bottom: 1px solid var(--blue-soft);
+}
+.sr-group__label {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--blue);
+  font-weight: 500;
+}
+.sr-group__hint {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--charcoal);
+  opacity: 0.45;
+}
+
 .sr-section__head {
   grid-column: 1 / -1;
   font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
