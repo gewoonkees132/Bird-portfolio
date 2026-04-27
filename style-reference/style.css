@@ -3,18 +3,32 @@
    Munich '72 spirited inheritance · alectear-feel craft
    ============================================================ */
 
+/* ============================================================
+   Grid — single source of truth
+   Modular system inherited from the portfolio's photo plane
+   (tessellation V4: u=120, g=24, 9 cols × 5 rows = 1320×744).
+   The reference page renders inside this same grid.
+   Edit only this block to retune the system.
+   ============================================================ */
+:root {
+  --page-width:   1336px;    /* tile + 2 × edge */
+  --tile-width:   1320px;    /* V4 tile — matches photo plane */
+  --tile-height:   744px;    /* 5·u + 6·g — was 760 (math bug, off by 16) */
+  --tile-margin:     0px;    /* no margin between tiles in the photo plane */
+  --page-edge:       8px;    /* outer boundary on all four sides */
+  --gutter:         24px;    /* g — constant inside-tile and between-tile */
+  --cell:          120px;    /* u — square module */
+  --cols:            9;
+  --tick:            2px;    /* sub-tick: u/60, g/12 */
+  --stride:        144px;    /* u + g — row pitch */
+}
+
 :root {
   --field:         #F2EEE5;
   --blue:          #1635EE;
   --charcoal:      #1A1A1A;
   --field-overlay: rgba(242, 238, 229, 0.95);
   --blue-soft:     rgba(22, 53, 238, 0.6);
-
-  /* Spatial */
-  --tile-width:   1320px;
-  --tile-height:   760px;
-  --gutter:         24px;
-  --tile-margin:     0px;
 
   /* Type sizes */
   --wm-size-d:    0.95rem;
