@@ -11,6 +11,10 @@
    Edit only this block to retune the system.
    ============================================================ */
 :root {
+  /* Grid — the photo-plane tessellation V4. u=120, g=24, 9 cols × 5 rows
+     hold an integer count of 3:2 photographs at the brand's intended
+     scale. Tile is 1320 × 744; 744 = 5·u + 6·g (was 760, off-by-16
+     math bug fixed). All other spacing on the page derives from these. */
   --page-width:   1336px;    /* tile + 2 × edge */
   --tile-width:   1320px;    /* V4 tile — matches photo plane */
   --tile-height:   744px;    /* 5·u + 6·g — was 760 (math bug, off by 16) */
@@ -24,13 +28,18 @@
 }
 
 :root {
+  /* Palette — three colors, locked. --field is uncoated-paper cream
+     (Steidl monograph stock, not a screen background). --blue is
+     Munich '72 lineage: high-saturation structural blue. --charcoal
+     is quiet ink (photographic neutral, not pure black) so type sits
+     at the same density as photographic shadows. */
   --field:         #F2EEE5;
   --blue:          #1635EE;
   --charcoal:      #1A1A1A;
   --field-overlay: rgba(242, 238, 229, 0.95);
   --blue-soft:     rgba(22, 53, 238, 0.6);
 
-  /* Type sizes */
+  /* Type sizes — display roles named in 1.5 Typography on the page */
   --wm-size-d:    0.95rem;
   --wm-size-m:    0.86rem;
   --label-size-d: 0.92rem;
@@ -38,7 +47,10 @@
   --meta-size-d:  0.74rem;
   --meta-size-m:  0.62rem;
 
-  /* Motion */
+  /* Motion — fast start, gentle settle: the photograph emerges before
+     the chrome resolves. --pan-lerp tuned empirically: low enough to
+     feel weighty, high enough not to lag the user's intent.
+     [edit: Kees] confirm 360ms / 0.08 are the right values, not 320/0.1. */
   --pan-lerp:        0.08;
   --focus-fade:      360ms;
   --focus-easing:    cubic-bezier(0.22, 0.61, 0.36, 1);
@@ -49,7 +61,9 @@
   /* Substitute for ABC Diatype */
   --font-stack: 'ABC Diatype', system-ui, -apple-system, 'Segoe UI', sans-serif;
 
-  /* Tweakable */
+  /* Photograph treatment — non-focused photos recede in attention but
+     do not disappear: the photograph in focus is the subject; everything
+     else is evidence. Rendered as a specimen in 1.4 Color (Phase 2). */
   --ambient-opacity: 0.55;
   --ambient-saturate: 0.65;
   --ambient-brightness: 0.92;
