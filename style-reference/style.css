@@ -524,7 +524,7 @@ html, body {
 
 /* Visually hidden but accessible to assistive tech.
    Used for: page-level <h1>, skip-link in its un-focused state. */
-.sr-sr-only {
+.sr-visually-hidden {
   position: absolute;
   width: 1px;
   height: 1px;
