@@ -1125,9 +1125,12 @@ body.show-grid::after {
 }
 
 /* ============================================================
-   Mobile fallback — single-column flow below 720px
+   Below-1336 fallback — single-column flow when the 1320 grid
+   can't fit. The reference is authored for 1336; below that, the
+   page reflows to a single column rather than scaling the 9-col
+   grid (which would drift the cell from the documented 120px).
    ============================================================ */
-@media (max-width: 720px) {
+@media (max-width: 1335px) {
   .sr-page {
     width: 100%;
     padding: var(--page-edge);
@@ -1305,12 +1308,15 @@ body.show-grid::after {
   font-style: normal;
 }
 
-/* Mobile: anatomy callouts collapse to legend-only; overlay edge tightens to 12px */
+/* Below 1336: anatomy callouts collapse to legend-only (no room for inline numerals);
+   overlay edge tightens to 12px below 720px (true mobile only). */
+@media (max-width: 1335px) {
+  .sr-anatomy__num { display: none; }
+}
 @media (max-width: 720px) {
   :root {
     --overlay-edge: 12px;
   }
-  .sr-anatomy__num { display: none; }
 }
 
 /* ============================================================
