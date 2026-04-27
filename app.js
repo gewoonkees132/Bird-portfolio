@@ -196,7 +196,7 @@
           pEl.className = 'photo is-brand is-entering';
           pEl.innerHTML =
             '<div class="brand-inner">' +
-              '<span class="brand-picto" aria-hidden="true">PICTO</span>' +
+              '<img class="brand-picto" src="files/logo/SVG/logo.svg" alt="" aria-hidden="true" />' +
               '<span class="brand-wordmark">' +
                 '<span class="brand-name">Kees Leemeijer</span>' +
                 '<span class="brand-dot">.</span>' +
