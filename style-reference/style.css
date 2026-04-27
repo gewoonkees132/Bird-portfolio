@@ -972,7 +972,7 @@ html, body {
 .sr-grid-ruleset__diagram {
   position: relative;
 }
-.sr-anatomy {
+.sr-grid-anatomy {
   position: relative;
   width: 100%;
   height: 100%;
@@ -986,15 +986,15 @@ html, body {
   background-size: var(--stride) 100%, 100% var(--stride);
   background-position: var(--gutter) 0, 0 var(--gutter);
 }
-.sr-anatomy__edge {
+.sr-grid-anatomy__edge {
   position: absolute;
   background: rgba(22, 53, 238, 0.18);
 }
-.sr-anatomy__edge--l { left: 0; top: 0; bottom: 0; width: var(--page-edge); }
-.sr-anatomy__edge--r { right: 0; top: 0; bottom: 0; width: var(--page-edge); }
-.sr-anatomy__edge--t { left: 0; top: 0; right: 0; height: var(--page-edge); }
-.sr-anatomy__edge--b { left: 0; bottom: 0; right: 0; height: var(--page-edge); }
-.sr-anatomy__caption {
+.sr-grid-anatomy__edge--l { left: 0; top: 0; bottom: 0; width: var(--page-edge); }
+.sr-grid-anatomy__edge--r { right: 0; top: 0; bottom: 0; width: var(--page-edge); }
+.sr-grid-anatomy__edge--t { left: 0; top: 0; right: 0; height: var(--page-edge); }
+.sr-grid-anatomy__edge--b { left: 0; bottom: 0; right: 0; height: var(--page-edge); }
+.sr-grid-anatomy__caption {
   position: absolute;
   bottom: 6px;
   right: 12px;
