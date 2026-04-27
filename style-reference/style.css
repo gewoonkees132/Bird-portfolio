@@ -1096,3 +1096,93 @@ body.show-grid::after {
   body.show-grid::after { display: none; }
   .show-grid .sr-section { background-image: none; }
 }
+
+/* ============================================================
+   Identity (1.2) — mark at scale, clear-space, minimum size
+   ============================================================ */
+.sr-identity-mark {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 16px 0;
+}
+.sr-identity-mark__wordmark {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 2.2rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--charcoal);
+}
+.sr-identity-mark__wordmark img {
+  width: 32px;
+  height: 32px;
+}
+.sr-identity-mark__wordmark .dot { color: var(--blue); }
+.sr-identity-mark__dot-only {
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: var(--blue);
+}
+
+.sr-identity-clearspace {
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 1em;                        /* 1× cap-height ≈ 1em on the rendered face */
+  border: 1px dashed var(--blue-soft);
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: var(--charcoal);
+}
+.sr-identity-clearspace .dot { color: var(--blue); }
+.sr-identity-clearspace__edge {
+  position: absolute;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--blue);
+  opacity: 0.6;
+  background: var(--field);
+  padding: 0 4px;
+  white-space: nowrap;
+}
+.sr-identity-clearspace__edge--top    { top: -7px; left: 50%; transform: translateX(-50%); }
+.sr-identity-clearspace__edge--bottom { bottom: -7px; left: 50%; transform: translateX(-50%); }
+.sr-identity-clearspace__edge--left   { left: -7px; top: 50%; transform: translate(-50%, -50%) rotate(-90deg); transform-origin: center; }
+.sr-identity-clearspace__edge--right  { right: -7px; top: 50%; transform: translate(50%, -50%) rotate(90deg); transform-origin: center; }
+
+.sr-identity-min {
+  display: flex;
+  align-items: flex-end;
+  gap: 32px;
+}
+.sr-identity-min__wordmark {
+  display: inline-flex;
+  align-items: baseline;
+  width: 96px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--charcoal);
+}
+.sr-identity-min__wordmark .dot { color: var(--blue); }
+.sr-identity-min__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--blue);
+}
+.sr-identity-min__caption {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--charcoal);
+  opacity: 0.55;
+  margin-top: 6px;
+}
