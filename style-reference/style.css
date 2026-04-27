@@ -58,6 +58,11 @@
   --overlay-edge:    16px;   /* distance from surface edge */
   --overlay-gap:      8px;   /* gap between primitives within a slot */
   --overlay-z:        50;    /* above content, below modals */
+
+  /* Placeholder bands — photo-loading skeleton fixture, also reused
+     as illustrative photo stand-in inside the 3.1 Overlays specimens */
+  --placeholder-band-a: #d9d3c5;
+  --placeholder-band-b: #cfc7b6;
 }
 
 * { box-sizing: border-box; }
@@ -151,8 +156,8 @@ html, body {
   background:
     repeating-linear-gradient(
       0deg,
-      var(--ph-band-a, #d9d3c5) 0 14px,
-      var(--ph-band-b, #cfc7b6) 14px 28px
+      var(--ph-band-a, var(--placeholder-band-a)) 0 14px,
+      var(--ph-band-b, var(--placeholder-band-b)) 14px 28px
     );
 }
 .photo .placeholder::after {
@@ -360,8 +365,8 @@ html, body {
   position: relative;
   background:
     repeating-linear-gradient(0deg,
-      var(--ph-band-a, #d9d3c5) 0 14px,
-      var(--ph-band-b, #cfc7b6) 14px 28px);
+      var(--ph-band-a, var(--placeholder-band-a)) 0 14px,
+      var(--ph-band-b, var(--placeholder-band-b)) 14px 28px);
   display: grid;
   place-items: center;
 }
@@ -864,8 +869,8 @@ html, body {
   height: 40px;
   background: repeating-linear-gradient(
     0deg,
-    #d9d3c5 0 8px,
-    #cfc7b6 8px 16px
+    var(--placeholder-band-a) 0 8px,
+    var(--placeholder-band-b) 8px 16px
   );
   border-radius: 1px;
   animation: sr-photo-decode 1400ms infinite;
