@@ -24,6 +24,8 @@
      · Runtime classes use `.kebab-case` (`.stage`, `.photo`, `.species`).
      · Specimen classes use `.sr-block__element--modifier` (BEM).
      · Top-level dividers use the full ============= banner style.
+     · @media blocks are co-located with the rules they qualify, not
+       consolidated at end-of-file.
      · The specimen may consume the runtime; the runtime may not
        reference the specimen. @layer encodes this contract.
 
