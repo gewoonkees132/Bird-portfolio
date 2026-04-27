@@ -958,8 +958,14 @@ html, body {
 
 /* Mobile-cell rendering inside the reference page.
    The portfolio's .mobile-edition is display:none on desktop and only
-   shows below 720px. Inside an .sr-cell__body we force it visible at
-   a constrained width so the mobile cell renders at its real type sizes. */
+   shows below 720px (style.css:328, :405). Inside an .sr-cell__body
+   we force it visible at a constrained width so the mobile cell
+   specimen (2.6) renders at its real type sizes. This is a clean
+   specimen technique, not a hack: the override IS the documented way
+   to render the mobile cell inside the desktop document flow without
+   duplicating styles. The constrained max-width and bordered frame
+   make the override explicit visually; in the runtime, .mobile-edition
+   occupies the full viewport. */
 .sr-cell__body .mobile-edition {
   display: block;
   position: static;
