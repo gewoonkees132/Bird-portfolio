@@ -415,9 +415,21 @@ html, body {
 }
 
 /* ============================================================
-   Style Reference — page-specific layout
-   (leading-source CSS; the portfolio styles above are mirrored
-   in the root styles.css)
+   ============================================================
+   END RUNTIME · BEGIN SPECIMEN
+   ============================================================
+   Above this line: the portfolio runtime — the system being
+   documented. The reference page consumes these rules to
+   render its own chrome.
+
+   Below this line: the .sr-* specimen — the document showing
+   the system. The specimen may consume the runtime; the
+   runtime may not reference the specimen. Keep the boundary
+   one-way.
+
+   This file is not synced anywhere. The portfolio's styles.css
+   is a separate concern in a different workspace.
+   ============================================================
    ============================================================ */
 
 html, body {
