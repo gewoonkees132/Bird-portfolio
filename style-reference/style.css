@@ -1249,6 +1249,9 @@ body.show-grid::after {
 
 /* Mobile: hide the inline callouts; legend rows stay so the parts are still named */
 @media (max-width: 720px) {
+  :root {
+    --overlay-edge: 12px;
+  }
   .sr-anatomy__num { display: none; }
 }
 
