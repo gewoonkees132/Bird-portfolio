@@ -419,5 +419,12 @@
       </div>
     </section>
   </main>
+    <script>
+      // Toggle the grid overlay via the ?grid URL flag.
+      // Example: http://localhost:8000/style-reference/?grid
+      if (new URLSearchParams(location.search).has('grid')) {
+        document.body.classList.add('show-grid');
+      }
+    </script>
 </body>
 </html>

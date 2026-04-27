@@ -1044,3 +1044,52 @@ html, body {
   text-transform: uppercase;
   border: 1px solid rgba(22, 53, 238, 0.35);
 }
+
+/* ============================================================
+   ?grid debug overlay — opt-in via URL flag
+   ============================================================ */
+
+/* Edge strip — single border-trick draws all four sides at once */
+.show-grid .sr-page::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: var(--page-edge) solid rgba(22, 53, 238, 0.18);
+  pointer-events: none;
+  z-index: 50;
+}
+
+/* Cell-grid overlay on every section: vertical lines every (cell + gutter),
+   horizontal lines every stride. The background-position offset accounts for
+   the section's grid not having an outer-left gutter — the first cell starts
+   at x=0 inside .sr-section. */
+.show-grid .sr-section {
+  background-image:
+    linear-gradient(to right,
+      rgba(22, 53, 238, 0.10) 0 1px,
+      transparent 1px),
+    linear-gradient(to bottom,
+      rgba(22, 53, 238, 0.05) 0 1px,
+      transparent 1px);
+  background-size: var(--stride) 100%, 100% var(--stride);
+  background-position: 0 0, 0 0;
+  background-repeat: repeat;
+}
+
+/* Fixed bottom-right legend */
+body.show-grid::after {
+  content: 'u 120 · g 24 · edge 8 · tick 2';
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: var(--blue);
+  background: rgba(242, 238, 229, 0.92);
+  padding: 4px 8px;
+  border: 1px solid rgba(22, 53, 238, 0.35);
+  text-transform: uppercase;
+  z-index: 60;
+  pointer-events: none;
+}
