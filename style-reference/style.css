@@ -536,8 +536,6 @@ html, body {
 .sr-cell--r3 { grid-row: span 3; }
 .sr-cell--r4 { grid-row: span 4; }
 
-/* Backwards-compat alias: legacy .sr-cell--12 from the 12-col system → full width */
-.sr-cell--12 { grid-column: span 9; }
 
 .sr-cell__label {
   font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
@@ -940,7 +938,7 @@ html, body {
 }
 .sr-elevation__stack li:last-child {
   background: var(--blue);
-  color: #f0eadf;
+  color: var(--field);
 }
 .sr-elevation__stack li:nth-child(2) {
   background: rgba(22, 53, 238, 0.12);
