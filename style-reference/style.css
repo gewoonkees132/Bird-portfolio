@@ -502,8 +502,8 @@ html, body {
   display: flex;
   align-items: center;
   gap: 16px;
-  padding: 0 0 8px 0;
-  margin: 32px 0 8px 0;
+  padding: 0 0 var(--page-edge) 0;
+  margin: calc(var(--page-edge) + var(--gutter)) 0 var(--page-edge) 0;
   border-bottom: 1px solid var(--blue-soft);
 }
 .sr-group__label {
@@ -1019,7 +1019,7 @@ html, body {
 .sr-token {
   background: rgba(26, 26, 26, 0.04);
   border-left: 2px solid var(--blue);
-  padding: 12px 14px;
+  padding: 12px 16px;
   font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   align-self: start;
 }
@@ -1271,7 +1271,7 @@ body.show-grid::after {
   place-items: center;
   width: 16px;
   height: 16px;
-  margin-right: 6px;
+  margin-right: 8px;
   vertical-align: middle;
   background: var(--blue);
   color: #fff;
