@@ -487,16 +487,24 @@ html, body {
 }
 
 .sr-page {
-  max-width: 1320px;
+  width: var(--page-width);
+  max-width: 100%;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: calc(var(--page-edge) + var(--gutter));  /* 8 + 24 = 32 */
+  position: relative;
 }
 
 .sr-section {
   display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  gap: 24px;
-  padding: 48px 0;
+  grid-template-columns: repeat(var(--cols), var(--cell));
+  grid-auto-rows: var(--cell);
+  column-gap: var(--gutter);
+  row-gap: var(--gutter);
+  padding: 0;
+}
+
+.sr-section + .sr-section {
+  margin-top: var(--gutter);
 }
 
 .sr-section__head {
@@ -506,8 +514,9 @@ html, body {
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: rgba(26, 26, 26, 0.6);
-  margin: 0 0 8px;
+  margin: 0;
   font-weight: 500;
+  align-self: end;
 }
 
 .sr-rule {
@@ -515,6 +524,7 @@ html, body {
   height: 1px;
   background: rgba(26, 26, 26, 0.10);
   margin: 0;
+  padding: 0;
   border: 0;
 }
 
