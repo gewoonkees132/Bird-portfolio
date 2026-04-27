@@ -422,8 +422,8 @@ html, body {
   margin: 8px 0 24px;
   line-height: 1.5;
 }
-.mobile-edition .mcell { margin-bottom: 32px; }
-.mobile-edition .mcell .mphoto {
+.mobile-edition__cell { margin-bottom: 32px; }
+.mobile-edition__photo {
   position: relative;
   background:
     repeating-linear-gradient(0deg,
@@ -433,7 +433,7 @@ html, body {
   place-items: center;
   overflow: hidden;
 }
-.mobile-edition .mcell .mphoto img {
+.mobile-edition__photo img {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -443,8 +443,8 @@ html, body {
   user-select: none;
   -webkit-user-drag: none;
 }
-.mobile-edition .mcell .mphoto:has(img) span { display: none; }
-.mobile-edition .mcell .mphoto span {
+.mobile-edition__photo:has(img) span { display: none; }
+.mobile-edition__photo span {
   font-family: var(--mono-stack);
   font-size: 10px;
   letter-spacing: 0.06em;
@@ -453,14 +453,14 @@ html, body {
   padding: 4px 8px;
   background: color-mix(in srgb, var(--field) 85%, transparent);
 }
-.mobile-edition .mcell .mlabel {
+.mobile-edition__label {
   margin-top: 10px;
   font-size: var(--label-size-m);
   font-weight: 500;
   color: var(--charcoal);
 }
-.mobile-edition .mcell .mlabel .latin { font-style: italic; color: var(--blue); margin-left: 0.4em; font-weight: 400; }
-.mobile-edition .mcell .mmeta {
+.mobile-edition__label .latin { font-style: italic; color: var(--blue); margin-left: 0.4em; font-weight: 400; }
+.mobile-edition__meta {
   margin-top: 4px;
   font-size: var(--meta-size-m);
   color: var(--blue);
