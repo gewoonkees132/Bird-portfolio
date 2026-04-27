@@ -495,6 +495,31 @@ html, body {
   white-space: nowrap;
 }
 
+/* Skip-link — first focusable element; reveals on keyboard focus.
+   Anchors to #sr-1-1 (1.1 Principles) so keyboard users land in
+   substantive content, not the masthead label. */
+.sr-skip:focus-visible {
+  position: fixed;
+  top: var(--page-edge);
+  left: var(--page-edge);
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: 8px 16px;
+  clip: auto;
+  clip-path: none;
+  background: var(--field);
+  color: var(--charcoal);
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 1px;
+  z-index: 100;
+  /* The global :focus-visible rule at style.css:449 supplies the outline. */
+}
+
 .sr-page {
   width: var(--page-width);
   max-width: 100%;
