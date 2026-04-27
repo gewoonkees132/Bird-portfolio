@@ -1432,7 +1432,7 @@ html, body {
   min-width: 96px;
 }
 .sr-overlay-primitive__sample { font-size: 13px; color: var(--charcoal); }
-.sr-overlay-primitive__sample .ind-dot {
+.sr-overlay-primitive__sample .sr-overlay-primitive__dot {
   display: inline-block;
   width: 5px;
   height: 5px;
@@ -1496,7 +1496,7 @@ html, body {
   letter-spacing: 0.14em;
   text-transform: uppercase;
 }
-.sr-overlay-applied__layer--bl .live {
+.sr-overlay-applied__layer__live {
   width: 5px;
   height: 5px;
   border-radius: 999px;
@@ -1514,7 +1514,7 @@ html, body {
 }
 
 /* Backdrop-blur opt-in (used only when text-shadow is insufficient) */
-.sr-overlay-applied__layer.overlay--backdrop {
+.sr-overlay-applied__layer.sr-overlay-applied__layer--backdrop {
   padding: 6px 10px;
   background: rgba(0, 0, 0, 0.25);
   backdrop-filter: blur(8px);
