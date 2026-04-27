@@ -1128,7 +1128,7 @@ html, body {
 .sr-colophon__signature .dot { color: var(--blue); }
 
 /* ============================================================
-   Grid ruleset — first specimen on the page
+   Grid ruleset — §1.3 specimen — token chips + page-anatomy diagram
    ============================================================ */
 .sr-token {
   background: rgba(26, 26, 26, 0.04);
