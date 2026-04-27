@@ -287,8 +287,8 @@
 
   // ---------- Tweakables (live) ----------
   const TWEAKS = /*EDITMODE-BEGIN*/{
-    "lerp": 0.04,
-    "zoomLerp": 0.04,
+    "lerp": 0.02,
+    "zoomLerp": 0.02,
     "zoomMin": 1.0,
     "zoomMax": 4.0,
     "dwellDelay": 400,
