@@ -198,28 +198,36 @@
       <hr class="sr-rule" />
     </section>
     <section class="sr-section sr-motion">
-      <h2 class="sr-section__head">Motion</h2>
+      <span class="sr-section__id">07</span>
+      <h2 class="sr-section__title">Motion</h2>
+      <div class="sr-section__stats">
+        <span><b>4</b> demos</span>
+        <span>focus-easing</span>
+        <span>cubic-bezier</span>
+      </div>
+      <hr class="sr-rule" />
 
-      <div class="sr-cell sr-cell--3">
+      <div class="sr-cell sr-cell--2">
         <div class="sr-motion__demo"><span class="sr-motion__value">0.08</span></div>
         <div class="sr-motion__caption">--pan-lerp / 0.08<br/>per-frame damping factor for pan velocity (JS)</div>
       </div>
-      <div class="sr-cell sr-cell--3">
+      <div class="sr-cell sr-cell--2">
         <div class="sr-motion__demo"><div class="sr-motion__chip"></div></div>
         <div class="sr-motion__caption">--focus-fade / 360ms<br/>--focus-easing / cubic-bezier(0.22, 0.61, 0.36, 1)</div>
       </div>
-      <div class="sr-cell sr-cell--3">
+      <div class="sr-cell sr-cell--2">
         <div class="sr-motion__demo">
           <span class="sr-motion__label">European Bee-eater<span class="latin">Merops apiaster</span></span>
         </div>
         <div class="sr-motion__caption">--label-in / 200ms ease-out<br/>--label-out / 150ms ease-in</div>
       </div>
-      <div class="sr-cell sr-cell--3">
+      <div class="sr-cell sr-cell--2">
         <div class="sr-motion__demo"><div class="sr-motion__photo"></div></div>
         <div class="sr-motion__caption">--photo-decode / 200ms ease-out<br/>opacity 0 → 1, translateY(4px) → 0</div>
       </div>
+      <div class="sr-cell sr-cell--1"></div><!-- spacer to fill row (4×2 + 1 = 9) -->
 
-      <div class="sr-cell sr-cell--12">
+      <div class="sr-cell sr-cell--9">
         <div style="display:flex; align-items:center; gap:18px">
           <svg class="sr-motion__curve" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <rect x="0" y="0" width="80" height="80" fill="rgba(26,26,26,0.04)" />
@@ -231,6 +239,8 @@
           <div class="sr-motion__caption">--focus-easing curve / cubic-bezier(0.22, 0.61, 0.36, 1) — fast start, gentle settle</div>
         </div>
       </div>
+
+      <hr class="sr-rule" />
     </section>
     <section class="sr-section sr-components">
       <h2 class="sr-section__head">Components</h2>
