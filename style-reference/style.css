@@ -828,3 +828,20 @@ html, body {
   .sr-motion__label,
   .sr-motion__photo { animation: none; }
 }
+
+/* Mobile-cell rendering inside the reference page.
+   The portfolio's .mobile-edition is display:none on desktop and only
+   shows below 720px. Inside an .sr-cell__body we force it visible at
+   a constrained width so the mobile cell renders at its real type sizes. */
+.sr-cell__body .mobile-edition {
+  display: block;
+  position: static;
+  inset: auto;
+  background: var(--field);
+  padding: 18px;
+  overflow: visible;
+  z-index: auto;
+  max-width: 360px;
+  border: 1px solid rgba(26, 26, 26, 0.06);
+  border-radius: 1px;
+}
