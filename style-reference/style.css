@@ -792,6 +792,28 @@ html, body {
   align-self: center;
 }
 
+/* Photograph treatment specimen — ambient (non-focused) vs focused.
+   Reuses .photo runtime styles; the .sr-photo class scopes them to
+   in-flow rendering inside .sr-cell__body. */
+.sr-photo-treatment {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--gutter);
+}
+.sr-photo-treatment .photo {
+  position: relative;
+  aspect-ratio: 3 / 2;
+  width: 100%;
+}
+.sr-photo-treatment__caption {
+  margin-top: 6px;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(26, 26, 26, 0.65);
+}
+
 /* Typography */
 .sr-type__label {
   font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
