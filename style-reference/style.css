@@ -435,6 +435,19 @@ html, body {
 }
 
 /* ============================================================
+   Focus — keyboard-visible focus rings throughout the runtime
+   2px solid --blue, 2px offset, 1px corner radius (matches the system).
+   ============================================================ */
+:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+  border-radius: 1px;
+}
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* ============================================================
    ============================================================
    END RUNTIME · BEGIN SPECIMEN
    ============================================================
@@ -932,6 +945,25 @@ html, body {
   max-width: 60ch;
   margin: 0;
   align-self: start;
+}
+.sr-focus-demo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--charcoal);
+  background: rgba(26, 26, 26, 0.04);
+  border: 0;
+  border-radius: 1px;
+  cursor: pointer;
+}
+.sr-focus-demo:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
 }
 .sr-elevation__stack {
   list-style: none;
