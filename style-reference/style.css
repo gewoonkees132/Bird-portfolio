@@ -431,6 +431,7 @@ html, body {
    ============================================================ */
 @media (prefers-reduced-motion: reduce) {
   .photo, .species { transition-duration: 0ms; }
+  .identity, .compass { animation: none; opacity: 1; }
 }
 
 /* ============================================================
