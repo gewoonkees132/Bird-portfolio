@@ -10,8 +10,106 @@
 </head>
 <body>
   <main class="sr-page">
+    <section class="sr-section sr-masthead">
+      <span class="sr-section__id">00</span>
+      <h2 class="sr-section__title">Masthead</h2>
+      <div class="sr-section__stats">
+        <span>identity</span>
+        <span>title</span>
+        <span>version meta</span>
+      </div>
+      <hr class="sr-rule" />
+
+      <span class="sr-cell sr-cell--3 sr-masthead__wordmark">
+        <img src="files/logo.svg" alt="" aria-hidden="true" />
+        <span>Kees Leemeijer<span class="dot">.</span></span>
+      </span>
+      <h1 class="sr-cell sr-cell--5 sr-masthead__title-display">Style Reference</h1>
+      <div class="sr-cell sr-cell--1 sr-masthead__meta">v1<br>2026<br>04-27</div>
+
+      <hr class="sr-rule" />
+    </section>
+
+    <div class="sr-group">
+      <span class="sr-group__label">1.0 · Foundations</span>
+      <span class="sr-group__hint">tokens, principles, identity rules</span>
+    </div>
+
+    <section class="sr-section sr-principles">
+      <span class="sr-section__id">1.1</span>
+      <h2 class="sr-section__title">Principles</h2>
+      <div class="sr-section__stats">
+        <span><b>4</b> principles</span>
+        <span>quote · italic accent</span>
+      </div>
+      <hr class="sr-rule" />
+
+      <p class="sr-cell sr-cell--5 sr-cell--r2 sr-principles__quote">Munich '72 spirited inheritance · alectear-feel craft</p>
+      <ol class="sr-cell sr-cell--4 sr-cell--r2 sr-principles__principles">
+        <li>Asymmetric alignment — top-left identity, bottom-left label, bottom-right compass.</li>
+        <li>Italic blue Latin name as the sole italic accent.</li>
+        <li>Mono for utility text only — compass, meta, placeholders.</li>
+        <li>1px corner radius. Sharp, almost square; shadows do the lift.</li>
+      </ol>
+
+      <hr class="sr-rule" />
+    </section>
+    <section class="sr-section sr-identity">
+      <span class="sr-section__id">1.2</span>
+      <h2 class="sr-section__title">Identity</h2>
+      <div class="sr-section__stats">
+        <span>mark at scale</span>
+        <span>clear-space</span>
+        <span>min size</span>
+      </div>
+      <hr class="sr-rule" />
+
+      <div class="sr-cell sr-cell--5 sr-cell--r2">
+        <span class="sr-cell__label">MARK AT SCALE</span>
+        <div class="sr-cell__body">
+          <div class="sr-identity-mark">
+            <span class="sr-identity-mark__wordmark">
+              <img src="files/logo.svg" alt="" aria-hidden="true" />
+              <span>Kees Leemeijer<span class="dot">.</span></span>
+            </span>
+            <span class="sr-identity-mark__dot-only" aria-label="Dot-only mark"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sr-cell sr-cell--4 sr-cell--r2">
+        <span class="sr-cell__label">CLEAR-SPACE — 1× CAP-H</span>
+        <div class="sr-cell__body">
+          <span class="sr-identity-clearspace">
+            Kees Leemeijer<span class="dot">.</span>
+            <span class="sr-identity-clearspace__edge sr-identity-clearspace__edge--top">1× cap-h</span>
+            <span class="sr-identity-clearspace__edge sr-identity-clearspace__edge--right">1× cap-h</span>
+            <span class="sr-identity-clearspace__edge sr-identity-clearspace__edge--bottom">1× cap-h</span>
+            <span class="sr-identity-clearspace__edge sr-identity-clearspace__edge--left">1× cap-h</span>
+          </span>
+        </div>
+      </div>
+
+      <div class="sr-cell sr-cell--9">
+        <span class="sr-cell__label">MINIMUM SIZE</span>
+        <div class="sr-cell__body">
+          <div class="sr-identity-min">
+            <div>
+              <span class="sr-identity-min__wordmark">Kees Leemeijer<span class="dot">.</span></span>
+              <div class="sr-identity-min__caption">min 96px</div>
+            </div>
+            <div>
+              <span class="sr-identity-min__dot" aria-label="Dot-only minimum"></span>
+              <div class="sr-identity-min__caption">min 8px</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="sr-rule" />
+    </section>
     <section class="sr-section sr-grid-ruleset">
-      <span class="sr-section__id">01</span>
+      <span class="sr-section__id">1.3</span>
       <h2 class="sr-section__title">Grid</h2>
       <div class="sr-section__stats">
         <span><b>9</b> cols</span>
@@ -33,57 +131,19 @@
       <div class="sr-cell sr-cell--1 sr-token"><div class="sr-token__k">--stride</div><div class="sr-token__v">144</div></div>
 
       <div class="sr-cell sr-cell--9 sr-cell--r3 sr-grid-ruleset__diagram" aria-label="Page anatomy diagram">
-        <div class="sr-anatomy">
-          <div class="sr-anatomy__edge sr-anatomy__edge--l"></div>
-          <div class="sr-anatomy__edge sr-anatomy__edge--r"></div>
-          <div class="sr-anatomy__edge sr-anatomy__edge--t"></div>
-          <div class="sr-anatomy__edge sr-anatomy__edge--b"></div>
-          <div class="sr-anatomy__caption">page-edge 8 · tile 1320 · 9 × u=120 · g=24</div>
+        <div class="sr-grid-anatomy">
+          <div class="sr-grid-anatomy__edge sr-grid-anatomy__edge--l"></div>
+          <div class="sr-grid-anatomy__edge sr-grid-anatomy__edge--r"></div>
+          <div class="sr-grid-anatomy__edge sr-grid-anatomy__edge--t"></div>
+          <div class="sr-grid-anatomy__edge sr-grid-anatomy__edge--b"></div>
+          <div class="sr-grid-anatomy__caption">page-edge 8 · tile 1320 · 9 × u=120 · g=24</div>
         </div>
       </div>
 
       <hr class="sr-rule" />
     </section>
-    <section class="sr-section sr-masthead">
-      <span class="sr-section__id">02</span>
-      <h2 class="sr-section__title">Masthead</h2>
-      <div class="sr-section__stats">
-        <span>identity</span>
-        <span>title</span>
-        <span>version meta</span>
-      </div>
-      <hr class="sr-rule" />
-
-      <span class="sr-cell sr-cell--3 sr-masthead__wordmark">
-        <img src="files/logo.svg" alt="" aria-hidden="true" />
-        <span>Kees Leemeijer<span class="dot">.</span></span>
-      </span>
-      <h1 class="sr-cell sr-cell--5 sr-masthead__title-display">Style Reference</h1>
-      <div class="sr-cell sr-cell--1 sr-masthead__meta">v1<br>2026<br>04-27</div>
-
-      <hr class="sr-rule" />
-    </section>
-    <section class="sr-section sr-philosophy">
-      <span class="sr-section__id">03</span>
-      <h2 class="sr-section__title">Philosophy</h2>
-      <div class="sr-section__stats">
-        <span><b>4</b> principles</span>
-        <span>quote · italic accent</span>
-      </div>
-      <hr class="sr-rule" />
-
-      <p class="sr-cell sr-cell--5 sr-cell--r2 sr-philosophy__quote">Munich '72 spirited inheritance · alectear-feel craft</p>
-      <ol class="sr-cell sr-cell--4 sr-cell--r2 sr-philosophy__principles">
-        <li>Asymmetric alignment — top-left identity, bottom-left label, bottom-right compass.</li>
-        <li>Italic blue Latin name as the sole italic accent.</li>
-        <li>Mono for utility text only — compass, tweaks, placeholders.</li>
-        <li>1px corner radius. Sharp, almost square; shadows do the lift.</li>
-      </ol>
-
-      <hr class="sr-rule" />
-    </section>
     <section class="sr-section sr-color">
-      <span class="sr-section__id">04</span>
+      <span class="sr-section__id">1.4</span>
       <h2 class="sr-section__title">Color</h2>
       <div class="sr-section__stats">
         <span><b>5</b> tokens</span>
@@ -131,7 +191,7 @@
       <hr class="sr-rule" />
     </section>
     <section class="sr-section sr-typography">
-      <span class="sr-section__id">05</span>
+      <span class="sr-section__id">1.5</span>
       <h2 class="sr-section__title">Typography</h2>
       <div class="sr-section__stats">
         <span><b>6</b> sizes</span>
@@ -186,9 +246,9 @@
 
       <hr class="sr-rule" />
     </section>
-    <section class="sr-section sr-spatial">
-      <span class="sr-section__id">06</span>
-      <h2 class="sr-section__title">Spatial</h2>
+    <section class="sr-section sr-spacing">
+      <span class="sr-section__id">1.6</span>
+      <h2 class="sr-section__title">Spacing</h2>
       <div class="sr-section__stats">
         <span>tile <b>1320 × 744</b></span>
         <span>gutter <b>24</b></span>
@@ -231,8 +291,27 @@
 
       <hr class="sr-rule" />
     </section>
+    <section class="sr-section sr-elevation">
+      <span class="sr-section__id">1.7</span>
+      <h2 class="sr-section__title">Elevation</h2>
+      <div class="sr-section__stats">
+        <span><b>3</b> stack levels</span>
+        <span>static + dynamic</span>
+      </div>
+      <hr class="sr-rule" />
+
+      <p class="sr-cell sr-cell--5 sr-cell--r2 sr-elevation__body">This static grid is designed to be composed above a dynamic pannable background. Future portfolio surfaces stack from a pannable photo plane below, through this static UI grid, to focus overlays and labels on top.</p>
+      <ol class="sr-cell sr-cell--3 sr-cell--r2 sr-elevation__stack">
+        <li>Above &mdash; focus overlays / labels</li>
+        <li>Foreground &mdash; static UI grid (this)</li>
+        <li>Background &mdash; pannable photo plane</li>
+      </ol>
+      <div class="sr-cell sr-cell--1"></div><!-- spacer -->
+
+      <hr class="sr-rule" />
+    </section>
     <section class="sr-section sr-motion">
-      <span class="sr-section__id">07</span>
+      <span class="sr-section__id">1.8</span>
       <h2 class="sr-section__title">Motion</h2>
       <div class="sr-section__stats">
         <span><b>4</b> demos</span>
@@ -276,68 +355,176 @@
 
       <hr class="sr-rule" />
     </section>
-    <section class="sr-section sr-components">
-      <span class="sr-section__id">08</span>
-      <h2 class="sr-section__title">Components</h2>
+
+    <div class="sr-group">
+      <span class="sr-group__label">2.0 · Components</span>
+      <span class="sr-group__hint">composable atoms with anatomy + usage</span>
+    </div>
+
+    <section class="sr-section sr-component sr-component--wordmark">
+      <span class="sr-section__id">2.1</span>
+      <h2 class="sr-section__title">Wordmark / dot</h2>
       <div class="sr-section__stats">
-        <span><b>9</b> components</span>
-        <span>identity / labels</span>
-        <span>cells / brand / panel</span>
+        <span>identity atom</span>
+        <span>2 parts</span>
       </div>
       <hr class="sr-rule" />
 
-      <div class="sr-cell sr-cell--3">
-        <span class="sr-cell__label">IDENTITY</span>
+      <div class="sr-cell sr-cell--5 sr-cell--r2">
+        <span class="sr-cell__label">SPECIMEN</span>
         <div class="sr-cell__body">
-          <div class="identity">
-            <img class="pictogram" src="files/logo.svg" alt="" aria-hidden="true" />
-            <span><span class="name">Kees Leemeijer</span><span class="dot">.</span></span>
+          <div class="sr-anatomy">
+            <div class="identity">
+              <img class="pictogram" src="files/logo.svg" alt="" aria-hidden="true" />
+              <span><span class="sr-anatomy__num">1</span><span class="name">Kees Leemeijer</span><span class="sr-anatomy__num">2</span><span class="dot">.</span></span>
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="sr-cell sr-cell--3">
-        <span class="sr-cell__label">SPECIES LABEL</span>
+      <div class="sr-cell sr-cell--4 sr-cell--r2">
+        <span class="sr-cell__label">ANATOMY</span>
         <div class="sr-cell__body">
-          <div class="species is-visible">
-            <div class="line-name">European Bee-eater<span class="latin">Merops apiaster</span></div>
-            <div class="meta">Photo 1 / 8</div>
+          <div class="sr-anatomy__legend">
+            <div class="sr-anatomy__legend-row"><span class="sr-anatomy__num">1</span> wordmark — sans 500, charcoal</div>
+            <div class="sr-anatomy__legend-row"><span class="sr-anatomy__num">2</span> dot — blue terminal mark</div>
+          </div>
+          <p class="sr-anatomy__usage">Used as the persistent identity atom across surfaces.</p>
+        </div>
+      </div>
+
+      <hr class="sr-rule" />
+    </section>
+
+    <section class="sr-section sr-component sr-component--species">
+      <span class="sr-section__id">2.2</span>
+      <h2 class="sr-section__title">Species label</h2>
+      <div class="sr-section__stats">
+        <span>caption atom</span>
+        <span>3 parts</span>
+      </div>
+      <hr class="sr-rule" />
+
+      <div class="sr-cell sr-cell--5 sr-cell--r2">
+        <span class="sr-cell__label">SPECIMEN</span>
+        <div class="sr-cell__body">
+          <div class="sr-anatomy">
+            <div class="species is-visible">
+              <div class="line-name"><span class="sr-anatomy__num">1</span>European Bee-eater<span class="sr-anatomy__num">2</span><span class="latin">Merops apiaster</span></div>
+              <div class="meta"><span class="sr-anatomy__num">3</span>Photo 1 / 8</div>
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="sr-cell sr-cell--3">
-        <span class="sr-cell__label">COMPASS</span>
+      <div class="sr-cell sr-cell--4 sr-cell--r2">
+        <span class="sr-cell__label">ANATOMY</span>
+        <div class="sr-cell__body">
+          <div class="sr-anatomy__legend">
+            <div class="sr-anatomy__legend-row"><span class="sr-anatomy__num">1</span> line-name — sans 500, charcoal</div>
+            <div class="sr-anatomy__legend-row"><span class="sr-anatomy__num">2</span> latin — italic blue (sole italic accent)</div>
+            <div class="sr-anatomy__legend-row"><span class="sr-anatomy__num">3</span> meta — mono utility, blue-soft</div>
+          </div>
+          <p class="sr-anatomy__usage">Captions a single bird photograph. One per cell, anchored bottom-left.</p>
+        </div>
+      </div>
+
+      <hr class="sr-rule" />
+    </section>
+
+    <section class="sr-section sr-component sr-component--compass">
+      <span class="sr-section__id">2.3</span>
+      <h2 class="sr-section__title">Compass</h2>
+      <div class="sr-section__stats">
+        <span>nav atom</span>
+        <span>2 parts</span>
+      </div>
+      <hr class="sr-rule" />
+
+      <div class="sr-cell sr-cell--5 sr-cell--r2">
+        <span class="sr-cell__label">SPECIMEN</span>
         <div class="sr-cell__body" style="text-align:right">
-          <div class="compass">
-            <div>Drag · arrow keys</div>
-            <div>Arrangement <span class="arr">A</span></div>
+          <div class="sr-anatomy">
+            <div class="compass">
+              <div><span class="sr-anatomy__num">1</span>Drag · arrow keys</div>
+              <div><span class="sr-anatomy__num">2</span>Arrangement <span class="arr">A</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sr-cell sr-cell--4 sr-cell--r2">
+        <span class="sr-cell__label">ANATOMY</span>
+        <div class="sr-cell__body">
+          <div class="sr-anatomy__legend">
+            <div class="sr-anatomy__legend-row"><span class="sr-anatomy__num">1</span> instruction — mono utility, charcoal-soft</div>
+            <div class="sr-anatomy__legend-row"><span class="sr-anatomy__num">2</span> state — arrangement letter in blue</div>
+          </div>
+          <p class="sr-anatomy__usage">Tells the visitor how to navigate the photo plane and where they currently are.</p>
+        </div>
+      </div>
+
+      <hr class="sr-rule" />
+    </section>
+
+    <section class="sr-section sr-component sr-component--photo">
+      <span class="sr-section__id">2.4</span>
+      <h2 class="sr-section__title">Photo cell</h2>
+      <div class="sr-section__stats">
+        <span>display atom</span>
+        <span>2 states</span>
+        <span>2 parts</span>
+      </div>
+      <hr class="sr-rule" />
+
+      <div class="sr-cell sr-cell--3 sr-cell--r2">
+        <span class="sr-cell__label">DEFAULT</span>
+        <div class="sr-cell__body">
+          <div class="sr-anatomy">
+            <div class="photo sr-photo" style="--ph-band-a:#3d6b8a; --ph-band-b:#4a7c9a;">
+              <div class="placeholder" data-label="P1 · COMMON KINGFISHER"></div>
+              <span class="sr-anatomy__num" style="position:absolute; top:8px; left:8px;">1</span>
+              <span class="sr-anatomy__num" style="position:absolute; bottom:8px; left:8px;">2</span>
+            </div>
           </div>
         </div>
       </div>
 
       <div class="sr-cell sr-cell--3 sr-cell--r2">
-        <span class="sr-cell__label">PHOTO CELL — DEFAULT</span>
+        <span class="sr-cell__label">FOCUSED</span>
         <div class="sr-cell__body">
-          <div class="photo sr-photo" style="--ph-band-a:#3d6b8a; --ph-band-b:#4a7c9a;">
-            <div class="placeholder" data-label="P1 · COMMON KINGFISHER"></div>
+          <div class="sr-anatomy">
+            <div class="photo sr-photo is-focused" style="--ph-band-a:#3d6b8a; --ph-band-b:#4a7c9a;">
+              <div class="placeholder" data-label="P1 · COMMON KINGFISHER"></div>
+            </div>
           </div>
         </div>
       </div>
 
       <div class="sr-cell sr-cell--3 sr-cell--r2">
-        <span class="sr-cell__label">PHOTO CELL — FOCUSED</span>
+        <span class="sr-cell__label">ANATOMY</span>
         <div class="sr-cell__body">
-          <div class="photo sr-photo is-focused" style="--ph-band-a:#3d6b8a; --ph-band-b:#4a7c9a;">
-            <div class="placeholder" data-label="P1 · COMMON KINGFISHER"></div>
+          <div class="sr-anatomy__legend">
+            <div class="sr-anatomy__legend-row"><span class="sr-anatomy__num">1</span> placeholder slug — mono uppercase</div>
+            <div class="sr-anatomy__legend-row"><span class="sr-anatomy__num">2</span> photo body — band gradient until image loads</div>
           </div>
+          <p class="sr-anatomy__usage">A single photograph in the pannable plane. Adopts focused state when centered.</p>
         </div>
       </div>
 
-      <div class="sr-cell sr-cell--3 sr-cell--r2"></div><!-- spacer to fill 9-col row -->
+      <hr class="sr-rule" />
+    </section>
+
+    <section class="sr-section sr-component sr-component--brand">
+      <span class="sr-section__id">2.5</span>
+      <h2 class="sr-section__title">Brand card</h2>
+      <div class="sr-section__stats">
+        <span>identity surface</span>
+      </div>
+      <hr class="sr-rule" />
 
       <div class="sr-cell sr-cell--5 sr-cell--r3">
-        <span class="sr-cell__label">BRAND CARD</span>
+        <span class="sr-cell__label">SPECIMEN</span>
         <div class="sr-cell__body">
           <div class="photo sr-photo is-brand" style="aspect-ratio: 3 / 2; max-width: 696px">
             <div class="brand-inner">
@@ -349,7 +536,25 @@
       </div>
 
       <div class="sr-cell sr-cell--4 sr-cell--r3">
-        <span class="sr-cell__label">MOBILE CELL</span>
+        <span class="sr-cell__label">USAGE</span>
+        <div class="sr-cell__body">
+          <p class="sr-anatomy__usage">Used as a full-bleed identity surface in the pannable plane (one per arrangement).</p>
+        </div>
+      </div>
+
+      <hr class="sr-rule" />
+    </section>
+
+    <section class="sr-section sr-component sr-component--mobile">
+      <span class="sr-section__id">2.6</span>
+      <h2 class="sr-section__title">Mobile cell</h2>
+      <div class="sr-section__stats">
+        <span>narrow-viewport surface</span>
+      </div>
+      <hr class="sr-rule" />
+
+      <div class="sr-cell sr-cell--4 sr-cell--r3">
+        <span class="sr-cell__label">SPECIMEN</span>
         <div class="sr-cell__body">
           <div class="mobile-edition">
             <div class="mcell" style="margin-bottom:0">
@@ -363,48 +568,97 @@
         </div>
       </div>
 
-      <div class="sr-cell sr-cell--9">
-        <span class="sr-cell__label">TWEAKS PANEL</span>
+      <div class="sr-cell sr-cell--5 sr-cell--r3">
+        <span class="sr-cell__label">USAGE</span>
         <div class="sr-cell__body">
-          <div class="tweaks is-open" role="region" aria-label="Tweaks (sample)">
-            <span class="tw-title">Tweaks</span>
-            <div class="tw"><label>Lerp</label><input type="range" min="0.01" max="0.40" step="0.01" value="0.08" disabled><span class="v">0.08</span></div>
-            <div class="tw"><label>Zoom min</label><input type="range" min="0.1" max="1.0" step="0.05" value="0.5" disabled><span class="v">0.50</span></div>
-            <div class="tw"><label>Zoom max</label><input type="range" min="1.0" max="8.0" step="0.1" value="3.0" disabled><span class="v">3.0</span></div>
-            <div class="tw"><label>Ambient</label><input type="range" min="0.2" max="1" step="0.01" value="0.55" disabled><span class="v">0.55</span></div>
-            <div class="tw"><label>Sat</label><input type="range" min="0" max="1" step="0.01" value="0.65" disabled><span class="v">0.65</span></div>
-            <div class="tw"><label>Bri</label><input type="range" min="0.6" max="1.1" step="0.01" value="0.92" disabled><span class="v">0.92</span></div>
-            <div class="tw"><label>Fade</label><input type="range" min="120" max="800" step="20" value="360" disabled><span class="v">360</span></div>
-            <div class="tw"><label>Blue</label><input type="color" value="#1635EE" disabled></div>
-            <div class="tw"><label>Field</label><input type="color" value="#F2EEE5" disabled></div>
+          <p class="sr-anatomy__usage">Single-column placeholder edition shown below 720px viewport width.</p>
+        </div>
+      </div>
+
+      <hr class="sr-rule" />
+    </section>
+    <div class="sr-group">
+      <span class="sr-group__label">3.0 · Patterns</span>
+      <span class="sr-group__hint">composed page-chrome systems</span>
+    </div>
+    <section class="sr-section sr-pattern sr-pattern--overlays">
+      <span class="sr-section__id">3.1</span>
+      <h2 class="sr-section__title">Overlays</h2>
+      <div class="sr-section__stats">
+        <span><b>8</b> slots</span>
+        <span><b>6</b> primitives</span>
+        <span><b>3</b> tokens</span>
+      </div>
+      <hr class="sr-rule" />
+
+      <div class="sr-cell sr-cell--5 sr-cell--r3">
+        <span class="sr-cell__label">SLOT DIAGRAM — 8 ANCHORS, CENTER RESERVED</span>
+        <div class="sr-cell__body">
+          <div class="sr-overlay-diagram">
+            <span class="sr-overlay-slot sr-overlay-slot--tl">tl</span>
+            <span class="sr-overlay-slot sr-overlay-slot--tc">tc</span>
+            <span class="sr-overlay-slot sr-overlay-slot--tr">tr</span>
+            <span class="sr-overlay-slot sr-overlay-slot--ml">ml</span>
+            <span class="sr-overlay-slot sr-overlay-slot--mr">mr</span>
+            <span class="sr-overlay-slot sr-overlay-slot--bl">bl</span>
+            <span class="sr-overlay-slot sr-overlay-slot--bc">bc</span>
+            <span class="sr-overlay-slot sr-overlay-slot--br">br</span>
+            <span class="sr-overlay-center">— content —</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sr-cell sr-cell--4 sr-cell--r3">
+        <span class="sr-cell__label">CONTENT PRIMITIVES</span>
+        <div class="sr-cell__body" style="display:flex; flex-direction:column; gap:8px;">
+          <div class="sr-overlay-primitive">
+            <span class="sr-overlay-primitive__name">identity</span>
+            <span class="sr-overlay-primitive__sample">Kees Leemeijer<span style="color:var(--blue)">.</span></span>
+          </div>
+          <div class="sr-overlay-primitive">
+            <span class="sr-overlay-primitive__name">text-line</span>
+            <span class="sr-overlay-primitive__sample">Available for assignments</span>
+          </div>
+          <div class="sr-overlay-primitive">
+            <span class="sr-overlay-primitive__name">mono-utility</span>
+            <span class="sr-overlay-primitive__sample" style="font-family:ui-monospace,monospace; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; opacity:0.7;">v.2026.04 · 52.37°N</span>
+          </div>
+          <div class="sr-overlay-primitive">
+            <span class="sr-overlay-primitive__name">link</span>
+            <span class="sr-overlay-primitive__sample" style="color:var(--blue); text-decoration:underline; text-underline-offset:3px;">contact →</span>
+          </div>
+          <div class="sr-overlay-primitive">
+            <span class="sr-overlay-primitive__name">indicator</span>
+            <span class="sr-overlay-primitive__sample" style="font-family:ui-monospace,monospace; font-size:10px; letter-spacing:0.14em; text-transform:uppercase;"><span class="ind-dot"></span>live</span>
+          </div>
+          <div class="sr-overlay-primitive">
+            <span class="sr-overlay-primitive__name">stack</span>
+            <span class="sr-overlay-primitive__sample" style="font-family:ui-monospace,monospace; font-size:9px; letter-spacing:0.12em; text-transform:uppercase; opacity:0.7; line-height:1.4;">two lines<br>like this</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sr-cell sr-cell--9">
+        <span class="sr-cell__label">APPLIED EXAMPLE — TL: IDENTITY · BL: INDICATOR · BR: STACK</span>
+        <div class="sr-cell__body">
+          <div class="sr-overlay-applied">
+            <div class="sr-overlay-applied__layer sr-overlay-applied__layer--tl">
+              Kees Leemeijer<span class="dot"></span>
+            </div>
+            <div class="sr-overlay-applied__layer sr-overlay-applied__layer--bl">
+              <span class="live"></span>live · banded 06:12
+            </div>
+            <div class="sr-overlay-applied__layer sr-overlay-applied__layer--br">
+              52.37°N · 4.89°E<br>nikon z9 · 600mm f/4
+            </div>
           </div>
         </div>
       </div>
 
       <hr class="sr-rule" />
     </section>
-    <section class="sr-section sr-layering">
-      <span class="sr-section__id">09</span>
-      <h2 class="sr-section__title">Layering</h2>
-      <div class="sr-section__stats">
-        <span><b>3</b> stack levels</span>
-        <span>static + dynamic</span>
-      </div>
-      <hr class="sr-rule" />
-
-      <p class="sr-cell sr-cell--5 sr-cell--r2 sr-layering__body">This static grid is designed to be composed above a dynamic pannable background. Future portfolio surfaces stack from a pannable photo plane below, through this static UI grid, to focus overlays and labels on top.</p>
-      <ol class="sr-cell sr-cell--3 sr-cell--r2 sr-layering__stack">
-        <li>Above &mdash; focus overlays / labels</li>
-        <li>Foreground &mdash; static UI grid (this)</li>
-        <li>Background &mdash; pannable photo plane</li>
-      </ol>
-      <div class="sr-cell sr-cell--1"></div><!-- spacer -->
-
-      <hr class="sr-rule" />
-    </section>
-
     <section class="sr-section sr-colophon">
-      <span class="sr-section__id">10</span>
+      <span class="sr-section__id">99</span>
       <h2 class="sr-section__title">Colophon</h2>
       <div class="sr-section__stats">
         <span>set in</span>
