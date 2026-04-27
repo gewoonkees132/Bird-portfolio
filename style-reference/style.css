@@ -1169,6 +1169,7 @@ body.show-grid::after {
   font-weight: 500;
   letter-spacing: -0.01em;
   color: var(--charcoal);
+  white-space: nowrap;
 }
 .sr-identity-min__wordmark .dot { color: var(--blue); }
 .sr-identity-min__dot {
