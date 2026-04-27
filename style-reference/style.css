@@ -665,9 +665,7 @@ html, body {
    to the viewport. Inside an .sr-cell__body they render in the
    document flow with their visual properties (size, color, weight,
    spacing) preserved. */
-.sr-cell__body .identity,
-.sr-cell__body .compass,
-.sr-cell__body .species {
+.sr-cell__body :is(.identity, .compass, .species) {
   position: static;
   top: auto; left: auto; right: auto; bottom: auto;
   transform: none;
