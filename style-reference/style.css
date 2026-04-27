@@ -1187,3 +1187,59 @@ body.show-grid::after {
   opacity: 0.55;
   margin-top: 6px;
 }
+
+/* ============================================================
+   Component anatomy template — numbered callouts + legend + usage
+   Used inside every 2.x Component section
+   ============================================================ */
+.sr-anatomy {
+  position: relative;
+  display: inline-block;
+}
+.sr-anatomy__num {
+  display: inline-grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  margin-right: 6px;
+  vertical-align: middle;
+  background: var(--blue);
+  color: #fff;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 10px;
+  font-weight: 600;
+  border-radius: 1px;
+  line-height: 1;
+}
+.sr-anatomy__legend {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--blue-soft);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--charcoal);
+  opacity: 0.75;
+}
+.sr-anatomy__legend-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.sr-anatomy__usage {
+  margin-top: 12px;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--charcoal);
+  opacity: 0.55;
+  line-height: 1.5;
+  font-style: normal;
+}
+
+/* Mobile: hide the inline callouts; legend rows stay so the parts are still named */
+@media (max-width: 720px) {
+  .sr-anatomy__num { display: none; }
+}
