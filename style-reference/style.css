@@ -1353,6 +1353,9 @@ html, body {
   line-height: 1.5;
   font-style: normal;
 }
+.sr-anatomy__usage--inline { margin-top: 0; }
+.sr-anatomy__usage--tight  { margin-top: 6px; }
+.sr-anatomy__usage--snug   { margin-top: 8px; }
 
 /* Below 1336: anatomy callouts collapse to legend-only (no room for inline numerals);
    overlay edge tightens to 12px below 720px (true mobile only). */
