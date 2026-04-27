@@ -4,6 +4,37 @@
    (was: "alectear-feel craft" — undefined coined term, substituted)
    ============================================================ */
 
+/* ============================================================
+   File map — single-file system of record for the brand. No build,
+   no preprocessor; the specimen page renders from these rules.
+
+   Order:
+     · This preamble + brand attribution
+     · @layer declaration + tokens (`:root` × 2)
+     · Layer 'reset'      — *, html/body base
+     · Layer 'runtime'    — Stage, Tile, .photo, .identity,
+                              .species, .compass, mobile,
+                              reduced-motion, focus-visible
+     · END RUNTIME · BEGIN SPECIMEN divider
+     · Layer 'specimen'   — .sr-* primitives, sections in
+                              §1.1 → §1.8 → §2.x → §3.1 → §99
+                              order, then below-1336 fallback
+     · Layer 'debug'      — ?grid overlay (opt-in via URL)
+
+   Conventions:
+     · Runtime classes use `.kebab-case` (`.stage`, `.photo`, `.species`).
+     · Specimen classes use `.sr-block__element--modifier` (BEM).
+     · Top-level dividers use the full ============= banner style.
+     · The specimen may consume the runtime; the runtime may not
+       reference the specimen. @layer encodes this contract.
+
+   Edit rules:
+     · Edit only the two `:root` blocks to retune the system.
+     · Charcoal/blue/field alphas derive from base tokens via
+       color-mix() — do not add raw rgba() literals.
+     · New tokens land in the second `:root` block, grouped by role.
+   ============================================================ */
+
 /* Cascade layers — encodes the runtime/specimen contract in CSS.
    Specimen wins over runtime by layer order, not source order.
    Debug overlay is opt-in via the ?grid URL flag. */
