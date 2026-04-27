@@ -779,7 +779,7 @@ html, body {
   color: var(--blue);
   font-weight: 400;
 }
-.sr-principles__principles {
+.sr-principles__list {
   list-style: none;
   margin: 0;
   padding: 0;
@@ -792,12 +792,12 @@ html, body {
   counter-reset: principle;
   align-self: start;
 }
-.sr-principles__principles li {
+.sr-principles__list li {
   counter-increment: principle;
   padding-left: 28px;
   position: relative;
 }
-.sr-principles__principles li::before {
+.sr-principles__list li::before {
   content: counter(principle, decimal-leading-zero);
   position: absolute;
   left: 0;
