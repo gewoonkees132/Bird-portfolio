@@ -928,14 +928,14 @@ html, body {
 
 /* Layering note */
 .sr-layering__body {
-  grid-column: span 8;
   font-size: 16px;
   line-height: 1.5;
   color: var(--charcoal);
   max-width: 60ch;
+  margin: 0;
+  align-self: start;
 }
 .sr-layering__stack {
-  grid-column: 9 / -1;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -946,6 +946,7 @@ html, body {
   font-size: 11px;
   letter-spacing: 0.04em;
   color: rgba(26, 26, 26, 0.7);
+  align-self: start;
 }
 .sr-layering__stack li {
   padding: 8px 12px;
@@ -962,17 +963,16 @@ html, body {
 }
 
 /* Colophon */
-.sr-colophon { padding-top: 32px; padding-bottom: 64px; }
 .sr-colophon__body {
-  grid-column: 1 / -1;
   display: flex;
   justify-content: space-between;
-  align-items: end;
+  align-items: center;
   gap: 24px;
   font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   font-size: 11px;
   letter-spacing: 0.04em;
   color: rgba(26, 26, 26, 0.6);
+  align-self: center;
 }
 .sr-colophon__signature {
   font-family: var(--font-stack);
