@@ -432,8 +432,8 @@ html, body {
       var(--ph-band-b, var(--placeholder-band-b)) 14px 28px);
   display: grid;
   place-items: center;
+  overflow: hidden;
 }
-.mobile-edition .mcell .mphoto { overflow: hidden; }
 .mobile-edition .mcell .mphoto img {
   position: absolute;
   inset: 0;
