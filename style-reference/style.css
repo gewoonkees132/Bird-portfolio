@@ -497,6 +497,7 @@ html, body {
 /* Skip-link — first focusable element; reveals on keyboard focus.
    Anchors to #sr-1-1 (1.1 Principles) so keyboard users land in
    substantive content, not the masthead label. */
+.sr-skip:focus,
 .sr-skip:focus-visible {
   position: fixed;
   top: var(--page-edge);
