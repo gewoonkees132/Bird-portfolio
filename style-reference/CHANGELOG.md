@@ -2,6 +2,14 @@
 
 Reverse-chronological. One entry per dated revision; each entry one line summarizing the change.
 
+## 2026-04-27 — v1 · audit remediation (R-Phase 1, Critical)
+
+R-Phase 1 (Critical) closes three findings from the 2026-04-27 CSS audit. C-1 aligned `--pan-lerp` between the CSS token and the §1.8 Motion specimen — Kees ratified `0.02` (keep CSS, fix specimen); the heavier-feel runtime value is preserved and the specimen now documents it accurately. C-2 aligned `--focus-fade` — Kees ratified `200ms` (keep CSS, fix specimen); the snappier runtime value remains and the specimen's `360ms` caption is corrected. `--focus-fade` is load-bearing on `.photo` transitions, so the runtime feel is unchanged. C-3 replaced the stale `Grid ruleset — first specimen on the page` banner with an accurate `§1.3 specimen — token chips + page-anatomy diagram` header.
+
+Spec: `docs/specs/2026-04-27-css-audit-design.md`.
+Audit: `docs/audits/2026-04-27-css-audit.md`.
+Plan: `docs/plans/2026-04-27-css-audit-remediation.md`.
+
 ## 2026-04-27 — v1 · close-out (Phase 3)
 
 Close-out (Phase 3): heading-order fix (page H1 hoisted to a sibling header via `.sr-sr-only` utility; visible 56px title becomes `<p aria-hidden="true">`); skip-link added as first focusable element (#sr-1-1 target); WCAG-AA contrast re-verified post-restructure; warm-dark hex comment tightened with promotion trigger (DK1); `[edit: Kees]` markers resolved (Marker 1 rewritten — `--pan-lerp` 0.02 / `--focus-fade` 200ms tuned values; Marker 2 ratified at 18 / 22); `<b>` stat-highlight pattern documented in 1.5 Typography (system-unit only rule preserved per C1b); iconography rule rendered in 1.2 Identity (logo + U+2192, no third); photo aspect rule rendered in 1.4 Color (3:2 canonical; off-aspect cropped via `object-fit: cover`); LOADING state added as 2.4 Photo cell's third specimen (`sr-photo--loading-demo`); voice audit applied to usage bodies and principles.
