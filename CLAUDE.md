@@ -26,3 +26,7 @@ python -m http.server
 ```
 
 Then open `http://localhost:8000`.
+
+## style-reference/ is a separate workspace
+
+The `style-reference/` subdirectory is a self-contained workspace for refining the Kees Leemeijer brand style. It has its own `CLAUDE.md`. Open it directly when working on style; do not edit its files from this workspace, and do not assume any synchronization between `style-reference/style.css` and the portfolio's `styles.css`.

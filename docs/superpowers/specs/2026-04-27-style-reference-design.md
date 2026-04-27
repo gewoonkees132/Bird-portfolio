@@ -5,6 +5,8 @@ status: approved
 author: Kees Leemeijer (with Claude)
 ---
 
+> **STATUS: Superseded (2026-04-27).** This spec encoded a "leading source / portfolio follows" model that was severed. The current source of truth lives at `style-reference/docs/specs/2026-04-27-standalone-style-reference-design.md`.
+
 # Style Reference
 
 A canonical, single-page specimen sheet that codifies the design system extracted from the existing bird portfolio. Becomes the leading source for all future design work under the Kees Leemeijer identity.
