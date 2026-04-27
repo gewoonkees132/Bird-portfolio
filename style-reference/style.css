@@ -529,15 +529,28 @@ html, body {
 }
 
 .sr-cell {
-  grid-column: span 12;
+  grid-column: span 9;
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
-.sr-cell--3  { grid-column: span 3; }
-.sr-cell--4  { grid-column: span 4; }
-.sr-cell--6  { grid-column: span 6; }
-.sr-cell--12 { grid-column: span 12; }
+.sr-cell--1 { grid-column: span 1; }
+.sr-cell--2 { grid-column: span 2; }
+.sr-cell--3 { grid-column: span 3; }
+.sr-cell--4 { grid-column: span 4; }
+.sr-cell--5 { grid-column: span 5; }
+.sr-cell--6 { grid-column: span 6; }
+.sr-cell--7 { grid-column: span 7; }
+.sr-cell--8 { grid-column: span 8; }
+.sr-cell--9 { grid-column: span 9; }
+
+.sr-cell--r1 { grid-row: span 1; }
+.sr-cell--r2 { grid-row: span 2; }
+.sr-cell--r3 { grid-row: span 3; }
+.sr-cell--r4 { grid-row: span 4; }
+
+/* Backwards-compat alias: legacy .sr-cell--12 from the 12-col system → full width */
+.sr-cell--12 { grid-column: span 9; }
 
 .sr-cell__label {
   font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
@@ -576,6 +589,46 @@ html, body {
   width: 100%;
   aspect-ratio: 3 / 2;
 }
+
+/* ============================================================
+   Section anatomy — id + title + stats header row
+   Mirrors tessellation-options.html .opt header.
+   ============================================================ */
+.sr-section__id {
+  grid-column: 1 / span 1;
+  align-self: start;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--blue);
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.sr-section__title {
+  grid-column: 2 / span 7;
+  align-self: start;
+  font-family: var(--font-stack);
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--charcoal);
+  margin: 0;
+}
+
+.sr-section__stats {
+  grid-column: 9 / span 1;
+  align-self: start;
+  text-align: right;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: rgba(26, 26, 26, 0.55);
+  text-transform: uppercase;
+  line-height: 1.5;
+}
+.sr-section__stats span { display: block; }
+.sr-section__stats b { color: var(--blue); font-weight: 500; }
 
 /* Masthead */
 .sr-masthead { align-items: end; }
