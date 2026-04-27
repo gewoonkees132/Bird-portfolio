@@ -1554,7 +1554,7 @@ html, body {
   .sr-cell,
   [class*="sr-cell--"] {
     display: block;
-    width: 100% !important;
+    width: 100%;
     margin-bottom: var(--gutter);
   }
 
