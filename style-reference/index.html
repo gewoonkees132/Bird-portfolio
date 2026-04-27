@@ -577,6 +577,86 @@
 
       <hr class="sr-rule" />
     </section>
+    <div class="sr-group">
+      <span class="sr-group__label">3.0 · Patterns</span>
+      <span class="sr-group__hint">composed page-chrome systems</span>
+    </div>
+    <section class="sr-section sr-pattern sr-pattern--overlays">
+      <span class="sr-section__id">3.1</span>
+      <h2 class="sr-section__title">Overlays</h2>
+      <div class="sr-section__stats">
+        <span><b>8</b> slots</span>
+        <span><b>6</b> primitives</span>
+        <span><b>3</b> tokens</span>
+      </div>
+      <hr class="sr-rule" />
+
+      <div class="sr-cell sr-cell--5 sr-cell--r3">
+        <span class="sr-cell__label">SLOT DIAGRAM — 8 ANCHORS, CENTER RESERVED</span>
+        <div class="sr-cell__body">
+          <div class="sr-overlay-diagram">
+            <span class="sr-overlay-slot sr-overlay-slot--tl">tl</span>
+            <span class="sr-overlay-slot sr-overlay-slot--tc">tc</span>
+            <span class="sr-overlay-slot sr-overlay-slot--tr">tr</span>
+            <span class="sr-overlay-slot sr-overlay-slot--ml">ml</span>
+            <span class="sr-overlay-slot sr-overlay-slot--mr">mr</span>
+            <span class="sr-overlay-slot sr-overlay-slot--bl">bl</span>
+            <span class="sr-overlay-slot sr-overlay-slot--bc">bc</span>
+            <span class="sr-overlay-slot sr-overlay-slot--br">br</span>
+            <span class="sr-overlay-center">— content —</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sr-cell sr-cell--4 sr-cell--r3">
+        <span class="sr-cell__label">CONTENT PRIMITIVES</span>
+        <div class="sr-cell__body" style="display:flex; flex-direction:column; gap:8px;">
+          <div class="sr-overlay-primitive">
+            <span class="sr-overlay-primitive__name">identity</span>
+            <span class="sr-overlay-primitive__sample">Kees Leemeijer<span style="color:var(--blue)">.</span></span>
+          </div>
+          <div class="sr-overlay-primitive">
+            <span class="sr-overlay-primitive__name">text-line</span>
+            <span class="sr-overlay-primitive__sample">Available for assignments</span>
+          </div>
+          <div class="sr-overlay-primitive">
+            <span class="sr-overlay-primitive__name">mono-utility</span>
+            <span class="sr-overlay-primitive__sample" style="font-family:ui-monospace,monospace; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; opacity:0.7;">v.2026.04 · 52.37°N</span>
+          </div>
+          <div class="sr-overlay-primitive">
+            <span class="sr-overlay-primitive__name">link</span>
+            <span class="sr-overlay-primitive__sample" style="color:var(--blue); text-decoration:underline; text-underline-offset:3px;">contact →</span>
+          </div>
+          <div class="sr-overlay-primitive">
+            <span class="sr-overlay-primitive__name">indicator</span>
+            <span class="sr-overlay-primitive__sample" style="font-family:ui-monospace,monospace; font-size:10px; letter-spacing:0.14em; text-transform:uppercase;"><span class="ind-dot"></span>live</span>
+          </div>
+          <div class="sr-overlay-primitive">
+            <span class="sr-overlay-primitive__name">stack</span>
+            <span class="sr-overlay-primitive__sample" style="font-family:ui-monospace,monospace; font-size:9px; letter-spacing:0.12em; text-transform:uppercase; opacity:0.7; line-height:1.4;">two lines<br>like this</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sr-cell sr-cell--9">
+        <span class="sr-cell__label">APPLIED EXAMPLE — TL: IDENTITY · BL: INDICATOR · BR: STACK</span>
+        <div class="sr-cell__body">
+          <div class="sr-overlay-applied">
+            <div class="sr-overlay-applied__layer sr-overlay-applied__layer--tl">
+              Kees Leemeijer<span class="dot"></span>
+            </div>
+            <div class="sr-overlay-applied__layer sr-overlay-applied__layer--bl">
+              <span class="live"></span>live · banded 06:12
+            </div>
+            <div class="sr-overlay-applied__layer sr-overlay-applied__layer--br">
+              52.37°N · 4.89°E<br>nikon z9 · 600mm f/4
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="sr-rule" />
+    </section>
     <section class="sr-section sr-colophon">
       <span class="sr-section__id">99</span>
       <h2 class="sr-section__title">Colophon</h2>
