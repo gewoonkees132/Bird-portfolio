@@ -860,9 +860,9 @@ html, body {
   height: 32px;
   background: var(--blue);
   border-radius: 1px;
-  animation: sr-focus-fade 1800ms var(--focus-easing) infinite;
+  animation: sr-demo-focus-fade 1800ms var(--focus-easing) infinite;
 }
-@keyframes sr-focus-fade {
+@keyframes sr-demo-focus-fade {
   0%   { opacity: 0.5; }
   50%  { opacity: 1; }
   100% { opacity: 0.5; }
@@ -873,7 +873,7 @@ html, body {
   font-size: var(--label-size-d);
   font-weight: 500;
   color: var(--charcoal);
-  animation: sr-label-cycle 1600ms infinite;
+  animation: sr-demo-label-cycle 1600ms infinite;
 }
 .sr-motion__label .latin {
   font-style: italic;
@@ -881,7 +881,7 @@ html, body {
   font-weight: 400;
   margin-left: 0.4em;
 }
-@keyframes sr-label-cycle {
+@keyframes sr-demo-label-cycle {
   0%   { opacity: 0; }
   12.5% { opacity: 1; animation-timing-function: ease-out; } /* 200ms in */
   75%  { opacity: 1; }                                       /* hold */
@@ -899,9 +899,9 @@ html, body {
     var(--placeholder-band-b) 8px 16px
   );
   border-radius: 1px;
-  animation: sr-photo-decode 1400ms infinite;
+  animation: sr-demo-photo-decode 1400ms infinite;
 }
-@keyframes sr-photo-decode {
+@keyframes sr-demo-photo-decode {
   0%   { opacity: 0; transform: translateY(4px); animation-timing-function: ease-out; }
   14%  { opacity: 1; transform: translateY(0); }   /* 200ms in */
   85%  { opacity: 1; transform: translateY(0); }   /* hold */
