@@ -1006,6 +1006,16 @@ html, body {
   100% { opacity: 0; transform: translateY(4px); }  /* reset */
 }
 
+/* 2.4 Photo cell — LOADING specimen loop. Reuses the
+   sr-demo-photo-decode keyframe at the larger photo-cell scale.
+   Loops 1400ms for legibility; the runtime transitions once. */
+.sr-photo.sr-photo--loading-demo {
+  animation: sr-demo-photo-decode 1400ms infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sr-photo.sr-photo--loading-demo { animation: none; }
+}
+
 /* Easing-curve plot */
 .sr-motion__curve {
   width: 80px;

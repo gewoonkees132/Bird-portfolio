@@ -574,7 +574,7 @@
       <h2 id="sr-2-4" class="sr-section__title">Photo cell</h2>
       <div class="sr-section__stats">
         <span>display atom</span>
-        <span>2 states</span>
+        <span><b>3</b> states</span>
         <span>2 parts</span>
       </div>
       <hr class="sr-rule" />
@@ -604,13 +604,26 @@
       </div>
 
       <div class="sr-cell sr-cell--3 sr-cell--r2">
+        <span class="sr-cell__label">LOADING</span>
+        <div class="sr-cell__body">
+          <div class="sr-anatomy">
+            <div class="photo sr-photo sr-photo--loading-demo" style="--ph-band-a:#3d6b8a; --ph-band-b:#4a7c9a;">
+              <div class="placeholder" data-label="P1 · COMMON KINGFISHER"></div>
+              <span class="sr-anatomy__num" style="position:absolute; top:8px; left:8px;">3</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sr-cell sr-cell--9">
         <span class="sr-cell__label">ANATOMY</span>
         <div class="sr-cell__body">
           <div class="sr-anatomy__legend">
             <div class="sr-anatomy__legend-row"><span class="sr-anatomy__num">1</span> placeholder slug — mono uppercase</div>
             <div class="sr-anatomy__legend-row"><span class="sr-anatomy__num">2</span> photo body — band gradient until image loads</div>
+            <div class="sr-anatomy__legend-row"><span class="sr-anatomy__num">3</span> loading — opacity 0 → 1, translateY(4px) → 0, 200ms ease-out (.is-entering → .is-entered)</div>
           </div>
-          <p class="sr-anatomy__usage">A single photograph in the pannable plane. Adopts focused state when centered.</p>
+          <p class="sr-anatomy__usage">A single photograph in the pannable plane. Adopts focused state when centered. Decode entrance is the runtime's <code>.is-entering</code> → <code>.is-entered</code> transition; the LOADING specimen above loops the entrance for legibility.</p>
         </div>
       </div>
 
