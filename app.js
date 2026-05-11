@@ -39,6 +39,69 @@
       image: F('P8-Lark.webp') },
   ];
 
+  // ---------- Bird facts (per-species lede + vitals + fun fact) ----------
+  // Vitals from Cornell Lab Birds of the World, BirdLife, RSPB, BTO.
+  // Lede + fun-fact prose written at CEFR B1 reading level. Sources:
+  //   1 Robin       — Lack (1943) territorial decoy experiments.
+  //   2 Weaver nest — Collias & Victoria (1978) on grass-freshness rejection.
+  //   3 Jay         — Parnell et al. (2015, Sci Reports) structural-blue feathers.
+  //   4 Dunnock     — Davies, ~600-year cuckoo-host evolutionary lag.
+  //   5 Bee-eater   — Watve et al. (2002, Anim Cognition) gaze-sensitivity.
+  //   6 Weaver flt  — Olaleye et al. (1982, Trop Pest Mgmt) maize-raid commute.
+  //   7 Great Tit   — Estók, Zsebok & Siemers (2010, Biol Letters) bat predation.
+  //   8 Skylark     — Cresswell (1994, Behav Ecol Sociobiol) merlin pursuit-deterrent song.
+  // Keyed by SPECIES.id (1–8).
+  const BIRD_FACTS = {
+    1: {
+      wingspan: '20–22 cm', weight: '16–22 g',
+      range: 'Europe, N Africa', habitat: 'Woodland, gardens',
+      lede: 'The European Robin holds its patch of garden all year, and will sing through winter nights under a streetlight. The orange breast is a flag. Show it to a rival and he reads a threat, not a bird.',
+      fun_fact: 'In a famous test, a wild robin attacked a small bundle of red feathers with no head and no body. In some places, fights between robins cause about one in ten adult deaths.'
+    },
+    2: {
+      wingspan: '24–28 cm', weight: '30–45 g',
+      range: 'Sub-Saharan Africa', habitat: 'Savanna, villages',
+      lede: 'A male Village Weaver is a builder who works for an audience. He strips long green strips from leaves and knots them into a hanging pouch. Then he hangs upside down beneath it, fans his wings, and waits for a female to inspect his work.',
+      fun_fact: 'A female checks the grass for freshness before she moves in. In one study, scientists painted dead grass green to fool her. She still walked away. A male may build twenty nests in a season to keep her happy.'
+    },
+    3: {
+      wingspan: '52–58 cm', weight: '140–190 g',
+      range: 'Europe, Asia', habitat: 'Oak woodland',
+      lede: 'The Eurasian Jay is a shy crow of the oak woods, easier to hear than to see. The give-away is the wing flash, a panel of bright sky-blue barred with black, lit up for a second as the bird crosses a clearing.',
+      fun_fact: 'There is no blue paint in that wing. The colour comes from tiny sponge-like structures in the feather, about 150 nanometres across, sitting over a layer of black. Crush the feather and the blue is gone.'
+    },
+    4: {
+      wingspan: '19–21 cm', weight: '19–24 g',
+      range: 'Europe, W Asia', habitat: 'Hedgerows, gardens',
+      lede: 'The Dunnock is the brown bird most people walk straight past. It shuffles under the hedge like a mouse with feathers, picking tiny seeds and insects from the leaf litter. The song is a thin, hurried warble from a low branch.',
+      fun_fact: 'Common Cuckoos have laid eggs in dunnock nests for at least 600 years. The cuckoo egg is huge and bright blue. The dunnock egg is small and plain. She still sits on it as if nothing is wrong.'
+    },
+    5: {
+      wingspan: '29–30 cm', weight: '15–20 g',
+      range: 'S & SE Asia', habitat: 'Open scrub',
+      lede: 'The Green Bee-eater is a small jewel of dry, open country, bright green with a long pair of tail streamers. It hunts from a bare twig, darts out to grab a bee in the air, and carries it back to the same perch to deal with it.',
+      fun_fact: 'The bird seems to track what a watcher can see. In one test, it slipped into its nest tunnel far more often when the human nearby was looking the other way, as if it knew which eyes were a problem.'
+    },
+    6: {
+      wingspan: '24–28 cm', weight: '30–45 g',
+      range: 'Sub-Saharan Africa', habitat: 'Savanna, villages',
+      lede: 'A Village Weaver in flight is a quick, bouncing shape against the sky, wings beating in short bursts. Birds pour from the colony tree at dawn and again in the late afternoon, all heading the same way, like workers leaving for a shift.',
+      fun_fact: 'These flights run on a clock. Flocks raid the maize fields from about eight to eleven in the morning, then again from four to six in the evening, almost every day of the season. It is, quite literally, a daily commute.'
+    },
+    7: {
+      wingspan: '22–26 cm', weight: '14–22 g',
+      range: 'Europe, Asia, N Africa', habitat: 'Woodland, gardens',
+      lede: 'The Great Tit is the loud yellow bird at the garden feeder, with a black cap and a black stripe down its belly. It is bold and clever, and will pull the lid off a milk bottle or work out a puzzle box in a few tries.',
+      fun_fact: 'In a Hungarian cave one winter, great tits were filmed flying in to find sleeping bats. They pecked them on the head, killed them, and ate them. Eighteen times in two winters. The bird-table cutie hunts mammals.'
+    },
+    8: {
+      wingspan: '30–36 cm', weight: '33–45 g',
+      range: 'Europe, Asia, N Africa', habitat: 'Open farmland',
+      lede: 'The Eurasian Skylark is a small brown bird of open farmland with one big trick. The male climbs almost out of sight on whirring wings, then hangs there and pours out a long, bubbling song over the field below.',
+      fun_fact: 'When a merlin gives chase, the skylark sings while it flees. The better the song in mid-air, the sooner the falcon gives up and turns away. The song is not for show. It is a message that says, save your effort, you will not catch me.'
+    }
+  };
+
   // ---------- Arrangements ----------
   // Tile: 1320 x 760. 12×7 cell grid, module 88, gutter 24, no outer margin.
   // Each arrangement uses 7 of 8 photos in a hand-designed Mondrian.
@@ -152,6 +215,9 @@
   const plane = document.getElementById('plane');
   const speciesEl = document.getElementById('species');
   const speciesName = speciesEl.querySelector('.line-name');
+  const speciesLede = speciesEl.querySelector('.line-lede');
+  const speciesVitals = speciesEl.querySelector('.line-vitals');
+  const speciesFact = speciesEl.querySelector('.line-fact');
   const speciesMeta = speciesEl.querySelector('.meta');
 
   // We render a buffer of tiles around the visitor.
@@ -266,8 +332,8 @@
   let panY = panY_target;
 
   // Zoom state. Scale is applied around viewport center (zoom-to-center).
-  let zoom = 1.0;
-  let zoom_target = 1.0;
+  let zoom = 1.6;
+  let zoom_target = 1.6;
 
   // Magnetic dwell state. After `dwellDelay` ms of no user interaction
   // and settled velocity, the plane gently tugs toward the nearest photo
@@ -289,7 +355,7 @@
   const TWEAKS = /*EDITMODE-BEGIN*/{
     "lerp": 0.02,
     "zoomLerp": 0.02,
-    "zoomMin": 1.0,
+    "zoomMin": 1.6,
     "zoomMax": 4.0,
     "dwellDelay": 400,
     "dwellPull": 0.0015,
@@ -302,7 +368,7 @@
   }/*EDITMODE-END*/;
 
   // ---------- Persist tweaks internally (localStorage) ----------
-  const LS_KEY = 'kl-portfolio.tweaks.v2';
+  const LS_KEY = 'kl-portfolio.tweaks.v4';
   try {
     const saved = JSON.parse(localStorage.getItem(LS_KEY) || 'null');
     if (saved && typeof saved === 'object') Object.assign(TWEAKS, saved);
@@ -536,9 +602,30 @@
 
     // Update label
     const sp = SPECIES.find(s => s.id === info.slot.id);
+    // Non-breaking space inside the binomial keeps Genus species on one line.
+    const latinHtml = escapeHtml(sp.latin).replace(/ /g, '&nbsp;');
     speciesName.innerHTML =
-      `${escapeHtml(sp.vernacular)}<span class="latin">${escapeHtml(sp.latin)}</span>`;
+      `${escapeHtml(sp.vernacular)}<span class="latin">${latinHtml}</span>`;
     speciesMeta.textContent = `Photo ${sp.id} / 8 · Arrangement ${ARRANGEMENTS[info.arrIdx].name}`;
+
+    // Fun-read content (visible only when the plate is bloomed)
+    const f = BIRD_FACTS[sp.id];
+    if (f) {
+      speciesLede.textContent = f.lede;
+      speciesVitals.innerHTML = [
+        ['Wingspan', f.wingspan],
+        ['Weight',   f.weight],
+        ['Range',    f.range],
+        ['Habitat',  f.habitat],
+      ].map(([k, v]) =>
+        `<span class="stat"><span class="k">${escapeHtml(k)}</span><span class="v">${escapeHtml(v)}</span></span>`
+      ).join('');
+      speciesFact.innerHTML = `<span class="fact-body">${escapeHtml(f.fun_fact)}</span>`;
+    } else {
+      speciesLede.textContent = '';
+      speciesVitals.innerHTML = '';
+      speciesFact.innerHTML = '';
+    }
 
     // Fade label in (it may already be visible — OK)
     speciesEl.classList.remove('is-visible');
@@ -767,6 +854,50 @@
     requestAnimationFrame(updateCompass);
   }
   updateCompass();
+
+  // ---------- Species label: bloom interaction ----------
+  // Click the small-caps mark to expand into the full cream plate.
+  // Click outside (or press Escape) to collapse. The hover affordance
+  // (logo glyph appearing left of the name) is pure CSS. After
+  // DWELL_CUE_MS of stillness, the resting label gets a gentle opacity
+  // breath via .is-dwell to invite a click.
+  const DWELL_CUE_MS = 1800;
+
+  function setBloomed(b) {
+    speciesEl.classList.toggle('is-blooming', b);
+    if (b) speciesEl.classList.remove('is-dwell');
+  }
+
+  speciesEl.addEventListener('click', (e) => {
+    // Only the visible text (.line-name) toggles bloom — empty plate area is inert.
+    if (!e.target.closest('.line-name')) return;
+    e.stopPropagation();
+    setBloomed(!speciesEl.classList.contains('is-blooming'));
+    bumpInteraction();
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!speciesEl.contains(e.target) && speciesEl.classList.contains('is-blooming')) {
+      setBloomed(false);
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && speciesEl.classList.contains('is-blooming')) {
+      setBloomed(false);
+      e.stopPropagation();
+    }
+  });
+
+  function updateDwellCue() {
+    const idle = performance.now() - lastInteractionAt;
+    const settled = !dragging && Math.abs(vx) < 0.1 && Math.abs(vy) < 0.1;
+    const blooming = speciesEl.classList.contains('is-blooming');
+    const shouldShow = settled && idle > DWELL_CUE_MS && !blooming;
+    speciesEl.classList.toggle('is-dwell', shouldShow);
+    requestAnimationFrame(updateDwellCue);
+  }
+  updateDwellCue();
 
   // Kick off
   requestAnimationFrame(render);

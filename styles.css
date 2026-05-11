@@ -15,6 +15,8 @@
   --tile-height:   760px;
   --gutter:         24px;
   --tile-margin:     0px;
+  --inset-corner:   14px;  /* species plate offset from viewport bottom-left */
+  --radius-card:     8px;  /* bloomed species plate corner radius */
 
   /* Type sizes */
   --wm-size-d:    0.95rem;
@@ -234,44 +236,250 @@ html, body {
 }
 .identity .name { color: var(--charcoal); }
 .identity .dot  { color: var(--blue); }
-
-/* ============================================================
-   Species label — pinned bottom-left of viewport
-   ============================================================ */
-.species {
-  position: fixed;
-  bottom: 22px;
-  left: 22px;
-  z-index: 10;
-  pointer-events: none;
+.identity .name,
+.identity .dot {
   opacity: 0;
   transition: opacity var(--label-out) ease-in;
-  max-width: 60vw;
 }
-.species.is-visible {
+.identity:hover .name,
+.identity:hover .dot,
+.identity:focus-visible .name,
+.identity:focus-visible .dot {
   opacity: 1;
   transition: opacity var(--label-in) ease-out;
 }
-.species .line-name {
-  font-size: var(--label-size-d);
-  font-weight: 500;
-  color: var(--charcoal);
-  line-height: 1.3;
-  letter-spacing: -0.005em;
+
+/* ============================================================
+   Species label — pinned bottom-left of viewport
+   Foreground / background pattern:
+     Resting   — vernacular only, small-caps tracked, on photo
+     Dwell cue — 24px hairline fades in beneath after 800ms idle
+     Bloomed   — cream plate scales open from corner, full trio
+   Container is pointer-events:none so the viewport remains pannable
+   everywhere except the visible text itself.
+   ============================================================ */
+.species {
+  position: fixed;
+  bottom: var(--inset-corner);
+  left: var(--inset-corner);
+  z-index: 10;
+  pointer-events: none;
+  /* Resting padding compensates for --inset-corner so the resting
+     name remains at its original viewport position (~22px from left,
+     ~18px from bottom). Bloomed padding below resets to a plate-
+     interior value because the plate itself is now lifted. */
+  padding: 4px 8px;
+  max-width: 40vw;
+  opacity: 0;
+  transition:
+    opacity var(--label-out) ease-in,
+    padding 240ms var(--focus-easing);
+  isolation: isolate;
 }
-.species .latin {
+.species.is-visible {
+  opacity: 1;
+  transition:
+    opacity var(--label-in) ease-out,
+    padding 240ms var(--focus-easing);
+}
+
+/* Bloom plate — pseudo-element scales out from bottom-left corner.
+   The plate is now a lifted floating card (--inset-corner from edges),
+   so it carries a full hairline + a soft shadow rather than the old
+   half-frame that relied on the viewport edges. */
+.species::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--field);
+  border: 1px solid rgba(26, 26, 26, 0.22);
+  border-radius: var(--radius-card);
+  box-shadow: 0 6px 24px -8px rgba(0, 0, 0, 0.22);
+  transform-origin: bottom left;
+  transform: scale(0);
+  opacity: 0;
+  transition:
+    transform 280ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    opacity 200ms ease;
+  z-index: -1;
+  pointer-events: none;
+}
+.species.is-blooming {
+  pointer-events: auto;
+  padding: 14px 20px;
+  width: 40vw;
+}
+.species.is-blooming::before {
+  transform: scale(1);
+  opacity: 1;
+}
+
+/* Resting: vernacular only, small-caps tracked, white with deep shadow.
+   Hit area is just the visible text (pannable everywhere else). */
+.species .line-name {
+  pointer-events: auto;
+  cursor: pointer;
+  position: relative;
+  display: inline-block;
+  font-weight: 500;
+  font-size: 11px;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  line-height: 1.3;
+  text-shadow:
+    0 1px 4px rgba(0, 0, 0, 0.55),
+    0 0 1px rgba(0, 0, 0, 0.85);
+  transition:
+    color 200ms ease,
+    font-size 200ms ease,
+    letter-spacing 200ms ease,
+    text-shadow 200ms ease,
+    padding-left 520ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.species .latin { display: none; }
+.species .meta  { display: none; }
+.species .line-lede,
+.species .line-vitals,
+.species .line-fact { display: none; }
+
+/* Dwell cue — a 24px hairline beneath the name after 800ms idle.
+   Suppressed while blooming. */
+.species .line-name::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 18px;
+  height: 18px;
+  background: url('files/logo/SVG/logo.svg') no-repeat center / contain;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
+  opacity: 0;
+  transform: translate(-4px, -50%) scale(0.88);
+  transform-origin: left center;
+  transition:
+    opacity 520ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 520ms cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+  will-change: opacity, transform;
+}
+.species:not(.is-blooming) .line-name:hover {
+  padding-left: 26px;
+}
+.species:not(.is-blooming) .line-name:hover::before {
+  opacity: 0.65;
+  transform: translate(0, -50%) scale(1);
+}
+
+/* Bloomed: no logo glyph beside the name — title block leads cleanly. */
+.species.is-blooming .line-name {
+  padding-left: 0;
+}
+.species.is-blooming .line-name::before,
+.species.is-blooming .line-name:hover::before {
+  display: none;
+}
+
+/* Idle invitation: the resting label stays solid for most of each
+   cycle and softens briefly to draw the eye, then returns. The long
+   solid hold (0%–60%) plus a 1800ms idle threshold means quick
+   browsing never sees the cue — it only appears once you've truly
+   lingered on a photo. Suppressed on hover and during bloom. */
+.species.is-dwell:not(.is-blooming) .line-name:not(:hover) {
+  animation: speciesInvite 4000ms ease-in-out infinite;
+}
+@keyframes speciesInvite {
+  0%, 60%, 100% { opacity: 1;   }
+  80%           { opacity: 0.6; }
+}
+
+/* Bloomed: stacked title (V1) — vernacular sans display over italic
+   binomial in brand blue. Body, vitals, and fun-fact pull stack below
+   on hairlines. Sizes are S1 (compact) so the plate doesn't crowd
+   the photo plane behind it. */
+.species.is-blooming .line-name {
+  cursor: pointer;
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--charcoal);
+  text-transform: none;
+  letter-spacing: -0.018em;
+  line-height: 1.0;
+  text-shadow: none;
+}
+.species.is-blooming .latin {
+  display: block;
   font-style: italic;
   color: var(--blue);
   font-weight: 400;
-  margin-left: 0.5em;
-}
-.species .meta {
+  font-size: 17px;
+  line-height: 1.0;
+  letter-spacing: 0.002em;
   margin-top: 6px;
-  font-size: var(--meta-size-d);
-  color: var(--blue-soft);
-  font-weight: 500;
+  margin-left: 0;
+}
+
+/* Lede — full width inside the plate, no max-width. Hairline above. */
+.species.is-blooming .line-lede {
+  display: block;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(26, 26, 26, 0.18);
+  font-size: 12px;
+  line-height: 1.5;
+  color: #2a2a2a;
+}
+
+/* Vitals strip — flex row of stat columns. */
+.species.is-blooming .line-vitals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 22px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(26, 26, 26, 0.18);
+}
+.species.is-blooming .line-vitals .stat {
+  display: flex;
+  flex-direction: column;
+}
+.species.is-blooming .line-vitals .k {
+  font-size: 7.5px;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  color: rgba(26, 26, 26, 0.55);
+  font-weight: 500;
+  line-height: 1.0;
+}
+.species.is-blooming .line-vitals .v {
+  font-size: 11.5px;
+  line-height: 1.1;
+  margin-top: 2px;
+  font-weight: 500;
+  color: var(--charcoal);
+}
+
+/* Fun-fact pull — italic body with 2px blue rule on the left. */
+.species.is-blooming .line-fact {
+  display: block;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(26, 26, 26, 0.18);
+}
+.species.is-blooming .line-fact .fact-body {
+  display: block;
+  padding-left: 12px;
+  border-left: 2px solid var(--blue);
+  font-style: italic;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #2a2a2a;
+}
+
+/* Photo position / arrangement meta is omitted from the bloomed plate. */
+.species.is-blooming .meta {
+  display: none;
 }
 
 /* ============================================================
@@ -456,5 +664,8 @@ html, body {
    Print / reduced motion
    ============================================================ */
 @media (prefers-reduced-motion: reduce) {
-  .photo, .species { transition-duration: 0ms; }
+  .photo,
+  .species,
+  .species::before,
+  .species .line-name { transition-duration: 0ms; animation-duration: 0ms; }
 }
