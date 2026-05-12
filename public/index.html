@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Kees Leemeijer · Bird Photography</title>
+<meta name="description" content="Portfolio of bird photography by Kees Leemeijer — a hand-arranged, pannable plane of species portraits from Europe and beyond." />
+<link rel="canonical" href="https://verticokees.github.io/Bird-portfolio/" />
+<meta name="theme-color" content="#1635ee" />
+
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Kees Leemeijer" />
+<meta property="og:title" content="Kees Leemeijer · Bird Photography" />
+<meta property="og:description" content="Portfolio of bird photography by Kees Leemeijer — a hand-arranged, pannable plane of species portraits from Europe and beyond." />
+<meta property="og:url" content="https://verticokees.github.io/Bird-portfolio/" />
+<meta property="og:image" content="https://verticokees.github.io/Bird-portfolio/files/P5-Green_Bee-eater.webp" />
+<meta property="og:image:alt" content="Green Bee-eater perched in evening light." />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Kees Leemeijer · Bird Photography" />
+<meta name="twitter:description" content="Portfolio of bird photography by Kees Leemeijer — a hand-arranged, pannable plane of species portraits from Europe and beyond." />
+<meta name="twitter:image" content="https://verticokees.github.io/Bird-portfolio/files/P5-Green_Bee-eater.webp" />
+
+<link rel="icon" type="image/svg+xml" href="files/logo/SVG/logo.svg" />
+<link rel="preload" as="image" href="files/P5-Green_Bee-eater.webp" fetchpriority="high" />
+<link rel="stylesheet" href="styles.css" />
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "name": "Kees Leemeijer",
+      "url": "https://verticokees.github.io/Bird-portfolio/",
+      "image": "https://verticokees.github.io/Bird-portfolio/files/P5-Green_Bee-eater.webp",
+      "jobTitle": "Bird photographer",
+      "email": "mailto:kees_leemeijer@hotmail.com"
+    },
+    {
+      "@type": "ImageGallery",
+      "name": "Bird Photography by Kees Leemeijer",
+      "url": "https://verticokees.github.io/Bird-portfolio/",
+      "creator": { "@type": "Person", "name": "Kees Leemeijer" },
+      "image": [
+        {"@type":"ImageObject","name":"European Robin","contentUrl":"https://verticokees.github.io/Bird-portfolio/files/P1-European_Robin.webp"},
+        {"@type":"ImageObject","name":"Weaver Bird","contentUrl":"https://verticokees.github.io/Bird-portfolio/files/P2-Weaver_Bird.webp"},
+        {"@type":"ImageObject","name":"Eurasian Jay","contentUrl":"https://verticokees.github.io/Bird-portfolio/files/P3-Eurasian_Jay.webp"},
+        {"@type":"ImageObject","name":"Dunnock","contentUrl":"https://verticokees.github.io/Bird-portfolio/files/P4-Dunnock.webp"},
+        {"@type":"ImageObject","name":"Green Bee-eater","contentUrl":"https://verticokees.github.io/Bird-portfolio/files/P5-Green_Bee-eater.webp"},
+        {"@type":"ImageObject","name":"Weaver Bird","contentUrl":"https://verticokees.github.io/Bird-portfolio/files/P6-Weaver_Bird_flapping.webp"},
+        {"@type":"ImageObject","name":"Great Tit","contentUrl":"https://verticokees.github.io/Bird-portfolio/files/P7-Great_Tit.webp"},
+        {"@type":"ImageObject","name":"Lark","contentUrl":"https://verticokees.github.io/Bird-portfolio/files/P8-Lark.webp"}
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+<main>
+
+  <!-- Desktop spatial plane (decorative for AT — mobile edition serves screen readers) -->
+  <div class="stage" id="stage" aria-hidden="true" aria-label="Pannable photograph plane. Drag on desktop or use the mobile gallery below.">
+    <div class="plane" id="plane"></div>
+  </div>
+
+  <!-- Identity (wordmark + pictogram) -->
+  <a class="identity" href="mailto:kees_leemeijer@hotmail.com" aria-label="Email Kees Leemeijer">
+    <img class="pictogram" src="files/logo/SVG/logo.svg" alt="" aria-hidden="true" />
+    <h1 class="wordmark"><span class="name">Kees Leemeijer</span><span class="dot">.</span></h1>
+  </a>
+
+  <!-- Species label, pinned bottom-left.
+       Resting: just .line-name in small caps on the photo.
+       Bloomed: name + latin, hairline-separated lede / vitals / fun-fact pull. -->
+  <div class="species" id="species">
+    <div class="line-name" aria-live="polite" aria-atomic="true"></div>
+    <div class="line-lede"></div>
+    <div class="line-vitals"></div>
+    <div class="line-fact"></div>
+    <div class="meta"></div>
+  </div>
+
+  <!-- Quiet pan affordance: arrangement letter + drag hint -->
+  <div class="compass">
+    <div>Drag · pinch · arrow keys</div>
+    <div>Arrangement <span class="arr" id="compass-arr">A</span></div>
+  </div>
+
+  <!-- Mobile placeholder edition -->
+  <div class="mobile-edition">
+    <div class="mobile-identity">
+      <img class="pictogram" src="files/logo/SVG/logo.svg" alt="" aria-hidden="true" />
+      <h1 class="mobile-name"><span class="name">Kees Leemeijer</span><span class="dot">.</span></h1>
+    </div>
+    <div class="mobile-note">Mobile edition — placeholder. Final order is editorial, hand-ordered, opening with Arrangement A's lead.</div>
+
+    <div class="mcell">
+      <div class="mphoto" style="aspect-ratio: 3/2; --ph-band-a:#a87a3e; --ph-band-b:#b8893f;">
+        <img src="files/P5-Green_Bee-eater.webp" alt="" fetchpriority="high" decoding="async" />
+        <span>P5 · GREEN BEE-EATER</span>
+      </div>
+      <div class="mlabel">Green Bee-eater<span class="latin">Merops orientalis</span></div>
+      <div class="mmeta">Photo 1 / 8</div>
+    </div>
+    <div class="mcell">
+      <div class="mphoto" style="aspect-ratio: 2/3; --ph-band-a:#c79e6e; --ph-band-b:#b88c5e;">
+        <img src="files/P2-Weaver_Bird.webp" alt="" loading="lazy" decoding="async" />
+        <span>P2 · WEAVER BIRD</span>
+      </div>
+      <div class="mlabel">Weaver Bird<span class="latin">Ploceus cucullatus</span></div>
+      <div class="mmeta">Photo 2 / 8</div>
+    </div>
+    <div class="mcell">
+      <div class="mphoto" style="aspect-ratio: 21/9; --ph-band-a:#3a4a3e; --ph-band-b:#48584c;">
+        <img src="files/P4-Dunnock.webp" alt="" loading="lazy" decoding="async" />
+        <span>P4 · DUNNOCK</span>
+      </div>
+      <div class="mlabel">Dunnock<span class="latin">Prunella modularis</span></div>
+      <div class="mmeta">Photo 3 / 8</div>
+    </div>
+    <div class="mcell">
+      <div class="mphoto" style="aspect-ratio: 3/2; --ph-band-a:#3d6b8a; --ph-band-b:#4a7c9a;">
+        <img src="files/P1-European_Robin.webp" alt="" loading="lazy" decoding="async" />
+        <span>P1 · EUROPEAN ROBIN</span>
+      </div>
+      <div class="mlabel">European Robin<span class="latin">Erithacus rubecula</span></div>
+      <div class="mmeta">Photo 4 / 8</div>
+    </div>
+    <div class="mcell">
+      <div class="mphoto" style="aspect-ratio: 2/3; --ph-band-a:#8b7848; --ph-band-b:#9a8758;">
+        <img src="files/P6-Weaver_Bird_flapping.webp" alt="" loading="lazy" decoding="async" />
+        <span>P6 · WEAVER BIRD</span>
+      </div>
+      <div class="mlabel">Weaver Bird<span class="latin">Ploceus cucullatus</span></div>
+      <div class="mmeta">Photo 5 / 8</div>
+    </div>
+    <div class="mcell">
+      <div class="mphoto" style="aspect-ratio: 3/2; --ph-band-a:#7a8b76; --ph-band-b:#8a9c86;">
+        <img src="files/P3-Eurasian_Jay.webp" alt="" loading="lazy" decoding="async" />
+        <span>P3 · EURASIAN JAY</span>
+      </div>
+      <div class="mlabel">Eurasian Jay<span class="latin">Garrulus glandarius</span></div>
+      <div class="mmeta">Photo 6 / 8</div>
+    </div>
+    <div class="mcell">
+      <div class="mphoto" style="aspect-ratio: 21/9; --ph-band-a:#cdc4b0; --ph-band-b:#bdb4a0;">
+        <img src="files/P8-Lark.webp" alt="" loading="lazy" decoding="async" />
+        <span>P8 · LARK</span>
+      </div>
+      <div class="mlabel">Lark<span class="latin">Alauda arvensis</span></div>
+      <div class="mmeta">Photo 7 / 8</div>
+    </div>
+    <div class="mcell">
+      <div class="mphoto" style="aspect-ratio: 3/2; --ph-band-a:#6e5444; --ph-band-b:#7e6454;">
+        <img src="files/P7-Great_Tit.webp" alt="" loading="lazy" decoding="async" />
+        <span>P7 · GREAT TIT</span>
+      </div>
+      <div class="mlabel">Great Tit<span class="latin">Parus major</span></div>
+      <div class="mmeta">Photo 8 / 8</div>
+    </div>
+  </div>
+
+</main>
+<script src="app.js"></script>
+</body>
+</html>

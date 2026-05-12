@@ -106,89 +106,60 @@
   // Tile: 1320 x 760. 12×7 cell grid, module 88, gutter 24, no outer margin.
   // Each arrangement uses 7 of 8 photos in a hand-designed Mondrian.
   // The four arrangements use overlapping photo sets in different permutations.
-
-  // ============================================================
-  // STRICT MODULAR GRID — gutter is ALWAYS exactly 24px
-  //   u=88, g=24, C=12, R=7
-  //   Tile = 12*88 + 11*24 = 1320 wide; 7*88 + 6*24 = 760 tall.
-  //   Cell (c,r) -> pixel (c*(u+g), r*(u+g))
-  //   Span n cells = n*u + (n-1)*g
-  //
-  //   12×7 grid lets photos sit at honest aspect ratios:
-  //     L (landscape, ~3:2): 7×4=1.75, 5×3=1.67, 6×4=1.5
-  //     V (vertical, ~2:3):  3×4=0.75, 2×4=0.5, 3×3 (squarer)
-  //     W (wide, ~3:1):      6×2=3.0, 7×2=3.5, 9×2=4.5
-  //   Each arrangement: 7 photos (one of 8 sits out per tile).
-  //   Lead rotates: A→P5, B→P3, C→P7, D→P1.
-  //
-  //   Hand-designed so NO photo is adjacent to itself across any seam:
-  //     horizontal (right col of tile N vs left col of tile N+1)
-  //     vertical   (bottom row of tile N vs top row of same tile,
-  //                 since tiles duplicate vertically).
-  // ============================================================
-  // Per arrangement, the slot with the highest aspect ratio (the "long box")
-  // becomes a wordmark + pictogram brand card instead of a photograph.
   const ARRANGEMENTS = [
     {
-      // A — lead P5 top-left
       name: 'A',
       slots: [
-        { c:0, r:0, cw:7, ch:4, id: 5 },  // LEAD 7×4 (1.75)
-        { c:7, r:0, cw:5, ch:3, id: 3 },  // L 5×3 (1.67)
-        { c:7, r:3, cw:5, ch:1, id: 4 },  // W 5×1 strip
-        { c:0, r:4, cw:3, ch:3, id: 1 },  // L 3×3 squarer crop
-        { c:3, r:4, cw:6, ch:2, id: 8 },  // W 6×2 (3.0) ✓
-        { c:9, r:4, cw:3, ch:3, id: 6 },  // V 3×3 squarer crop
-        { c:3, r:6, cw:6, ch:1, brand: true },  // BRAND 6×1 (6.0) — longest
+        { c:0, r:0, cw:7, ch:4, id: 5 },
+        { c:7, r:0, cw:5, ch:3, id: 3 },
+        { c:7, r:3, cw:5, ch:1, id: 4 },
+        { c:0, r:4, cw:3, ch:3, id: 1 },
+        { c:3, r:4, cw:6, ch:2, id: 8 },
+        { c:9, r:4, cw:3, ch:3, id: 6 },
+        { c:3, r:6, cw:6, ch:1, brand: true },
       ]
     },
     {
-      // B — lead P3 top-right
       name: 'B',
       slots: [
-        { c:5, r:0, cw:7, ch:4, id: 3 },  // LEAD 7×4 (1.75)
-        { c:0, r:0, cw:3, ch:4, id: 6 },  // V 3×4 (0.75) ✓
-        { c:3, r:0, cw:2, ch:4, id: 2 },  // V 2×4 (0.5) tall vert
-        { c:0, r:4, cw:5, ch:3, id: 5 },  // L 5×3 (1.67) ✓
-        { c:5, r:4, cw:7, ch:2, id: 8 },  // W 7×2 (3.5)
-        { c:5, r:6, cw:5, ch:1, brand: true }, // BRAND 5×1 (5.0) — longest
-        { c:10, r:6, cw:2, ch:1, id: 4 }, // W 2×1 small strip
+        { c:5, r:0, cw:7, ch:4, id: 3 },
+        { c:0, r:0, cw:3, ch:4, id: 6 },
+        { c:3, r:0, cw:2, ch:4, id: 2 },
+        { c:0, r:4, cw:5, ch:3, id: 5 },
+        { c:5, r:4, cw:7, ch:2, id: 8 },
+        { c:5, r:6, cw:5, ch:1, brand: true },
+        { c:10, r:6, cw:2, ch:1, id: 4 },
       ]
     },
     {
-      // C — lead P7 bottom-left
       name: 'C',
       slots: [
-        { c:0, r:0, cw:6, ch:2, id: 4 },  // W 6×2 (3.0) ✓
-        { c:6, r:0, cw:3, ch:3, id: 2 },  // V 3×3 squarer
-        { c:9, r:0, cw:3, ch:2, id: 6 },  // V 3×2 (1.5) — squarer crop
-        { c:9, r:2, cw:3, ch:1, id: 5 },  // L 3×1 strip
-        { c:0, r:2, cw:6, ch:1, brand: true },  // BRAND 6×1 (6.0) — longest
-        { c:0, r:3, cw:7, ch:4, id: 7 },  // LEAD 7×4 (1.75)
-        { c:7, r:3, cw:5, ch:4, id: 1 },  // L 5×4 (1.25) squarer crop
+        { c:0, r:0, cw:6, ch:2, id: 4 },
+        { c:6, r:0, cw:3, ch:3, id: 2 },
+        { c:9, r:0, cw:3, ch:2, id: 6 },
+        { c:9, r:2, cw:3, ch:1, id: 5 },
+        { c:0, r:2, cw:6, ch:1, brand: true },
+        { c:0, r:3, cw:7, ch:4, id: 7 },
+        { c:7, r:3, cw:5, ch:4, id: 1 },
       ]
     },
     {
-      // D — lead P1 mid-center (floats in the middle so left+right edges vary)
       name: 'D',
       slots: [
-        { c:0, r:0, cw:6, ch:2, id: 8 },  // W 6×2 (3.0) ✓
-        { c:6, r:0, cw:6, ch:2, id: 4 },  // W 6×2 (3.0) ✓
-        { c:0, r:2, cw:2, ch:4, id: 6 },  // V 2×4 (0.5) tall vert
-        { c:2, r:2, cw:7, ch:4, id: 1 },  // LEAD 7×4 (1.75)
-        { c:9, r:2, cw:3, ch:4, id: 2 },  // V 3×4 (0.75) ✓
-        { c:0, r:6, cw:6, ch:1, brand: true },  // BRAND 6×1 (6.0) — longest
-        { c:6, r:6, cw:6, ch:1, id: 3 },  // L 6×1 strip
+        { c:0, r:0, cw:6, ch:2, id: 8 },
+        { c:6, r:0, cw:6, ch:2, id: 4 },
+        { c:0, r:2, cw:2, ch:4, id: 6 },
+        { c:2, r:2, cw:7, ch:4, id: 1 },
+        { c:9, r:2, cw:3, ch:4, id: 2 },
+        { c:0, r:6, cw:6, ch:1, brand: true },
+        { c:6, r:6, cw:6, ch:1, id: 3 },
       ]
     },
   ];
 
-  // Grid params (used to expand cell coords to pixels)
-  const U = 88;      // module (12×7 grid)
-  const GUT = 24;    // gutter (constant — DO NOT change without changing CSS too)
+  const U = 88;
+  const GUT = 24;
 
-  // Expand each slot from cell coords to absolute pixel rect within the tile.
-  // Outer margin = 0 so seam between tiles = exactly one gutter (24px).
   ARRANGEMENTS.forEach(arr => {
     arr.slots.forEach(s => {
       s.x = s.c * (U + GUT);
@@ -198,48 +169,30 @@
     });
   });
 
-  // Lead photo per arrangement (the focused-on-load id)
   const ARRANGEMENT_LEAD = { 0: 5, 1: 3, 2: 7, 3: 1 };
-
-  // Tile = inner-only (no outer margin). Between tiles we add one gutter
-  // so the seam reads identically to internal gutters.
-  const TILE_W = 12 * 88 + 11 * 24;  // = 1320
-  const TILE_H =  7 * 88 +  6 * 24;  // =  760
+  const TILE_W = 12 * 88 + 11 * 24;
+  const TILE_H =  7 * 88 +  6 * 24;
   const GUTTER = 24;
-
-  // Strip width: 4 arrangements + gutters between them
-  const STRIP_W = (TILE_W + GUTTER) * ARRANGEMENTS.length; // each arrangement + trailing gutter
+  const STRIP_W = (TILE_W + GUTTER) * ARRANGEMENTS.length;
 
   // ---------- DOM build ----------
   const stage = document.getElementById('stage');
   const plane = document.getElementById('plane');
   const speciesEl = document.getElementById('species');
+  if (!stage || !plane || !speciesEl) {
+    console.error('[bird-portfolio] Missing required DOM nodes; aborting init.');
+    return;
+  }
   const speciesName = speciesEl.querySelector('.line-name');
   const speciesLede = speciesEl.querySelector('.line-lede');
   const speciesVitals = speciesEl.querySelector('.line-vitals');
   const speciesFact = speciesEl.querySelector('.line-fact');
   const speciesMeta = speciesEl.querySelector('.meta');
 
-  // We render a buffer of tiles around the visitor.
-  // Horizontally: 3 strip-copies (left, center, right) -> 12 arrangements visible band.
-  // Vertically: 3 rows (above, center, below).
-  // The center "world" is large enough that we don't hit edges in normal use; we wrap on the GPU side via modulo translation.
+  const HSPAN = 3;
+  const VSPAN = 5;
 
-  // Actually, simpler: we compute pan -> world coords with modulo on STRIP_W (horizontal) and (TILE_H + GUTTER) (vertical).
-  // We then render a fixed 5x3 grid of arrangements positioned such that the center always covers the viewport.
-  // The plane translates by -(pan modulo periodicity), and we add an offset of one period so wrap is invisible.
-
-  // Buffer must cover the viewport at minimum zoom (0.4× default).
-  // At z=0.4, world-space visible ≈ viewport / z, so up to ~5000×3000 px.
-  // PERIOD_X = 4 × (1320+24) = 5376; PERIOD_Y = 784. So we need ~5 vertical
-  // copies and 3 horizontal copies to comfortably tile any viewport at min zoom.
-  const HSPAN = 3; // # of strip copies horizontally (arrangements * HSPAN tiles wide)
-  const VSPAN = 5; // # of vertical copies
-
-  // Build the tile buffer DOM.
-  // We create ARRANGEMENTS.length * HSPAN tiles per row, VSPAN rows.
-  // Tile at (col, row) shows ARRANGEMENTS[col % ARRANGEMENTS.length].
-  const tiles = []; // {el, photos: [{el, slot, sp}]}
+  const tiles = [];
   for (let row = 0; row < VSPAN; row++) {
     for (let col = 0; col < ARRANGEMENTS.length * HSPAN; col++) {
       const arr = ARRANGEMENTS[col % ARRANGEMENTS.length];
@@ -274,9 +227,11 @@
         }
 
         const sp = SPECIES.find(s => s.id === slot.id);
+        if (!sp) return;
         pEl.className = 'photo is-entering';
         pEl.style.setProperty('--ph-band-a', sp.band_a);
         pEl.style.setProperty('--ph-band-b', sp.band_b);
+        pEl.setAttribute('data-species', sp.vernacular);
 
         const ph = document.createElement('div');
         ph.className = 'placeholder';
@@ -292,6 +247,10 @@
           img.draggable = false;
           img.src = sp.image;
           img.addEventListener('load', () => pEl.classList.add('has-image'), { once: true });
+          img.addEventListener('error', () => {
+            pEl.classList.add('img-failed');
+            console.warn('[bird-portfolio] Image failed to load:', sp.image);
+          }, { once: true });
           pEl.appendChild(img);
         }
 
@@ -304,10 +263,8 @@
     }
   }
 
-  // Per-photo entrance fade (staggered subtly)
   let entered = 0;
   const allPhotos = tiles.flatMap(t => t.photos);
-  // Only animate the first "ring" — the rest just inherit final state.
   allPhotos.forEach((p, i) => {
     const delay = 60 + (i % 32) * 14;
     setTimeout(() => {
@@ -317,13 +274,9 @@
   });
 
   // ---------- Pan state ----------
-  // Pan position in "world" units: pan represents the world point at the viewport center.
-  // The plane translation = -(pan - viewport/2 - offset) mod period.
-
   const PERIOD_X = (TILE_W + GUTTER) * ARRANGEMENTS.length;
   const PERIOD_Y = (TILE_H + GUTTER);
 
-  // Initial pan: center of Arrangement A's lead
   const A = ARRANGEMENTS[0];
   const leadSlotA = A.slots.find(s => s.id === ARRANGEMENT_LEAD[0]);
   let panX_target = leadSlotA.x + leadSlotA.w / 2;
@@ -331,51 +284,32 @@
   let panX = panX_target;
   let panY = panY_target;
 
-  // Zoom state. Scale is applied around viewport center (zoom-to-center).
   let zoom = 1.6;
   let zoom_target = 1.6;
 
-  // Magnetic dwell state. After `dwellDelay` ms of no user interaction
-  // and settled velocity, the plane gently tugs toward the nearest photo
-  // center. Tracked here:
   let lastInteractionAt = 0;
+  function bumpInteraction() { lastInteractionAt = performance.now(); }
 
-  function bumpInteraction() {
-    lastInteractionAt = performance.now();
-  }
-
-  // Velocity for momentum after release
   let vx = 0, vy = 0;
   let dragging = false;
   let lastPointer = null;
   let lastMoveTime = 0;
-  let inertiaActive = false;
 
-  // ---------- Tweakables (live) ----------
-  const TWEAKS = /*EDITMODE-BEGIN*/{
-    "lerp": 0.02,
-    "zoomLerp": 0.02,
-    "zoomMin": 1.6,
-    "zoomMax": 4.0,
-    "dwellDelay": 400,
-    "dwellPull": 0.0015,
-    "ambientOpacity": 0.9,
-    "ambientSaturate": 0,
-    "ambientBrightness": 0.81,
-    "focusFadeMs": 200,
-    "blue": "#1635ee",
-    "field": "#f2eee5"
-  }/*EDITMODE-END*/;
-
-  // ---------- Persist tweaks internally (localStorage) ----------
-  const LS_KEY = 'kl-portfolio.tweaks.v4';
-  try {
-    const saved = JSON.parse(localStorage.getItem(LS_KEY) || 'null');
-    if (saved && typeof saved === 'object') Object.assign(TWEAKS, saved);
-  } catch(_) {}
-  function persistTweaks() {
-    try { localStorage.setItem(LS_KEY, JSON.stringify(TWEAKS)); } catch(_) {}
-  }
+  // ---------- Tweakables (compiled-in constants; tweaks panel removed for production) ----------
+  const TWEAKS = {
+    lerp: 0.02,
+    zoomLerp: 0.02,
+    zoomMin: 1.6,
+    zoomMax: 4.0,
+    dwellDelay: 400,
+    dwellPull: 0.0015,
+    ambientOpacity: 0.9,
+    ambientSaturate: 0,
+    ambientBrightness: 0.81,
+    focusFadeMs: 200,
+    blue: '#1635ee',
+    field: '#f2eee5'
+  };
 
   function applyTweaks() {
     document.documentElement.style.setProperty('--ambient-opacity', TWEAKS.ambientOpacity);
@@ -392,52 +326,41 @@
     return { w: window.innerWidth, h: window.innerHeight };
   }
 
+  // RAF ids (used by the visibilitychange handler to pause loops in hidden tabs)
+  let rafRender = 0, rafCompass = 0, rafDwell = 0;
+
   function render() {
-    // Smooth toward target
     const lerp = TWEAKS.lerp;
     panX += (panX_target - panX) * lerp;
     panY += (panY_target - panY) * lerp;
     zoom += (zoom_target - zoom) * TWEAKS.zoomLerp;
 
-    // Apply momentum if not dragging
-    if (!dragging && (Math.abs(vx) > 0.05 || Math.abs(vy) > 0.05)) {
+    if (!dragging && !pinching && (Math.abs(vx) > 0.05 || Math.abs(vy) > 0.05)) {
       panX_target += vx;
       panY_target += vy;
       vx *= 0.94;
       vy *= 0.94;
-    } else if (!dragging) {
+    } else if (!dragging && !pinching) {
       vx = 0; vy = 0;
     }
 
-    // ----- Magnetic dwell -----
-    // After idle threshold + settled velocity, gently pull pan toward
-    // the focused photo's center. The pull is small (TWEAKS.dwellPull)
-    // so it feels like the plane is breathing, not snapping.
     const now = performance.now();
     const idleMs = now - lastInteractionAt;
-    const settled = !dragging && Math.abs(vx) < 0.1 && Math.abs(vy) < 0.1;
+    const settled = !dragging && !pinching && Math.abs(vx) < 0.1 && Math.abs(vy) < 0.1;
     if (settled && idleMs > TWEAKS.dwellDelay && currentFocusKey) {
       const fk = parseFocusKey(currentFocusKey);
       if (fk) {
-        // Find the nearest copy of the focused photo's center to current pan_target.
         const arrOriginX = fk.arrIdx * (TILE_W + GUTTER);
         const cx0 = fk.slot.x + fk.slot.w / 2;
         const cy0 = fk.slot.y + fk.slot.h / 2;
-        // Wrap pan_target into world coords:
         const px = panX_target;
         const py = panY_target;
-        // Find closest copy by trying each periodicity offset:
         let bestDx = 0, bestDy = 0, bestD2 = Infinity;
         for (const ox of [arrOriginX, arrOriginX + PERIOD_X, arrOriginX - PERIOD_X,
                           arrOriginX + 2*PERIOD_X, arrOriginX - 2*PERIOD_X]) {
           for (const oy of [0, PERIOD_Y, -PERIOD_Y, 2*PERIOD_Y, -2*PERIOD_Y]) {
-            // Account for buffer's modulo: pan is wrapped via wx/wy, so
-            // we compare against arrangement origin in WORLD (unwrapped) space.
-            // Simpler: we need the offset that minimizes distance from
-            // px to (ox + cx0). The pan periodicity allows infinite copies.
             const targetX = ox + cx0;
             const targetY = oy + cy0;
-            // Project px to nearest period:
             const wrappedTargetX = targetX +
               Math.round((px - targetX) / PERIOD_X) * PERIOD_X;
             const wrappedTargetY = targetY +
@@ -448,30 +371,19 @@
             if (d2 < bestD2) { bestD2 = d2; bestDx = dx; bestDy = dy; }
           }
         }
-        // Pull. Use a soft easing so the pull weakens as we approach.
-        // (multiplying by dwellPull each frame would slow asymptotically anyway,
-        //  but cap the pull to avoid jitter when distance is large)
         const dist = Math.sqrt(bestD2);
         if (dist > 0.5) {
-          // Soft envelope: start gently, fade out near zero
           panX_target += bestDx * TWEAKS.dwellPull;
           panY_target += bestDy * TWEAKS.dwellPull;
         }
       }
     }
 
-    // Plane transform: translate so world point (panX,panY) lands at
-    // viewport center, then scale around plane origin (which is fine
-    // because we computed translation accordingly).
-    //   screen = translate(tx,ty) * scale(z) * planeOrigin
-    //   want world point P to land at viewport center:
-    //     z*P + (tx,ty) = (vp.w/2, vp.h/2)
-    //     (tx,ty) = (vp.w/2 - z*P.x, vp.h/2 - z*P.y)
     const vp = viewport();
     const wx = ((panX % PERIOD_X) + PERIOD_X) % PERIOD_X;
     const wy = ((panY % PERIOD_Y) + PERIOD_Y) % PERIOD_Y;
     const middleCopyOriginX = ARRANGEMENTS.length * (TILE_W + GUTTER);
-    const middleCopyOriginY = Math.floor(VSPAN / 2) * (TILE_H + GUTTER); // middle row of buffer
+    const middleCopyOriginY = Math.floor(VSPAN / 2) * (TILE_H + GUTTER);
     const worldX = middleCopyOriginX + wx;
     const worldY = middleCopyOriginY + wy;
     const z = zoom;
@@ -480,40 +392,30 @@
 
     plane.style.transform = `translate3d(${tx}px, ${ty}px, 0) scale(${z})`;
 
-    // Focus tracking
     updateFocus(panX, panY);
 
-    requestAnimationFrame(render);
+    rafRender = requestAnimationFrame(render);
   }
 
   // ---------- Focus tracking ----------
   let currentFocusKey = null;
-  let focusedEls = new Set(); // dom elements currently marked focused
+  let focusedEls = new Set();
   let labelTimeout = null;
 
   function updateFocus(px, py) {
-    // Map pan into the periodic world coordinates relative to the plane buffer.
-    // We compute distance from `(px, py)` (the world point at viewport center)
-    // to each photo's center, considering wrap.
-
-    // Wrap pan to "primary" cell of the period:
     const wx = ((px % PERIOD_X) + PERIOD_X) % PERIOD_X;
     const wy = ((py % PERIOD_Y) + PERIOD_Y) % PERIOD_Y;
 
-    // For each arrangement, find candidate photos.
-    // Each photo's center in world = arrangement origin (varies by which copy)
-    // + slot center. We test the closest copy.
     let best = null;
     let bestDist = Infinity;
 
     for (let arrIdx = 0; arrIdx < ARRANGEMENTS.length; arrIdx++) {
       const arr = ARRANGEMENTS[arrIdx];
       const arrOriginX = arrIdx * (TILE_W + GUTTER);
-      // Candidates: this copy and adjacent (left/right wrap)
       const candidatesX = [arrOriginX, arrOriginX + PERIOD_X, arrOriginX - PERIOD_X];
       const candidatesY = [0, PERIOD_Y, -PERIOD_Y];
       for (const slot of arr.slots) {
-        if (slot.brand) continue;  // brand cards aren't focus targets
+        if (slot.brand) continue;
         const cx0 = slot.x + slot.w / 2;
         const cy0 = slot.y + slot.h / 2;
         for (const ox of candidatesX) {
@@ -536,17 +438,14 @@
 
     const newKey = `A${best.arrIdx}-S${best.slot.id}`;
 
-    // Hysteresis: 5% of viewport diagonal
     const vp = viewport();
     const diag = Math.sqrt(vp.w*vp.w + vp.h*vp.h);
     const hys = diag * 0.05;
 
     if (newKey !== currentFocusKey) {
-      // Only switch if best is meaningfully closer than the previous
       if (currentFocusKey === null) {
         commitFocus(newKey, best);
       } else {
-        // find prev's distance
         const prev = parseFocusKey(currentFocusKey);
         const prevDist = prev ? distanceToSlot(wx, wy, prev) : Infinity;
         if (prevDist - best.d > hys) {
@@ -585,11 +484,9 @@
   function commitFocus(key, info) {
     currentFocusKey = key;
 
-    // Update DOM: clear previous focused elements, mark all matching photos
     focusedEls.forEach(el => el.classList.remove('is-focused'));
     focusedEls.clear();
 
-    // Mark every visible photo across all tiles that matches the (arrIdx, slotId)
     tiles.forEach(t => {
       if (t.arrIndex !== info.arrIdx) return;
       t.photos.forEach(p => {
@@ -600,15 +497,13 @@
       });
     });
 
-    // Update label
     const sp = SPECIES.find(s => s.id === info.slot.id);
-    // Non-breaking space inside the binomial keeps Genus species on one line.
+    if (!sp) return;
     const latinHtml = escapeHtml(sp.latin).replace(/ /g, '&nbsp;');
     speciesName.innerHTML =
       `${escapeHtml(sp.vernacular)}<span class="latin">${latinHtml}</span>`;
     speciesMeta.textContent = `Photo ${sp.id} / 8 · Arrangement ${ARRANGEMENTS[info.arrIdx].name}`;
 
-    // Fun-read content (visible only when the plate is bloomed)
     const f = BIRD_FACTS[sp.id];
     if (f) {
       speciesLede.textContent = f.lede;
@@ -627,7 +522,6 @@
       speciesFact.innerHTML = '';
     }
 
-    // Fade label in (it may already be visible — OK)
     speciesEl.classList.remove('is-visible');
     if (labelTimeout) clearTimeout(labelTimeout);
     labelTimeout = setTimeout(() => speciesEl.classList.add('is-visible'), 60);
@@ -637,93 +531,155 @@
     return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   }
 
-  // ---------- Pointer interaction ----------
+  // ---------- Pointer interaction (mouse + touch, with two-finger pinch-zoom) ----------
+  // Strategy:
+  //   1 active pointer  → drag pan
+  //   2 active pointers → pinch-zoom around the touch midpoint, with translation
+  //                       so the world point under that midpoint stays anchored.
+  //                       Two-finger pan emerges naturally from midpoint drift.
+  //   ≥3 active pointers → first two govern; extras tracked but ignored.
+  const pointers = new Map();  // pointerId -> { x, y }
+  let pinching = false;
+  let pinchStart = null;  // { dist, midX, midY, zoom, worldX, worldY }
+
+  function midpointOf(pts) {
+    return { x: (pts[0].x + pts[1].x) / 2, y: (pts[0].y + pts[1].y) / 2 };
+  }
+  function distanceOf(pts) {
+    return Math.hypot(pts[1].x - pts[0].x, pts[1].y - pts[0].y);
+  }
+
+  function beginPinch() {
+    const pts = Array.from(pointers.values()).slice(0, 2);
+    const mid = midpointOf(pts);
+    const dist = distanceOf(pts);
+    const vp = viewport();
+    const worldX = panX_target + (mid.x - vp.w / 2) / zoom_target;
+    const worldY = panY_target + (mid.y - vp.h / 2) / zoom_target;
+    pinchStart = { dist: Math.max(1, dist), midX: mid.x, midY: mid.y, zoom: zoom_target, worldX, worldY };
+    pinching = true;
+    dragging = false;
+    vx = 0; vy = 0;
+    stage.classList.remove('is-dragging');
+  }
+
   stage.addEventListener('pointerdown', (e) => {
     if (e.button !== 0 && e.pointerType === 'mouse') return;
-    dragging = true;
-    inertiaActive = false;
-    vx = 0; vy = 0;
-    lastPointer = { x: e.clientX, y: e.clientY };
-    lastMoveTime = performance.now();
+    pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    try { stage.setPointerCapture(e.pointerId); } catch (_) {}
     bumpInteraction();
-    stage.classList.add('is-dragging');
-    stage.setPointerCapture(e.pointerId);
+
+    if (pointers.size >= 2 && !pinching) {
+      beginPinch();
+    } else if (pointers.size === 1) {
+      dragging = true;
+      vx = 0; vy = 0;
+      lastPointer = { x: e.clientX, y: e.clientY };
+      lastMoveTime = performance.now();
+      stage.classList.add('is-dragging');
+    }
   });
 
   stage.addEventListener('pointermove', (e) => {
-    if (!dragging) return;
-    const now = performance.now();
-    const dx = e.clientX - lastPointer.x;
-    const dy = e.clientY - lastPointer.y;
-    // Drag distance in screen px must translate to world-px / zoom
-    panX_target -= dx / zoom_target;
-    panY_target -= dy / zoom_target;
-    // Track velocity (px per frame approximately)
-    const dt = Math.max(8, now - lastMoveTime);
-    vx = -dx * (16 / dt) / zoom_target;
-    vy = -dy * (16 / dt) / zoom_target;
-    lastPointer = { x: e.clientX, y: e.clientY };
-    lastMoveTime = now;
+    if (!pointers.has(e.pointerId)) return;
+    pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
     bumpInteraction();
+
+    if (pinching && pointers.size >= 2) {
+      const pts = Array.from(pointers.values()).slice(0, 2);
+      const mid = midpointOf(pts);
+      const dist = distanceOf(pts);
+
+      const ratio = dist / pinchStart.dist;
+      let newZoom = pinchStart.zoom * ratio;
+      newZoom = Math.min(TWEAKS.zoomMax, Math.max(TWEAKS.zoomMin, newZoom));
+
+      const vp = viewport();
+      // Anchor the world point that was under the original midpoint at the
+      // CURRENT midpoint (so two-finger pan + zoom both feel natural).
+      panX_target = pinchStart.worldX - (mid.x - vp.w / 2) / newZoom;
+      panY_target = pinchStart.worldY - (mid.y - vp.h / 2) / newZoom;
+      zoom_target = newZoom;
+      return;
+    }
+
+    if (dragging && pointers.size === 1) {
+      const now = performance.now();
+      const dx = e.clientX - lastPointer.x;
+      const dy = e.clientY - lastPointer.y;
+      panX_target -= dx / zoom_target;
+      panY_target -= dy / zoom_target;
+      const dt = Math.max(8, now - lastMoveTime);
+      vx = -dx * (16 / dt) / zoom_target;
+      vy = -dy * (16 / dt) / zoom_target;
+      lastPointer = { x: e.clientX, y: e.clientY };
+      lastMoveTime = now;
+    }
   });
 
-  function endDrag(e) {
-    if (!dragging) return;
-    dragging = false;
-    stage.classList.remove('is-dragging');
+  function endPointer(e) {
+    if (!pointers.has(e.pointerId)) return;
+    pointers.delete(e.pointerId);
     try { stage.releasePointerCapture(e.pointerId); } catch (_) {}
     bumpInteraction();
-    // velocity continues until damped in render()
+
+    if (pinching && pointers.size < 2) {
+      pinching = false;
+      pinchStart = null;
+      // If a finger remains, hand back to drag from its current position
+      // without injecting momentum from the pinch motion.
+      if (pointers.size === 1) {
+        const remaining = pointers.values().next().value;
+        lastPointer = { x: remaining.x, y: remaining.y };
+        lastMoveTime = performance.now();
+        dragging = true;
+        vx = 0; vy = 0;
+        stage.classList.add('is-dragging');
+      } else {
+        dragging = false;
+        stage.classList.remove('is-dragging');
+      }
+      return;
+    }
+
+    if (pointers.size === 0 && dragging) {
+      dragging = false;
+      stage.classList.remove('is-dragging');
+    }
   }
-  stage.addEventListener('pointerup', endDrag);
-  stage.addEventListener('pointercancel', endDrag);
+  stage.addEventListener('pointerup', endPointer);
+  stage.addEventListener('pointercancel', endPointer);
 
   // Wheel events:
-  //   - ctrlKey true   → trackpad pinch (browsers map pinch to wheel+ctrl)
-  //   - mouse wheel    → deltaMode 1 (lines) OR deltaMode 0 with large |deltaY| & deltaX==0
-  //     → ZOOM (zoom-to-cursor: world point under cursor stays under cursor)
-  //   - trackpad two-finger swipe (small deltas, no ctrl) → PAN
+  //   - ctrlKey true   → trackpad pinch
+  //   - mouse wheel    → zoom-to-cursor
+  //   - trackpad two-finger swipe → pan
   stage.addEventListener('wheel', (e) => {
     e.preventDefault();
     bumpInteraction();
 
-    const isPinch = e.ctrlKey;  // trackpad pinch
+    const isPinch = e.ctrlKey;
     const isMouseWheel =
       e.deltaMode !== 0 ||
       (Math.abs(e.deltaY) >= 50 && Math.abs(e.deltaX) < 2);
 
     if (isPinch || isMouseWheel) {
-      // Zoom-to-cursor. Pinch dy is small (~5–20); mouse wheel dy is bigger (~100).
-      // Normalize so both feel similar.
       const norm = isPinch ? e.deltaY * 0.012 : e.deltaY * 0.0022;
-      // dy positive = scroll down = zoom OUT (matches macOS pinch convention)
       const factor = Math.exp(-norm);
       const newZoom = Math.min(
         TWEAKS.zoomMax,
         Math.max(TWEAKS.zoomMin, zoom_target * factor)
       );
-      const actualFactor = newZoom / zoom_target;
 
-      // Cursor position in viewport (screen) coords
       const vp = viewport();
       const cx = e.clientX;
       const cy = e.clientY;
-
-      // Math:
-      //   screen = z * world + tx,  tx = vp.w/2 - z * worldCenter
-      //   so screen = z * (world - worldCenter) + vp.w/2
-      //   => world - worldCenter = (screen - vp.w/2) / z
-      // The world point under cursor BEFORE zoom = panX_target + (cx - vp.w/2) / zoom_target
-      // After zoom we want THAT world point to still be under cursor:
-      //   newWorldCenter + (cx - vp.w/2)/newZoom = oldWorldCenter + (cx - vp.w/2)/oldZoom
-      //   => panX_target_new = panX_target + (cx - vp.w/2) * (1/oldZoom - 1/newZoom)
       const oldZ = zoom_target;
       panX_target += (cx - vp.w / 2) * (1 / oldZ - 1 / newZoom);
       panY_target += (cy - vp.h / 2) * (1 / oldZ - 1 / newZoom);
 
       zoom_target = newZoom;
     } else {
-      // Trackpad pan
       panX_target += e.deltaX / zoom_target;
       panY_target += e.deltaY / zoom_target;
     }
@@ -739,7 +695,6 @@
   });
 
   function jumpToNearestInDir(dir) {
-    // Build list of all photo centers within a generous neighborhood of pan
     const wx = ((panX_target % PERIOD_X) + PERIOD_X) % PERIOD_X;
     const wy = ((panY_target % PERIOD_Y) + PERIOD_Y) % PERIOD_Y;
     let best = null;
@@ -748,19 +703,17 @@
       const arr = ARRANGEMENTS[arrIdx];
       const arrOriginX = arrIdx * (TILE_W + GUTTER);
       for (const slot of arr.slots) {
-        if (slot.brand) continue;  // arrow nav skips brand cards
+        if (slot.brand) continue;
         for (const ox of [arrOriginX, arrOriginX + PERIOD_X, arrOriginX - PERIOD_X]) {
           for (const oy of [0, PERIOD_Y, -PERIOD_Y]) {
             const cx = ox + slot.x + slot.w/2;
             const cy = oy + slot.y + slot.h/2;
             const dx = cx - wx;
             const dy = cy - wy;
-            // direction filter
             if (dir === 'ArrowLeft'  && dx > -20) continue;
             if (dir === 'ArrowRight' && dx <  20) continue;
             if (dir === 'ArrowUp'    && dy > -20) continue;
             if (dir === 'ArrowDown'  && dy <  20) continue;
-            // score: dominant axis distance + small penalty for cross-axis
             let score;
             if (dir === 'ArrowLeft' || dir === 'ArrowRight') {
               score = Math.abs(dx) + Math.abs(dy) * 1.5;
@@ -781,86 +734,22 @@
     }
   }
 
-  // ---------- Tweaks panel toggle ----------
-  const tweaksPanel = document.getElementById('tweaks');
-  let tweaksOpen = false;
-
-  function setTweaksOpen(v) {
-    tweaksOpen = v;
-    tweaksPanel.classList.toggle('is-open', v);
-    if (!v) {
-      try { window.parent.postMessage({type: '__edit_mode_dismissed'}, '*'); } catch(_) {}
-    }
-  }
-
-  // Listen for host messages first, THEN announce availability.
-  window.addEventListener('message', (e) => {
-    const d = e.data || {};
-    if (d.type === '__activate_edit_mode') setTweaksOpen(true);
-    if (d.type === '__deactivate_edit_mode') setTweaksOpen(false);
-  });
-  try { window.parent.postMessage({type: '__edit_mode_available'}, '*'); } catch(_) {}
-
-  // Wire tweak controls
-  function bindRange(id, key, fmt) {
-    const input = document.getElementById(id);
-    const v = input.parentElement.querySelector('.v');
-    input.value = TWEAKS[key];
-    v.textContent = fmt ? fmt(TWEAKS[key]) : TWEAKS[key];
-    input.addEventListener('input', () => {
-      const val = parseFloat(input.value);
-      TWEAKS[key] = val;
-      v.textContent = fmt ? fmt(val) : val;
-      applyTweaks();
-      persistTweaks();
-      try { window.parent.postMessage({type:'__edit_mode_set_keys', edits: { [key]: val }}, '*'); } catch(_) {}
-    });
-  }
-  function bindColor(id, key) {
-    const input = document.getElementById(id);
-    input.value = TWEAKS[key];
-    input.addEventListener('input', () => {
-      TWEAKS[key] = input.value;
-      applyTweaks();
-      persistTweaks();
-      try { window.parent.postMessage({type:'__edit_mode_set_keys', edits: { [key]: input.value }}, '*'); } catch(_) {}
-    });
-  }
-  bindRange('tw-lerp',     'lerp',           v => v.toFixed(2));
-  bindRange('tw-zlerp',    'zoomLerp',       v => v.toFixed(2));
-  bindRange('tw-zmin',     'zoomMin',        v => v.toFixed(2) + '×');
-  bindRange('tw-zmax',     'zoomMax',        v => v.toFixed(2) + '×');
-  bindRange('tw-dwell',    'dwellDelay',     v => v + 'ms');
-  bindRange('tw-pull',     'dwellPull',      v => v.toFixed(4));
-  bindRange('tw-amb',      'ambientOpacity', v => v.toFixed(2));
-  bindRange('tw-sat',      'ambientSaturate',v => v.toFixed(2));
-  bindRange('tw-bri',      'ambientBrightness', v => v.toFixed(2));
-  bindRange('tw-fade',     'focusFadeMs',    v => v + 'ms');
-  bindColor('tw-blue',     'blue');
-  bindColor('tw-field',    'field');
-
-  document.getElementById('tweaks-close').addEventListener('click', () => setTweaksOpen(false));
-
   // Compass updates — show current arrangement letter
   const compassArr = document.getElementById('compass-arr');
   let lastArr = -1;
   function updateCompass() {
-    const wx = ((panX % PERIOD_X) + PERIOD_X) % PERIOD_X;
-    const arrIdx = Math.floor(wx / (TILE_W + GUTTER)) % ARRANGEMENTS.length;
-    if (arrIdx !== lastArr) {
-      lastArr = arrIdx;
-      compassArr.textContent = ARRANGEMENTS[arrIdx].name;
+    if (compassArr) {
+      const wx = ((panX % PERIOD_X) + PERIOD_X) % PERIOD_X;
+      const arrIdx = Math.floor(wx / (TILE_W + GUTTER)) % ARRANGEMENTS.length;
+      if (arrIdx !== lastArr) {
+        lastArr = arrIdx;
+        compassArr.textContent = ARRANGEMENTS[arrIdx].name;
+      }
     }
-    requestAnimationFrame(updateCompass);
+    rafCompass = requestAnimationFrame(updateCompass);
   }
-  updateCompass();
 
   // ---------- Species label: bloom interaction ----------
-  // Click the small-caps mark to expand into the full cream plate.
-  // Click outside (or press Escape) to collapse. The hover affordance
-  // (logo glyph appearing left of the name) is pure CSS. After
-  // DWELL_CUE_MS of stillness, the resting label gets a gentle opacity
-  // breath via .is-dwell to invite a click.
   const DWELL_CUE_MS = 1800;
 
   function setBloomed(b) {
@@ -869,7 +758,6 @@
   }
 
   speciesEl.addEventListener('click', (e) => {
-    // Only the visible text (.line-name) toggles bloom — empty plate area is inert.
     if (!e.target.closest('.line-name')) return;
     e.stopPropagation();
     setBloomed(!speciesEl.classList.contains('is-blooming'));
@@ -891,20 +779,32 @@
 
   function updateDwellCue() {
     const idle = performance.now() - lastInteractionAt;
-    const settled = !dragging && Math.abs(vx) < 0.1 && Math.abs(vy) < 0.1;
+    const settled = !dragging && !pinching && Math.abs(vx) < 0.1 && Math.abs(vy) < 0.1;
     const blooming = speciesEl.classList.contains('is-blooming');
     const shouldShow = settled && idle > DWELL_CUE_MS && !blooming;
     speciesEl.classList.toggle('is-dwell', shouldShow);
-    requestAnimationFrame(updateDwellCue);
+    rafDwell = requestAnimationFrame(updateDwellCue);
   }
-  updateDwellCue();
+
+  // ---------- Visibility pause ----------
+  // Stop all RAF loops while the tab is hidden so the page does not burn
+  // CPU/GPU on a backgrounded plane. Resume on focus.
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      if (rafRender)  cancelAnimationFrame(rafRender);
+      if (rafCompass) cancelAnimationFrame(rafCompass);
+      if (rafDwell)   cancelAnimationFrame(rafDwell);
+      rafRender = rafCompass = rafDwell = 0;
+    } else if (!rafRender) {
+      rafRender  = requestAnimationFrame(render);
+      rafCompass = requestAnimationFrame(updateCompass);
+      rafDwell   = requestAnimationFrame(updateDwellCue);
+    }
+  });
 
   // Kick off
-  requestAnimationFrame(render);
-
-  // First focus settle (after a tick so DOM is laid out)
-  setTimeout(() => {
-    updateFocus(panX, panY);
-  }, 240);
+  rafRender  = requestAnimationFrame(render);
+  rafCompass = requestAnimationFrame(updateCompass);
+  rafDwell   = requestAnimationFrame(updateDwellCue);
 
 })();

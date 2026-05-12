@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://verticokees.github.io/Bird-portfolio/sitemap.xml

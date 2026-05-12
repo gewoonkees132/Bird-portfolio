@@ -4,3 +4,22 @@ high quality/
 Thumbs.db
 .superpowers/
 *.ai
+
+# Editor / build / OS / deploy hosts
+node_modules/
+.env
+.env.*
+.idea/
+.cache/
+dist/
+build/
+coverage/
+*.log
+*.bak
+*.tmp
+.vercel
+.netlify
+
+# Audit working notes (kept locally, not deployed)
+audit.md
+Audit implementation.md

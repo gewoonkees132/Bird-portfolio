@@ -14,20 +14,16 @@
   --tile-width:   1320px;
   --tile-height:   760px;
   --gutter:         24px;
-  --tile-margin:     0px;
   --inset-corner:   14px;  /* species plate offset from viewport bottom-left */
   --radius-card:     8px;  /* bloomed species plate corner radius */
 
   /* Type sizes */
   --wm-size-d:    0.95rem;
   --wm-size-m:    0.86rem;
-  --label-size-d: 0.92rem;
   --label-size-m: 0.78rem;
-  --meta-size-d:  0.74rem;
   --meta-size-m:  0.62rem;
 
   /* Motion */
-  --pan-lerp:        0.08;
   --focus-fade:      360ms;
   --focus-easing:    cubic-bezier(0.22, 0.61, 0.36, 1);
   --label-in:        200ms;
@@ -101,7 +97,6 @@ html, body {
     filter  var(--focus-fade) var(--focus-easing),
     transform var(--focus-fade) var(--focus-easing),
     box-shadow var(--focus-fade) var(--focus-easing);
-  will-change: transform, opacity, filter;
 }
 .photo.is-focused {
   opacity: 1;
@@ -110,6 +105,7 @@ html, body {
     0 1px 2px rgba(0, 0, 0, 0.04),
     0 18px 48px -12px rgba(0, 0, 0, 0.18);
   z-index: 2;
+  will-change: transform, opacity, filter;
 }
 
 /* Decode fade-in */
@@ -312,6 +308,17 @@ html, body {
 .species.is-blooming::before {
   transform: scale(1);
   opacity: 1;
+}
+
+/* Smaller-screen bloom plate: between the mobile-edition cutoff (720px)
+   and ~960px the 40vw plate feels cramped. Let it span the full width
+   of the viewport (minus the inset-corner gutters on each side). The
+   resting (non-bloomed) label keeps its small floating treatment. */
+@media (max-width: 960px) and (min-width: 721px) {
+  .species.is-blooming {
+    width: calc(100vw - 2 * var(--inset-corner));
+    max-width: none;
+  }
 }
 
 /* Resting: vernacular only, small-caps tracked, white with deep shadow.
@@ -598,67 +605,52 @@ html, body {
 }
 
 /* ============================================================
-   Tweaks panel (custom — no React)
+   Semantic markup neutralizers
+   <h1> wordmark + mobile-name should look identical to the
+   former <span><span></span></span> structure (font, weight,
+   color, layout). These rules zero out default heading margins
+   and inherit type from the parent. Layout is unchanged.
    ============================================================ */
-.tweaks {
-  position: fixed;
-  bottom: 22px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 30;
-  background: rgba(26, 26, 26, 0.92);
-  color: #f0eadf;
-  padding: 12px 16px;
-  border-radius: 2px;
-  font-family: ui-monospace, "SF Mono", Menlo, monospace;
-  font-size: 11px;
-  letter-spacing: 0.04em;
-  display: none;
-  align-items: center;
-  gap: 18px;
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  box-shadow: 0 8px 30px rgba(0,0,0,0.18);
-  max-width: calc(100vw - 44px);
-  flex-wrap: wrap;
-  justify-content: center;
+.identity .wordmark {
+  font: inherit;
+  margin: 0;
+  display: inline;
 }
-.tweaks.is-open { display: flex; }
-.tweaks .tw-title {
+.mobile-name {
+  font: inherit;
+  margin: 0;
+  display: inline;
+}
+.mobile-name .name { color: var(--charcoal); }
+.mobile-name .dot  { color: var(--blue); }
+
+/* ============================================================
+   Image failure fallback — only ever visible if a .webp 404s
+   ============================================================ */
+.photo.img-failed::after {
+  content: attr(data-species);
+  position: absolute;
+  inset: auto 8px 8px 8px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 10px;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: rgba(240,234,223,0.55);
-  border-right: 1px solid rgba(240,234,223,0.18);
-  padding-right: 14px;
+  pointer-events: none;
 }
-.tweaks .tw {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
+
+/* ============================================================
+   404 page — minimal layout for /404.html only
+   ============================================================ */
+.notfound {
+  display: grid;
+  place-content: center;
+  min-height: 100vh;
+  gap: 1rem;
+  padding: 2rem;
+  text-align: center;
 }
-.tweaks .tw label {
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: rgba(240,234,223,0.7);
-}
-.tweaks .tw input[type="range"] {
-  width: 90px;
-  accent-color: var(--blue);
-}
-.tweaks .tw .v {
-  min-width: 32px;
-  text-align: right;
-  color: #f0eadf;
-}
-.tweaks .tw input[type="color"] {
-  width: 22px;
-  height: 22px;
-  padding: 0;
-  border: 1px solid rgba(240,234,223,0.3);
-  background: transparent;
-  border-radius: 1px;
-  cursor: pointer;
-}
+.notfound a { color: var(--blue); }
+.notfound p { font-size: 14px; }
 
 /* ============================================================
    Print / reduced motion
