@@ -286,6 +286,7 @@
 
   let zoom = 1.6;
   let zoom_target = 1.6;
+  const DESKTOP_BREAKPOINT = 720;
 
   let lastInteractionAt = 0;
   function bumpInteraction() { lastInteractionAt = performance.now(); }
@@ -320,6 +321,19 @@
     document.documentElement.style.setProperty('--field', TWEAKS.field);
   }
   applyTweaks();
+
+  // ---------- Mobile preview zoom ----------
+  // On narrow viewports (< DESKTOP_BREAKPOINT) the desktop-default 1.6× closeup
+  // shows only a fraction of a single photo. Boot zoomed-out so the visitor
+  // sees the editorial arrangement as a whole — a preview of the desktop
+  // composition. They can still pinch in to inspect any photo, and pinch back
+  // out to return to the preview (zoomMin is lowered to match).
+  if (window.innerWidth < DESKTOP_BREAKPOINT) {
+    const fitZoom = Math.max(0.25, (window.innerWidth * 0.95) / TILE_W);
+    zoom = fitZoom;
+    zoom_target = fitZoom;
+    TWEAKS.zoomMin = Math.min(TWEAKS.zoomMin, fitZoom);
+  }
 
   // ---------- Render loop ----------
   function viewport() {
