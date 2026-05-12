@@ -60,8 +60,8 @@
 <body>
 <main>
 
-  <!-- Desktop spatial plane (decorative for AT — mobile edition serves screen readers) -->
-  <div class="stage" id="stage" aria-hidden="true" aria-label="Pannable photograph plane. Drag on desktop or use the mobile gallery below.">
+  <!-- Spatial plane — single experience for every viewport -->
+  <div class="stage" id="stage" role="application" aria-label="Pannable photograph plane. Drag, pinch, or use arrow keys to explore.">
     <div class="plane" id="plane"></div>
   </div>
 
@@ -86,80 +86,6 @@
   <div class="compass">
     <div>Drag · pinch · arrow keys</div>
     <div>Arrangement <span class="arr" id="compass-arr">A</span></div>
-  </div>
-
-  <!-- Mobile placeholder edition -->
-  <div class="mobile-edition">
-    <div class="mobile-identity">
-      <img class="pictogram" src="files/logo/SVG/logo.svg" alt="" aria-hidden="true" />
-      <h1 class="mobile-name"><span class="name">Kees Leemeijer</span><span class="dot">.</span></h1>
-    </div>
-    <div class="mobile-note">Mobile edition — placeholder. Final order is editorial, hand-ordered, opening with Arrangement A's lead.</div>
-
-    <div class="mcell">
-      <div class="mphoto" style="aspect-ratio: 3/2; --ph-band-a:#a87a3e; --ph-band-b:#b8893f;">
-        <img src="files/P5-Green_Bee-eater.webp" alt="" fetchpriority="high" decoding="async" />
-        <span>P5 · GREEN BEE-EATER</span>
-      </div>
-      <div class="mlabel">Green Bee-eater<span class="latin">Merops orientalis</span></div>
-      <div class="mmeta">Photo 1 / 8</div>
-    </div>
-    <div class="mcell">
-      <div class="mphoto" style="aspect-ratio: 2/3; --ph-band-a:#c79e6e; --ph-band-b:#b88c5e;">
-        <img src="files/P2-Weaver_Bird.webp" alt="" loading="lazy" decoding="async" />
-        <span>P2 · WEAVER BIRD</span>
-      </div>
-      <div class="mlabel">Weaver Bird<span class="latin">Ploceus cucullatus</span></div>
-      <div class="mmeta">Photo 2 / 8</div>
-    </div>
-    <div class="mcell">
-      <div class="mphoto" style="aspect-ratio: 21/9; --ph-band-a:#3a4a3e; --ph-band-b:#48584c;">
-        <img src="files/P4-Dunnock.webp" alt="" loading="lazy" decoding="async" />
-        <span>P4 · DUNNOCK</span>
-      </div>
-      <div class="mlabel">Dunnock<span class="latin">Prunella modularis</span></div>
-      <div class="mmeta">Photo 3 / 8</div>
-    </div>
-    <div class="mcell">
-      <div class="mphoto" style="aspect-ratio: 3/2; --ph-band-a:#3d6b8a; --ph-band-b:#4a7c9a;">
-        <img src="files/P1-European_Robin.webp" alt="" loading="lazy" decoding="async" />
-        <span>P1 · EUROPEAN ROBIN</span>
-      </div>
-      <div class="mlabel">European Robin<span class="latin">Erithacus rubecula</span></div>
-      <div class="mmeta">Photo 4 / 8</div>
-    </div>
-    <div class="mcell">
-      <div class="mphoto" style="aspect-ratio: 2/3; --ph-band-a:#8b7848; --ph-band-b:#9a8758;">
-        <img src="files/P6-Weaver_Bird_flapping.webp" alt="" loading="lazy" decoding="async" />
-        <span>P6 · WEAVER BIRD</span>
-      </div>
-      <div class="mlabel">Weaver Bird<span class="latin">Ploceus cucullatus</span></div>
-      <div class="mmeta">Photo 5 / 8</div>
-    </div>
-    <div class="mcell">
-      <div class="mphoto" style="aspect-ratio: 3/2; --ph-band-a:#7a8b76; --ph-band-b:#8a9c86;">
-        <img src="files/P3-Eurasian_Jay.webp" alt="" loading="lazy" decoding="async" />
-        <span>P3 · EURASIAN JAY</span>
-      </div>
-      <div class="mlabel">Eurasian Jay<span class="latin">Garrulus glandarius</span></div>
-      <div class="mmeta">Photo 6 / 8</div>
-    </div>
-    <div class="mcell">
-      <div class="mphoto" style="aspect-ratio: 21/9; --ph-band-a:#cdc4b0; --ph-band-b:#bdb4a0;">
-        <img src="files/P8-Lark.webp" alt="" loading="lazy" decoding="async" />
-        <span>P8 · LARK</span>
-      </div>
-      <div class="mlabel">Lark<span class="latin">Alauda arvensis</span></div>
-      <div class="mmeta">Photo 7 / 8</div>
-    </div>
-    <div class="mcell">
-      <div class="mphoto" style="aspect-ratio: 3/2; --ph-band-a:#6e5444; --ph-band-b:#7e6454;">
-        <img src="files/P7-Great_Tit.webp" alt="" loading="lazy" decoding="async" />
-        <span>P7 · GREAT TIT</span>
-      </div>
-      <div class="mlabel">Great Tit<span class="latin">Parus major</span></div>
-      <div class="mmeta">Photo 8 / 8</div>
-    </div>
   </div>
 
 </main>

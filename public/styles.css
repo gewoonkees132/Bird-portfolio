@@ -310,11 +310,11 @@ html, body {
   opacity: 1;
 }
 
-/* Smaller-screen bloom plate: between the mobile-edition cutoff (720px)
-   and ~960px the 40vw plate feels cramped. Let it span the full width
-   of the viewport (minus the inset-corner gutters on each side). The
-   resting (non-bloomed) label keeps its small floating treatment. */
-@media (max-width: 960px) and (min-width: 721px) {
+/* On narrower viewports the 40vw bloom plate feels cramped. Let it span
+   the full width of the viewport (minus the inset-corner gutters on each
+   side). The resting (non-bloomed) label keeps its small floating
+   treatment. */
+@media (max-width: 960px) {
   .species.is-blooming {
     width: calc(100vw - 2 * var(--inset-corner));
     max-width: none;
@@ -519,110 +519,16 @@ html, body {
 }
 
 /* ============================================================
-   Mobile placeholder
-   ============================================================ */
-.mobile-edition {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: var(--field);
-  padding: 18px;
-  overflow-y: auto;
-  z-index: 20;
-}
-.mobile-edition .mobile-identity {
-  position: sticky;
-  top: 0;
-  padding: 10px 0 18px;
-  background: linear-gradient(to bottom, var(--field) 60%, transparent);
-  font-size: var(--wm-size-m);
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-  color: var(--charcoal);
-  font-weight: 500;
-  z-index: 2;
-}
-.mobile-edition .mobile-identity .pictogram { width: 14px; height: 14px; }
-.mobile-edition .mobile-note {
-  font-family: ui-monospace, "SF Mono", Menlo, monospace;
-  font-size: 11px;
-  color: rgba(26, 26, 26, 0.5);
-  letter-spacing: 0.04em;
-  margin: 8px 0 24px;
-  line-height: 1.5;
-}
-.mobile-edition .mcell { margin-bottom: 32px; }
-.mobile-edition .mcell .mphoto {
-  position: relative;
-  background:
-    repeating-linear-gradient(0deg,
-      var(--ph-band-a, #d9d3c5) 0 14px,
-      var(--ph-band-b, #cfc7b6) 14px 28px);
-  display: grid;
-  place-items: center;
-}
-.mobile-edition .mcell .mphoto { overflow: hidden; }
-.mobile-edition .mcell .mphoto img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  user-select: none;
-  -webkit-user-drag: none;
-}
-.mobile-edition .mcell .mphoto:has(img) span { display: none; }
-.mobile-edition .mcell .mphoto span {
-  font-family: ui-monospace, "SF Mono", Menlo, monospace;
-  font-size: 10px;
-  letter-spacing: 0.06em;
-  color: rgba(26, 26, 26, 0.5);
-  text-transform: uppercase;
-  padding: 4px 8px;
-  background: rgba(242, 238, 229, 0.85);
-}
-.mobile-edition .mcell .mlabel {
-  margin-top: 10px;
-  font-size: var(--label-size-m);
-  font-weight: 500;
-  color: var(--charcoal);
-}
-.mobile-edition .mcell .mlabel .latin { font-style: italic; color: var(--blue); margin-left: 0.4em; font-weight: 400; }
-.mobile-edition .mcell .mmeta {
-  margin-top: 4px;
-  font-size: var(--meta-size-m);
-  color: var(--blue-soft);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-weight: 500;
-}
-
-@media (max-width: 720px) {
-  .stage, .identity, .species, .compass { display: none; }
-  .mobile-edition { display: block; }
-}
-
-/* ============================================================
    Semantic markup neutralizers
-   <h1> wordmark + mobile-name should look identical to the
-   former <span><span></span></span> structure (font, weight,
-   color, layout). These rules zero out default heading margins
-   and inherit type from the parent. Layout is unchanged.
+   <h1> wordmark should look identical to the former
+   <span><span></span></span> structure. Zero default heading
+   margins and inherit type from the parent.
    ============================================================ */
 .identity .wordmark {
   font: inherit;
   margin: 0;
   display: inline;
 }
-.mobile-name {
-  font: inherit;
-  margin: 0;
-  display: inline;
-}
-.mobile-name .name { color: var(--charcoal); }
-.mobile-name .dot  { color: var(--blue); }
 
 /* ============================================================
    Image failure fallback — only ever visible if a .webp 404s
