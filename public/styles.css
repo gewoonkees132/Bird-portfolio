@@ -310,10 +310,10 @@ html, body {
   opacity: 1;
 }
 
-/* On narrower viewports the 40vw bloom plate feels cramped. Let it span
-   the full width of the viewport (minus the inset-corner gutters on each
-   side). The resting (non-bloomed) label keeps its small floating
-   treatment. */
+/* On narrower viewports (phones, tablets, small laptops) the 40vw bloom
+   plate feels cramped — let it span the full width of the viewport, minus
+   the inset-corner gutters. Stays anchored to the bottom-left corner; only
+   the width changes. The resting (non-bloomed) label is untouched. */
 @media (max-width: 960px) {
   .species.is-blooming {
     width: calc(100vw - 2 * var(--inset-corner));
