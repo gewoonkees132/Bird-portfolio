@@ -102,6 +102,45 @@
     }
   };
 
+  // ---------- Mobile bloom population ----------
+  // Each .mcell[data-sp="N"] gets a <details> appended with the same lede /
+  // vitals / fun-fact content the desktop bloom plate shows. Built from JS so
+  // BIRD_FACTS stays the single source of truth; the HTML doesn't duplicate
+  // the prose. Native <details> handles toggle + a11y; CSS handles motion.
+  function populateMobileBloom() {
+    const cells = document.querySelectorAll('.mcell[data-sp]');
+    cells.forEach(cell => {
+      const id = +cell.dataset.sp;
+      const sp = SPECIES.find(s => s.id === id);
+      const f = BIRD_FACTS[id];
+      if (!sp || !f) return;
+
+      const vitalsHtml = [
+        ['Wingspan', f.wingspan],
+        ['Weight',   f.weight],
+        ['Range',    f.range],
+        ['Habitat',  f.habitat],
+      ].map(([k, v]) =>
+        `<span class="stat"><span class="k">${escapeHtml(k)}</span><span class="v">${escapeHtml(v)}</span></span>`
+      ).join('');
+
+      const det = document.createElement('details');
+      det.className = 'mbloom';
+      det.innerHTML =
+        '<summary><span class="mbloom-cta"></span></summary>' +
+        '<div class="mbloom-body">' +
+          `<div class="mlede">${escapeHtml(f.lede)}</div>` +
+          `<div class="mvitals">${vitalsHtml}</div>` +
+          `<div class="mfact"><span class="fact-body">${escapeHtml(f.fun_fact)}</span></div>` +
+        '</div>';
+      // Pull the species label into the summary so the label row itself is the
+      // toggle: label left, "Read more" right, sharing a single underline.
+      const label = cell.querySelector('.mlabel');
+      if (label) det.querySelector('summary').insertBefore(label, det.querySelector('summary').firstChild);
+      cell.appendChild(det);
+    });
+  }
+
   // ---------- Arrangements ----------
   // Tile: 1320 x 760. 12×7 cell grid, module 88, gutter 24, no outer margin.
   // Each arrangement uses 7 of 8 photos in a hand-designed Mondrian.
@@ -286,7 +325,6 @@
 
   let zoom = 1.6;
   let zoom_target = 1.6;
-  const DESKTOP_BREAKPOINT = 720;
 
   let lastInteractionAt = 0;
   function bumpInteraction() { lastInteractionAt = performance.now(); }
@@ -321,19 +359,6 @@
     document.documentElement.style.setProperty('--field', TWEAKS.field);
   }
   applyTweaks();
-
-  // ---------- Mobile preview zoom ----------
-  // On narrow viewports (< DESKTOP_BREAKPOINT) the desktop-default 1.6× closeup
-  // shows only a fraction of a single photo. Boot zoomed-out so the visitor
-  // sees the editorial arrangement as a whole — a preview of the desktop
-  // composition. They can still pinch in to inspect any photo, and pinch back
-  // out to return to the preview (zoomMin is lowered to match).
-  if (window.innerWidth < DESKTOP_BREAKPOINT) {
-    const fitZoom = Math.max(0.25, (window.innerWidth * 0.95) / TILE_W);
-    zoom = fitZoom;
-    zoom_target = fitZoom;
-    TWEAKS.zoomMin = Math.min(TWEAKS.zoomMin, fitZoom);
-  }
 
   // ---------- Render loop ----------
   function viewport() {
@@ -817,6 +842,7 @@
   });
 
   // Kick off
+  populateMobileBloom();
   rafRender  = requestAnimationFrame(render);
   rafCompass = requestAnimationFrame(updateCompass);
   rafDwell   = requestAnimationFrame(updateDwellCue);

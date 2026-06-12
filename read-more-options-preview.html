@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Read more — integration options</title>
+<style>
+  :root { --charcoal: #1a1a1a; --blue: #2244cc; --paper: #f2eee5; }
+  body {
+    margin: 0;
+    background: #e6e1d5;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: var(--charcoal);
+    display: flex;
+    gap: 28px;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 32px 20px;
+    flex-wrap: wrap;
+  }
+  .option {
+    width: 320px;
+    background: var(--paper);
+    padding: 20px 16px 28px;
+  }
+  .opt-title {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(26,26,26,0.55);
+    margin-bottom: 18px;
+  }
+  .mphoto {
+    height: 180px;
+    background: repeating-linear-gradient(0deg, #d9d3c5 0 14px, #cfc7b6 14px 28px);
+    display: grid;
+    place-items: center;
+  }
+  .mphoto span {
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    color: rgba(26,26,26,0.5);
+    text-transform: uppercase;
+    padding: 4px 8px;
+    background: rgba(242,238,229,0.85);
+  }
+  .latin { font-style: italic; color: var(--blue); margin-left: 0.4em; font-weight: 400; }
+  .cta {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--blue);
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .cta::before { content: '+ '; font-size: 13px; }
+  .body-preview {
+    font-size: 13px;
+    line-height: 1.55;
+    color: #2a2a2a;
+    margin-top: 12px;
+  }
+  .closed-note {
+    margin-top: 26px;
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(26,26,26,0.4);
+    margin-bottom: 10px;
+  }
+
+  /* ---- Option A: label left, read more right, shared underline ---- */
+  .optA .mlabel-row {
+    margin-top: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(26,26,26,0.18);
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 10px;
+  }
+  .optA .mlabel { font-size: 14px; font-weight: 500; }
+
+  /* ---- Option B: read more breaks the rule, centered ---- */
+  .optB .mlabel { margin-top: 10px; font-size: 14px; font-weight: 500; }
+  .optB .rule-cta {
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .optB .rule-cta::before,
+  .optB .rule-cta::after {
+    content: '';
+    flex: 1;
+    border-top: 1px solid rgba(26,26,26,0.18);
+  }
+
+  /* ---- Option C: icon-only plus at the right end of the rule ---- */
+  .optC .mlabel-row {
+    margin-top: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(26,26,26,0.18);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .optC .mlabel { font-size: 14px; font-weight: 500; }
+  .optC .plus {
+    width: 18px; height: 18px;
+    border: 1px solid var(--blue);
+    border-radius: 50%;
+    color: var(--blue);
+    display: grid;
+    place-items: center;
+    font-size: 13px;
+    line-height: 1;
+    font-family: ui-monospace, Menlo, monospace;
+  }
+</style>
+</head>
+<body>
+
+<div class="option optA">
+  <div class="opt-title">Option A — right of label, shared underline</div>
+  <div class="mphoto"><span>Photo</span></div>
+  <div class="mlabel-row">
+    <div class="mlabel">Barn Owl<span class="latin">Tyto alba</span></div>
+    <span class="cta">Read more</span>
+  </div>
+  <div class="closed-note">Open state</div>
+  <div class="mphoto" style="height:120px"><span>Photo</span></div>
+  <div class="mlabel-row">
+    <div class="mlabel">Barn Owl<span class="latin">Tyto alba</span></div>
+    <span class="cta" style="color:#888">Close</span>
+  </div>
+  <div class="body-preview">The barn owl hunts almost entirely by sound, mapping prey in total darkness with asymmetric ears…</div>
+</div>
+
+<div class="option optB">
+  <div class="opt-title">Option B — set into the rule, centered</div>
+  <div class="mphoto"><span>Photo</span></div>
+  <div class="mlabel">Barn Owl<span class="latin">Tyto alba</span></div>
+  <div class="rule-cta"><span class="cta">Read more</span></div>
+  <div class="closed-note">Open state</div>
+  <div class="mphoto" style="height:120px"><span>Photo</span></div>
+  <div class="mlabel">Barn Owl<span class="latin">Tyto alba</span></div>
+  <div class="rule-cta"><span class="cta" style="color:#888">Close</span></div>
+  <div class="body-preview">The barn owl hunts almost entirely by sound, mapping prey in total darkness with asymmetric ears…</div>
+</div>
+
+<div class="option optC">
+  <div class="opt-title">Option C — icon-only “+” on the underline</div>
+  <div class="mphoto"><span>Photo</span></div>
+  <div class="mlabel-row">
+    <div class="mlabel">Barn Owl<span class="latin">Tyto alba</span></div>
+    <span class="plus">+</span>
+  </div>
+  <div class="closed-note">Open state</div>
+  <div class="mphoto" style="height:120px"><span>Photo</span></div>
+  <div class="mlabel-row">
+    <div class="mlabel">Barn Owl<span class="latin">Tyto alba</span></div>
+    <span class="plus">−</span>
+  </div>
+  <div class="body-preview">The barn owl hunts almost entirely by sound, mapping prey in total darkness with asymmetric ears…</div>
+</div>
+
+</body>
+</html>
