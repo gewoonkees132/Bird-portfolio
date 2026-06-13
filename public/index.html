@@ -75,7 +75,12 @@
        Resting: just .line-name in small caps on the photo.
        Bloomed: name + latin, hairline-separated lede / vitals / fun-fact pull. -->
   <div class="species" id="species">
-    <div class="line-name" aria-live="polite" aria-atomic="true"></div>
+    <!-- Resting label and bloomed title are two elements that crossfade on
+         bloom (no layout morph). The resting label carries aria-live so the
+         current species is announced; the bloomed title duplicates it visually
+         and is hidden from AT. -->
+    <div class="line-name line-name--bloom" aria-hidden="true"></div>
+    <div class="line-name line-name--rest" aria-live="polite" aria-atomic="true"></div>
     <div class="line-lede"></div>
     <div class="line-vitals"></div>
     <div class="line-fact"></div>

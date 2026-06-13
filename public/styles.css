@@ -37,6 +37,7 @@
   --ambient-opacity: 0.55;
   --ambient-saturate: 0.65;
   --ambient-brightness: 0.92;
+  --veil-ambient: 0.08;   /* black-veil opacity ≈ (1 - ambient-brightness); JS sets exact */
 }
 
 * { box-sizing: border-box; }
@@ -62,13 +63,17 @@ html, body {
   position: fixed;
   inset: 0;
   overflow: hidden;
+  /* Static grab cursor. Swapping to `grabbing` during drags changed an
+     inherited property on the ancestor of ~1700 nodes, forcing a whole-
+     subtree style recalc (745ms+ long task at 6x CPU) at every gesture
+     start and end. The cursor staying `grab` while dragging is the
+     accepted trade. */
   cursor: grab;
   background: var(--field);
   user-select: none;
   -webkit-user-select: none;
   touch-action: none;
 }
-.stage.is-dragging { cursor: grabbing; }
 
 .plane {
   position: absolute;
@@ -88,25 +93,53 @@ html, body {
 
 .photo {
   position: absolute;
-  overflow: hidden;
+  /* overflow:hidden removed so the focus shadow (::before) can render outside
+     the box. The img (object-fit:cover, inset:0) and placeholder are exactly
+     the slot size, so nothing else overflows. */
   background: var(--field);
+  /* opacity (cream wash) and transform are the only transitioned properties on
+     focus — both compositor-friendly. Brightness and shadow are carried by the
+     opacity-only pseudo overlays below; saturation is a STATIC filter that
+     swaps instantly (animating filter on ~15 focused tile-copies per focus
+     change was a top long-task source). */
   opacity: var(--ambient-opacity);
-  filter: saturate(var(--ambient-saturate)) brightness(var(--ambient-brightness));
+  filter: saturate(var(--ambient-saturate));
   transition:
     opacity var(--focus-fade) var(--focus-easing),
-    filter  var(--focus-fade) var(--focus-easing),
-    transform var(--focus-fade) var(--focus-easing),
-    box-shadow var(--focus-fade) var(--focus-easing);
+    transform var(--focus-fade) var(--focus-easing);
 }
-.photo.is-focused {
-  opacity: 1;
-  filter: none;
+/* Brightness veil — black @ (1 - ambient-brightness) reproduces the old
+   brightness() dim exactly; only its opacity transitions (composited). */
+.photo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: #000;
+  opacity: var(--veil-ambient);
+  transition: opacity var(--focus-fade) var(--focus-easing);
+  pointer-events: none;
+  z-index: 3;
+}
+/* Pre-rendered focus shadow — static geometry, opacity-faded (composited). */
+.photo::before {
+  content: '';
+  position: absolute;
+  inset: 0;
   box-shadow:
     0 1px 2px rgba(0, 0, 0, 0.04),
     0 18px 48px -12px rgba(0, 0, 0, 0.18);
-  z-index: 2;
-  will-change: transform, opacity, filter;
+  opacity: 0;
+  transition: opacity var(--focus-fade) var(--focus-easing);
+  pointer-events: none;
+  z-index: -1;
 }
+.photo.is-focused {
+  opacity: 1;
+  filter: none;                /* instant saturation reveal (untransitioned) */
+  z-index: 2;
+}
+.photo.is-focused::after  { opacity: 0; }   /* brightness up */
+.photo.is-focused::before { opacity: 1; }   /* shadow fades in */
 
 /* Decode fade-in */
 .photo.is-entering {
@@ -175,6 +208,9 @@ html, body {
   box-shadow: none;
   cursor: grab;
 }
+/* Brand cards carry no ambient dim or focus shadow — drop the overlays. */
+.photo.is-brand::before,
+.photo.is-brand::after { display: none; }
 .photo.is-brand .brand-inner {
   display: inline-flex;
   align-items: center;
@@ -260,23 +296,18 @@ html, body {
   left: var(--inset-corner);
   z-index: 10;
   pointer-events: none;
-  /* Resting padding compensates for --inset-corner so the resting
-     name remains at its original viewport position (~22px from left,
-     ~18px from bottom). Bloomed padding below resets to a plate-
-     interior value because the plate itself is now lifted. */
-  padding: 4px 8px;
+  /* No resting padding: the resting label is absolutely pinned to the corner,
+     so padding only frames the bloom plate (set on .is-blooming). Padding is no
+     longer transitioned — that morph was part of the bloom's CLS + long tasks. */
+  padding: 0;
   max-width: 40vw;
   opacity: 0;
-  transition:
-    opacity var(--label-out) ease-in,
-    padding 240ms var(--focus-easing);
+  transition: opacity var(--label-out) ease-in;
   isolation: isolate;
 }
 .species.is-visible {
   opacity: 1;
-  transition:
-    opacity var(--label-in) ease-out,
-    padding 240ms var(--focus-easing);
+  transition: opacity var(--label-in) ease-out;
 }
 
 /* Bloom plate — pseudo-element scales out from bottom-left corner.
@@ -321,13 +352,20 @@ html, body {
   }
 }
 
-/* Resting: vernacular only, small-caps tracked, white with deep shadow.
-   Hit area is just the visible text (pannable everywhere else). */
-.species .line-name {
+/* Resting label — vernacular only, small-caps tracked, white with deep shadow.
+   Absolutely pinned to the plate's bottom-left corner (~22px from left, ~18px
+   from bottom) so the bloomed title can take normal flow. Bloom is a pure
+   opacity crossfade between this and .line-name--bloom — no font-size /
+   letter-spacing / color / text-shadow / padding morph, which was the page's
+   only CLS and a stack of nine non-composited transitions per open/close. */
+.species .line-name--rest {
+  position: absolute;
+  left: 8px;
+  bottom: 4px;
   pointer-events: auto;
   cursor: pointer;
-  position: relative;
   display: inline-block;
+  white-space: nowrap;
   font-weight: 500;
   font-size: 11px;
   color: #ffffff;
@@ -337,12 +375,42 @@ html, body {
   text-shadow:
     0 1px 4px rgba(0, 0, 0, 0.55),
     0 0 1px rgba(0, 0, 0, 0.85);
+  opacity: 1;
   transition:
-    color 200ms ease,
-    font-size 200ms ease,
-    letter-spacing 200ms ease,
-    text-shadow 200ms ease,
+    opacity var(--label-in) ease,
     padding-left 520ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.species.is-blooming .line-name--rest {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Bloomed title — vernacular display over italic binomial. In normal flow so
+   the plate ::before sizes to it; hidden (opacity 0) until bloom, then fades in
+   as the resting label fades out and the plate scales open. */
+.species .line-name--bloom {
+  display: block;
+  pointer-events: auto;
+  cursor: pointer;
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--charcoal);
+  letter-spacing: -0.018em;
+  line-height: 1.0;
+  opacity: 0;
+  transition: opacity var(--label-in) ease;
+}
+.species.is-blooming .line-name--bloom { opacity: 1; }
+.species:not(.is-blooming) .line-name--bloom { pointer-events: none; }
+.species .line-name--bloom .latin {
+  display: block;
+  font-style: italic;
+  color: var(--blue);
+  font-weight: 400;
+  font-size: 17px;
+  line-height: 1.0;
+  letter-spacing: 0.002em;
+  margin-top: 6px;
 }
 
 .species .latin { display: none; }
@@ -351,9 +419,10 @@ html, body {
 .species .line-vitals,
 .species .line-fact { display: none; }
 
-/* Dwell cue — a 24px hairline beneath the name after 800ms idle.
-   Suppressed while blooming. */
-.species .line-name::before {
+/* Dwell cue — the logo glyph fades in beside the resting label after idle and
+   on hover; the label shifts right to reveal it. Lives only on the resting
+   label (the bloomed title leads cleanly without it). */
+.species .line-name--rest::before {
   content: '';
   position: absolute;
   left: 0;
@@ -371,21 +440,12 @@ html, body {
   pointer-events: none;
   will-change: opacity, transform;
 }
-.species:not(.is-blooming) .line-name:hover {
+.species:not(.is-blooming) .line-name--rest:hover {
   padding-left: 26px;
 }
-.species:not(.is-blooming) .line-name:hover::before {
+.species:not(.is-blooming) .line-name--rest:hover::before {
   opacity: 0.65;
   transform: translate(0, -50%) scale(1);
-}
-
-/* Bloomed: no logo glyph beside the name — title block leads cleanly. */
-.species.is-blooming .line-name {
-  padding-left: 0;
-}
-.species.is-blooming .line-name::before,
-.species.is-blooming .line-name:hover::before {
-  display: none;
 }
 
 /* Idle invitation: the resting label stays solid for most of each
@@ -393,38 +453,12 @@ html, body {
    solid hold (0%–60%) plus a 1800ms idle threshold means quick
    browsing never sees the cue — it only appears once you've truly
    lingered on a photo. Suppressed on hover and during bloom. */
-.species.is-dwell:not(.is-blooming) .line-name:not(:hover) {
+.species.is-dwell:not(.is-blooming) .line-name--rest:not(:hover) {
   animation: speciesInvite 4000ms ease-in-out infinite;
 }
 @keyframes speciesInvite {
   0%, 60%, 100% { opacity: 1;   }
   80%           { opacity: 0.6; }
-}
-
-/* Bloomed: stacked title (V1) — vernacular sans display over italic
-   binomial in brand blue. Body, vitals, and fun-fact pull stack below
-   on hairlines. Sizes are S1 (compact) so the plate doesn't crowd
-   the photo plane behind it. */
-.species.is-blooming .line-name {
-  cursor: pointer;
-  font-size: 26px;
-  font-weight: 600;
-  color: var(--charcoal);
-  text-transform: none;
-  letter-spacing: -0.018em;
-  line-height: 1.0;
-  text-shadow: none;
-}
-.species.is-blooming .latin {
-  display: block;
-  font-style: italic;
-  color: var(--blue);
-  font-weight: 400;
-  font-size: 17px;
-  line-height: 1.0;
-  letter-spacing: 0.002em;
-  margin-top: 6px;
-  margin-left: 0;
 }
 
 /* Lede — full width inside the plate, no max-width. Hairline above. */
@@ -736,7 +770,10 @@ html, body {
 .photo.img-failed::after {
   content: attr(data-species);
   position: absolute;
-  inset: auto 8px 8px 8px;
+  inset: auto 8px 8px 8px;   /* override the veil's inset:0 → bottom strip */
+  background: none;          /* override the veil fill */
+  opacity: 1;                /* override the veil's dim opacity so the label reads */
+  z-index: 3;
   color: rgba(255, 255, 255, 0.7);
   font-size: 10px;
   letter-spacing: 0.1em;
@@ -763,6 +800,8 @@ html, body {
    ============================================================ */
 @media (prefers-reduced-motion: reduce) {
   .photo,
+  .photo::before,
+  .photo::after,
   .species,
   .species::before,
   .species .line-name,
