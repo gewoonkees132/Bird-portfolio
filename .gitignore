@@ -23,3 +23,6 @@ coverage/
 # Audit working notes (kept locally, not deployed)
 audit.md
 Audit implementation.md
+
+# Local performance-profiling screenshots / notes
+.perf-shots/
