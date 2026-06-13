@@ -222,7 +222,8 @@
     console.error('[bird-portfolio] Missing required DOM nodes; aborting init.');
     return;
   }
-  const speciesName = speciesEl.querySelector('.line-name');
+  const speciesNameRest = speciesEl.querySelector('.line-name--rest');
+  const speciesNameBloom = speciesEl.querySelector('.line-name--bloom');
   const speciesLede = speciesEl.querySelector('.line-lede');
   const speciesVitals = speciesEl.querySelector('.line-vitals');
   const speciesFact = speciesEl.querySelector('.line-fact');
@@ -554,7 +555,10 @@
     const sp = SPECIES.find(s => s.id === info.slot.id);
     if (!sp) return;
     const latinHtml = escapeHtml(sp.latin).replace(/ /g, '&nbsp;');
-    speciesName.innerHTML =
+    // Resting label (uppercased by CSS, announced via aria-live) and bloomed
+    // title both get filled; the bloom is an opacity crossfade between them.
+    speciesNameRest.textContent = sp.vernacular;
+    speciesNameBloom.innerHTML =
       `${escapeHtml(sp.vernacular)}<span class="latin">${latinHtml}</span>`;
     speciesMeta.textContent = `Photo ${sp.id} / 8 · Arrangement ${ARRANGEMENTS[info.arrIdx].name}`;
 
@@ -805,22 +809,33 @@
     if (b) speciesEl.classList.remove('is-dwell');
   }
 
+  // Bloom open/close is UI-only — it does not move the plane, so it must NOT
+  // wake the render loop (that would spin a few needless render frames). Just
+  // re-arm the dwell-cue timer so the cue stays hidden while reading and
+  // reappears after closing. The bloom itself animates via CSS transitions.
+  function noteUiInteraction() {
+    lastInteractionAt = performance.now();
+    scheduleCue();
+  }
+
   speciesEl.addEventListener('click', (e) => {
     if (!e.target.closest('.line-name')) return;
     e.stopPropagation();
     setBloomed(!speciesEl.classList.contains('is-blooming'));
-    bumpInteraction();
+    noteUiInteraction();
   });
 
   document.addEventListener('click', (e) => {
     if (!speciesEl.contains(e.target) && speciesEl.classList.contains('is-blooming')) {
       setBloomed(false);
+      noteUiInteraction();
     }
   });
 
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && speciesEl.classList.contains('is-blooming')) {
       setBloomed(false);
+      noteUiInteraction();
       e.stopPropagation();
     }
   });
