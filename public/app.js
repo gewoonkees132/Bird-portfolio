@@ -6,9 +6,12 @@
 (function () {
   'use strict';
 
-  // ---------- Species data (8 photos) ----------
-  // Crops: 4 landscape (P1,P3,P5,P7) · 2 vertical (P2,P6) · 2 super-wide (P4,P8)
-  // Image assignment matches each photo's native aspect to its slot shape:
+  // ---------- Species data (16 photos) ----------
+  // Shapes: L landscape 16:9 (1,3,5,7,9,10,11,12,14,15) · V portrait 2:3
+  //   (2,6,13,16) · W super-wide letterbox (4,8). Repeats are intentional —
+  //   Weaver appears twice (2 nest / 6 flight) and the Raw-todo batch adds more
+  //   Great Tit + Robin tiles. Image assignment matches each photo's native
+  //   aspect to its slot shape:
   //   L slots ← landscape photos (~3:2)   V slots ← vertical photos (~2:3)
   //   W slots ← landscape photos cropped wide via object-fit: cover
   const F = (n) => 'files/' + encodeURI(n);
@@ -37,6 +40,33 @@
     { id: 8, vernacular: 'Lark',                  latin: 'Alauda arvensis',        shape: 'W',
       band_a: '#cdc4b0', band_b: '#bdb4a0',
       image: F('P8-Lark.webp') },
+    // Raw-todo batch (2026-06-13). Great Tit reuses P7's browns + Parus major;
+    // Robin reuses P1's blues + Erithacus rubecula. Facts shared per species
+    // below. id 7's image was replaced in the same batch (entry unchanged).
+    { id: 9,  vernacular: 'Great Tit',            latin: 'Parus major',            shape: 'L',
+      band_a: '#6e5444', band_b: '#7e6454',
+      image: F('P9-Great_Tit.webp') },
+    { id: 10, vernacular: 'Great Tit',            latin: 'Parus major',            shape: 'L',
+      band_a: '#6e5444', band_b: '#7e6454',
+      image: F('P10-Great_Tit.webp') },
+    { id: 11, vernacular: 'Great Tit',            latin: 'Parus major',            shape: 'L',
+      band_a: '#6e5444', band_b: '#7e6454',
+      image: F('P11-Great_Tit.webp') },
+    { id: 12, vernacular: 'Great Tit',            latin: 'Parus major',            shape: 'L',
+      band_a: '#6e5444', band_b: '#7e6454',
+      image: F('P12-Great_Tit.webp') },
+    { id: 13, vernacular: 'Great Tit',            latin: 'Parus major',            shape: 'V',
+      band_a: '#6e5444', band_b: '#7e6454',
+      image: F('P13-Great_Tit.webp') },
+    { id: 14, vernacular: 'European Robin',       latin: 'Erithacus rubecula',     shape: 'L',
+      band_a: '#3d6b8a', band_b: '#4a7c9a',
+      image: F('P14-European_Robin.webp') },
+    { id: 15, vernacular: 'European Robin',       latin: 'Erithacus rubecula',     shape: 'L',
+      band_a: '#3d6b8a', band_b: '#4a7c9a',
+      image: F('P15-European_Robin.webp') },
+    { id: 16, vernacular: 'European Robin',       latin: 'Erithacus rubecula',     shape: 'V',
+      band_a: '#3d6b8a', band_b: '#4a7c9a',
+      image: F('P16-European_Robin.webp') },
   ];
 
   // ---------- Bird facts (per-species lede + vitals + fun fact) ----------
@@ -50,7 +80,10 @@
   //   6 Weaver flt  — Olaleye et al. (1982, Trop Pest Mgmt) maize-raid commute.
   //   7 Great Tit   — Estók, Zsebok & Siemers (2010, Biol Letters) bat predation.
   //   8 Skylark     — Cresswell (1994, Behav Ecol Sociobiol) merlin pursuit-deterrent song.
-  // Keyed by SPECIES.id (1–8).
+  // Keyed by SPECIES.id. Bespoke prose for ids 1–8; the repeated Raw-todo
+  // tiles share existing per-species prose via the alias assignments after
+  // the literal (Great Tit 9–13 → 7, Robin 14–16 → 1). No new prose is
+  // written; the two distinct Weaver entries (2 nest / 6 flight) are preserved.
   const BIRD_FACTS = {
     1: {
       wingspan: '20–22 cm', weight: '16–22 g',
@@ -102,6 +135,12 @@
     }
   };
 
+  // Repeated Raw-todo species reuse the existing per-species prose (shared
+  // object reference — facts are read-only). All Great Tit ids point at the
+  // Great Tit entry (7); all Robin ids at the Robin entry (1).
+  BIRD_FACTS[9] = BIRD_FACTS[10] = BIRD_FACTS[11] = BIRD_FACTS[12] = BIRD_FACTS[13] = BIRD_FACTS[7];
+  BIRD_FACTS[14] = BIRD_FACTS[15] = BIRD_FACTS[16] = BIRD_FACTS[1];
+
   // ---------- Mobile bloom population ----------
   // Each .mcell[data-sp="N"] gets a <details> appended with the same lede /
   // vitals / fun-fact content the desktop bloom plate shows. Built from JS so
@@ -143,8 +182,10 @@
 
   // ---------- Arrangements ----------
   // Tile: 1320 x 760. 12×7 cell grid, module 88, gutter 24, no outer margin.
-  // Each arrangement uses 7 of 8 photos in a hand-designed Mondrian.
-  // The four arrangements use overlapping photo sets in different permutations.
+  // Each arrangement is an exact tiling: 6 photo slots + 1 brand slot, every
+  // cell covered once. A–D draw from the original 8 ids; E–H bring the
+  // Raw-todo ids (7,9–16) onto the cycle. The union of A–H references all 16
+  // ids (~3 appearances each). Place V ids in tall slots, L ids in wide ones.
   const ARRANGEMENTS = [
     {
       name: 'A',
@@ -194,6 +235,54 @@
         { c:6, r:6, cw:6, ch:1, id: 3 },
       ]
     },
+    {
+      name: 'E',
+      slots: [
+        { c:0, r:0, cw:8, ch:3, id: 9 },
+        { c:8, r:0, cw:4, ch:3, id: 14 },
+        { c:0, r:3, cw:3, ch:4, id: 13 },   // V
+        { c:3, r:3, cw:5, ch:2, id: 7 },
+        { c:8, r:3, cw:4, ch:3, id: 15 },
+        { c:3, r:5, cw:5, ch:2, id: 10 },
+        { c:8, r:6, cw:4, ch:1, brand: true },
+      ]
+    },
+    {
+      name: 'F',
+      slots: [
+        { c:0, r:0, cw:3, ch:5, id: 16 },   // V
+        { c:3, r:0, cw:9, ch:2, id: 11 },
+        { c:3, r:2, cw:4, ch:2, id: 12 },
+        { c:7, r:2, cw:5, ch:2, id: 15 },
+        { c:3, r:4, cw:9, ch:2, id: 14 },
+        { c:0, r:5, cw:3, ch:2, id: 9 },
+        { c:3, r:6, cw:9, ch:1, brand: true },
+      ]
+    },
+    {
+      name: 'G',
+      slots: [
+        { c:0, r:0, cw:3, ch:4, id: 13 },   // V
+        { c:9, r:0, cw:3, ch:4, id: 16 },   // V
+        { c:3, r:0, cw:6, ch:2, id: 11 },
+        { c:3, r:2, cw:6, ch:2, id: 12 },
+        { c:0, r:4, cw:7, ch:3, id: 10 },
+        { c:7, r:4, cw:5, ch:2, id: 7 },
+        { c:7, r:6, cw:5, ch:1, brand: true },
+      ]
+    },
+    {
+      name: 'H',
+      slots: [
+        { c:0, r:0, cw:4, ch:2, id: 11 },
+        { c:4, r:0, cw:5, ch:2, id: 12 },
+        { c:9, r:0, cw:3, ch:4, id: 13 },   // V
+        { c:0, r:2, cw:3, ch:4, id: 16 },   // V
+        { c:3, r:2, cw:6, ch:2, id: 14 },
+        { c:3, r:4, cw:9, ch:2, id: 15 },
+        { c:0, r:6, cw:12, ch:1, brand: true },
+      ]
+    },
   ];
 
   const U = 88;
@@ -208,7 +297,7 @@
     });
   });
 
-  const ARRANGEMENT_LEAD = { 0: 5, 1: 3, 2: 7, 3: 1 };
+  const ARRANGEMENT_LEAD = { 0: 5, 1: 3, 2: 7, 3: 1, 4: 9, 5: 16, 6: 13, 7: 11 };
   const TILE_W = 12 * 88 + 11 * 24;
   const TILE_H =  7 * 88 +  6 * 24;
   const GUTTER = 24;
@@ -229,6 +318,11 @@
   const speciesFact = speciesEl.querySelector('.line-fact');
   const speciesMeta = speciesEl.querySelector('.meta');
 
+  // HSPAN must stay >= 3: render() pins worldX inside the *middle* strip copy
+  // (middleCopyOriginX = one strip in), so a full strip is needed on BOTH sides
+  // for the seamless horizontal wrap. With 8 arrangements this is 24 columns;
+  // the engine is parameterized over ARRANGEMENTS.length, so nothing else
+  // changes. (Dropping to 2 leaves no strip to the right of center → wrap tears.)
   const HSPAN = 3;
   const VSPAN = 5;
 
@@ -329,11 +423,11 @@
 
   let lastInteractionAt = 0;
   // Single entry point for every user interaction: timestamp it, cancel any
-  // in-flight dwell glide (the user is taking over), hide the dwell cue, re-arm
-  // the cue + dwell-glide timers, and make sure the render loop is awake.
+  // in-flight dwell pull (the user is taking over), hide the dwell cue, re-arm
+  // the cue + dwell timers, and make sure the render loop is awake.
   function bumpInteraction() {
     lastInteractionAt = performance.now();
-    glide = null;
+    dwelling = false;
     speciesEl.classList.remove('is-dwell');
     scheduleCue();
     scheduleDwell();
@@ -352,6 +446,7 @@
     zoomMin: 1.6,
     zoomMax: 4.0,
     dwellDelay: 400,
+    dwellPull: 0.0015,
     ambientOpacity: 0.9,
     ambientSaturate: 0,
     ambientBrightness: 0.81,
@@ -381,11 +476,14 @@
   // One rAF loop drives pan/zoom/focus/compass. It SLEEPS (rafId = 0) once
   // everything is at rest and is restarted by wake() on any interaction, so an
   // untouched plane burns zero CPU instead of asymptotically chasing its target
-  // for minutes. `glide` holds an active dwell glide; the dwell cue and dwell
-  // glide are scheduled with setTimeout rather than polled every frame.
+  // for minutes. `dwelling` runs the gentle proportional recenter pull; the
+  // dwell cue and dwell trigger are scheduled with setTimeout rather than polled
+  // every frame.
   let rafId = 0;
-  let glide = null;          // { fromX, fromY, toX, toY, start, dur } or null
-  let dwellTimer = null;     // setTimeout id → dwell-glide trigger
+  let dwelling = false;      // gentle per-frame recenter pull is active
+  let dwellCx = 0, dwellCy = 0;  // fixed photo-center the pull targets
+  let dwellStart = 0;        // performance.now() the pull began (for the cap)
+  let dwellTimer = null;     // setTimeout id → dwell trigger
   let cueTimer = null;       // setTimeout id → dwell-cue (is-dwell) trigger
 
   // Idempotent: the rafId guard prevents stacking parallel rAF chains.
@@ -397,26 +495,34 @@
   }
 
   function render() {
-    if (glide) {
-      // Fixed-duration eased glide overrides lerp/momentum: drive pan directly
-      // to the focused photo center, then settle and let the loop sleep.
-      const t = Math.min(1, (performance.now() - glide.start) / glide.dur);
-      const e = 1 - Math.pow(1 - t, 3);          // cubic ease-out
-      panX = panX_target = glide.fromX + (glide.toX - glide.fromX) * e;
-      panY = panY_target = glide.fromY + (glide.toY - glide.fromY) * e;
-      if (t >= 1) glide = null;
-    } else {
-      const lerp = TWEAKS.lerp;
-      panX += (panX_target - panX) * lerp;
-      panY += (panY_target - panY) * lerp;
+    const lerp = TWEAKS.lerp;
+    panX += (panX_target - panX) * lerp;
+    panY += (panY_target - panY) * lerp;
 
-      if (!dragging && !pinching && (Math.abs(vx) > 0.05 || Math.abs(vy) > 0.05)) {
-        panX_target += vx;
-        panY_target += vy;
-        vx *= 0.94;
-        vy *= 0.94;
-      } else if (!dragging && !pinching) {
-        vx = 0; vy = 0;
+    if (!dragging && !pinching && (Math.abs(vx) > 0.05 || Math.abs(vy) > 0.05)) {
+      panX_target += vx;
+      panY_target += vy;
+      vx *= 0.94;
+      vy *= 0.94;
+    } else if (!dragging && !pinching) {
+      vx = 0; vy = 0;
+    }
+
+    // Dwell pull — the original gentle per-frame proportional drift of the
+    // target toward the focused photo's center (smoothed again by the lerp
+    // above). It approaches asymptotically and never quite arrives, so it is
+    // bounded by DWELL_MAX_MS: once the cap is hit — or it's within a pixel of
+    // center on screen — freeze in place and let the loop sleep, instead of
+    // creeping sub-pixel for a minute and pinning the CPU.
+    if (dwelling) {
+      panX_target += (dwellCx - panX_target) * TWEAKS.dwellPull;
+      panY_target += (dwellCy - panY_target) * TWEAKS.dwellPull;
+      const gx = dwellCx - panX, gy = dwellCy - panY;
+      if ((gx*gx + gy*gy) * zoom * zoom < 0.25 ||
+          performance.now() - dwellStart > DWELL_MAX_MS) {
+        dwelling = false;
+        panX_target = panX;
+        panY_target = panY;
       }
     }
 
@@ -425,7 +531,7 @@
     // Everything within snap thresholds and no pending motion → snap exactly,
     // paint one last frame, and stop the loop until the next wake().
     const atRest =
-      !dragging && !pinching && !glide &&
+      !dragging && !pinching && !dwelling &&
       Math.abs(panX_target - panX) < 0.1 &&
       Math.abs(panY_target - panY) < 0.1 &&
       Math.abs(vx) < 0.05 && Math.abs(vy) < 0.05 &&
@@ -560,7 +666,7 @@
     speciesNameRest.textContent = sp.vernacular;
     speciesNameBloom.innerHTML =
       `${escapeHtml(sp.vernacular)}<span class="latin">${latinHtml}</span>`;
-    speciesMeta.textContent = `Photo ${sp.id} / 8 · Arrangement ${ARRANGEMENTS[info.arrIdx].name}`;
+    speciesMeta.textContent = `Photo ${sp.id} / ${SPECIES.length} · Arrangement ${ARRANGEMENTS[info.arrIdx].name}`;
 
     const f = BIRD_FACTS[sp.id];
     if (f) {
@@ -842,7 +948,7 @@
 
   // Dwell cue — scheduled from the last interaction instead of polled every
   // frame. If a re-armed timer fires while momentum is still running, it waits
-  // a beat and re-checks rather than showing the cue mid-glide.
+  // a beat and re-checks rather than showing the cue mid-motion.
   function scheduleCue() {
     if (cueTimer) clearTimeout(cueTimer);
     cueTimer = setTimeout(fireCue, DWELL_CUE_MS);
@@ -854,18 +960,18 @@
     speciesEl.classList.add('is-dwell');
   }
 
-  // Dwell glide — replaces the old per-frame asymptotic pull (which never
-  // reached its target and kept the loop alive for minutes). After dwellDelay
-  // of settled idle, ease the focused photo to exact center over a fixed
-  // duration, computed once, then settle and sleep.
-  const DWELL_GLIDE_MS = 600;
+  // Dwell pull — after dwellDelay of settled idle, start the gentle proportional
+  // recenter (the render loop applies it; see the `dwelling` block there). The
+  // pull approaches asymptotically and is bounded by DWELL_MAX_MS so it can
+  // terminate and let the loop sleep instead of creeping sub-pixel for minutes.
+  const DWELL_MAX_MS = 8000;
   function scheduleDwell() {
     if (dwellTimer) clearTimeout(dwellTimer);
-    dwellTimer = setTimeout(tryDwellGlide, TWEAKS.dwellDelay);
+    dwellTimer = setTimeout(tryDwell, TWEAKS.dwellDelay);
   }
   // Nearest non-brand photo center to a pan position, across all arrangements
   // and the wrapped tile copies. Driven by panX_target (the user's intended
-  // destination) so the glide centers where the drag was headed, matching the
+  // destination) so the pull centers where the drag was headed, matching the
   // photo updateFocus will settle on once the plane catches up.
   function nearestCenterTo(px, py) {
     let bestX = px, bestY = py, bestD2 = Infinity;
@@ -889,11 +995,11 @@
     }
     return { x: bestX, y: bestY };
   }
-  function tryDwellGlide() {
+  function tryDwell() {
     dwellTimer = null;
-    if (!settledNow()) { dwellTimer = setTimeout(tryDwellGlide, 120); return; }
-    // Kill residual sub-threshold momentum so it can't resurrect after the
-    // glide and leave a slow lerp tail that never reaches the sleep threshold.
+    if (!settledNow()) { dwellTimer = setTimeout(tryDwell, 120); return; }
+    // Kill residual sub-threshold momentum so it can't fight the pull and leave
+    // a slow lerp tail that never reaches the sleep threshold.
     vx = 0; vy = 0;
     const target = nearestCenterTo(panX_target, panY_target);
     const dx = target.x - panX, dy = target.y - panY;
@@ -903,8 +1009,10 @@
       wake();
       return;
     }
-    glide = { fromX: panX, fromY: panY, toX: target.x, toY: target.y,
-              start: performance.now(), dur: DWELL_GLIDE_MS };
+    dwellCx = target.x;
+    dwellCy = target.y;
+    dwellStart = performance.now();
+    dwelling = true;
     wake();
   }
 
