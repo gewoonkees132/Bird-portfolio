@@ -37,6 +37,7 @@
   --ambient-opacity: 0.55;
   --ambient-saturate: 0.65;
   --ambient-brightness: 0.92;
+  --veil-ambient: 0.08;   /* black-veil opacity ≈ (1 - ambient-brightness); JS sets exact */
 }
 
 * { box-sizing: border-box; }
@@ -92,25 +93,53 @@ html, body {
 
 .photo {
   position: absolute;
-  overflow: hidden;
+  /* overflow:hidden removed so the focus shadow (::before) can render outside
+     the box. The img (object-fit:cover, inset:0) and placeholder are exactly
+     the slot size, so nothing else overflows. */
   background: var(--field);
+  /* opacity (cream wash) and transform are the only transitioned properties on
+     focus — both compositor-friendly. Brightness and shadow are carried by the
+     opacity-only pseudo overlays below; saturation is a STATIC filter that
+     swaps instantly (animating filter on ~15 focused tile-copies per focus
+     change was a top long-task source). */
   opacity: var(--ambient-opacity);
-  filter: saturate(var(--ambient-saturate)) brightness(var(--ambient-brightness));
+  filter: saturate(var(--ambient-saturate));
   transition:
     opacity var(--focus-fade) var(--focus-easing),
-    filter  var(--focus-fade) var(--focus-easing),
-    transform var(--focus-fade) var(--focus-easing),
-    box-shadow var(--focus-fade) var(--focus-easing);
+    transform var(--focus-fade) var(--focus-easing);
 }
-.photo.is-focused {
-  opacity: 1;
-  filter: none;
+/* Brightness veil — black @ (1 - ambient-brightness) reproduces the old
+   brightness() dim exactly; only its opacity transitions (composited). */
+.photo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: #000;
+  opacity: var(--veil-ambient);
+  transition: opacity var(--focus-fade) var(--focus-easing);
+  pointer-events: none;
+  z-index: 3;
+}
+/* Pre-rendered focus shadow — static geometry, opacity-faded (composited). */
+.photo::before {
+  content: '';
+  position: absolute;
+  inset: 0;
   box-shadow:
     0 1px 2px rgba(0, 0, 0, 0.04),
     0 18px 48px -12px rgba(0, 0, 0, 0.18);
-  z-index: 2;
-  will-change: transform, opacity, filter;
+  opacity: 0;
+  transition: opacity var(--focus-fade) var(--focus-easing);
+  pointer-events: none;
+  z-index: -1;
 }
+.photo.is-focused {
+  opacity: 1;
+  filter: none;                /* instant saturation reveal (untransitioned) */
+  z-index: 2;
+}
+.photo.is-focused::after  { opacity: 0; }   /* brightness up */
+.photo.is-focused::before { opacity: 1; }   /* shadow fades in */
 
 /* Decode fade-in */
 .photo.is-entering {
@@ -179,6 +208,9 @@ html, body {
   box-shadow: none;
   cursor: grab;
 }
+/* Brand cards carry no ambient dim or focus shadow — drop the overlays. */
+.photo.is-brand::before,
+.photo.is-brand::after { display: none; }
 .photo.is-brand .brand-inner {
   display: inline-flex;
   align-items: center;
@@ -740,7 +772,10 @@ html, body {
 .photo.img-failed::after {
   content: attr(data-species);
   position: absolute;
-  inset: auto 8px 8px 8px;
+  inset: auto 8px 8px 8px;   /* override the veil's inset:0 → bottom strip */
+  background: none;          /* override the veil fill */
+  opacity: 1;                /* override the veil's dim opacity so the label reads */
+  z-index: 3;
   color: rgba(255, 255, 255, 0.7);
   font-size: 10px;
   letter-spacing: 0.1em;
@@ -767,6 +802,8 @@ html, body {
    ============================================================ */
 @media (prefers-reduced-motion: reduce) {
   .photo,
+  .photo::before,
+  .photo::after,
   .species,
   .species::before,
   .species .line-name,

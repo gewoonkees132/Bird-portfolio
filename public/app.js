@@ -363,6 +363,9 @@
     document.documentElement.style.setProperty('--ambient-opacity', TWEAKS.ambientOpacity);
     document.documentElement.style.setProperty('--ambient-saturate', TWEAKS.ambientSaturate);
     document.documentElement.style.setProperty('--ambient-brightness', TWEAKS.ambientBrightness);
+    // Black-veil opacity that reproduces the old brightness() dim: brightness(b)
+    // multiplies each channel by b, same as compositing black at (1 - b).
+    document.documentElement.style.setProperty('--veil-ambient', 1 - TWEAKS.ambientBrightness);
     document.documentElement.style.setProperty('--focus-fade', TWEAKS.focusFadeMs + 'ms');
     document.documentElement.style.setProperty('--blue', TWEAKS.blue);
     document.documentElement.style.setProperty('--field', TWEAKS.field);
