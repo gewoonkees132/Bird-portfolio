@@ -599,7 +599,6 @@
     pinching = true;
     dragging = false;
     vx = 0; vy = 0;
-    stage.classList.remove('is-dragging');
   }
 
   stage.addEventListener('pointerdown', (e) => {
@@ -615,7 +614,6 @@
       vx = 0; vy = 0;
       lastPointer = { x: e.clientX, y: e.clientY };
       lastMoveTime = performance.now();
-      stage.classList.add('is-dragging');
     }
   });
 
@@ -673,17 +671,14 @@
         lastMoveTime = performance.now();
         dragging = true;
         vx = 0; vy = 0;
-        stage.classList.add('is-dragging');
       } else {
         dragging = false;
-        stage.classList.remove('is-dragging');
       }
       return;
     }
 
     if (pointers.size === 0 && dragging) {
       dragging = false;
-      stage.classList.remove('is-dragging');
     }
   }
   stage.addEventListener('pointerup', endPointer);

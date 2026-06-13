@@ -62,13 +62,17 @@ html, body {
   position: fixed;
   inset: 0;
   overflow: hidden;
+  /* Static grab cursor. Swapping to `grabbing` during drags changed an
+     inherited property on the ancestor of ~1700 nodes, forcing a whole-
+     subtree style recalc (745ms+ long task at 6x CPU) at every gesture
+     start and end. The cursor staying `grab` while dragging is the
+     accepted trade. */
   cursor: grab;
   background: var(--field);
   user-select: none;
   -webkit-user-select: none;
   touch-action: none;
 }
-.stage.is-dragging { cursor: grabbing; }
 
 .plane {
   position: absolute;
