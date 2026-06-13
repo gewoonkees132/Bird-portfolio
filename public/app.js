@@ -327,7 +327,17 @@
   let zoom_target = 1.6;
 
   let lastInteractionAt = 0;
-  function bumpInteraction() { lastInteractionAt = performance.now(); }
+  // Single entry point for every user interaction: timestamp it, cancel any
+  // in-flight dwell glide (the user is taking over), hide the dwell cue, re-arm
+  // the cue + dwell-glide timers, and make sure the render loop is awake.
+  function bumpInteraction() {
+    lastInteractionAt = performance.now();
+    glide = null;
+    speciesEl.classList.remove('is-dwell');
+    scheduleCue();
+    scheduleDwell();
+    wake();
+  }
 
   let vx = 0, vy = 0;
   let dragging = false;
@@ -341,7 +351,6 @@
     zoomMin: 1.6,
     zoomMax: 4.0,
     dwellDelay: 400,
-    dwellPull: 0.0015,
     ambientOpacity: 0.9,
     ambientSaturate: 0,
     ambientBrightness: 0.81,
@@ -365,58 +374,59 @@
     return { w: window.innerWidth, h: window.innerHeight };
   }
 
-  // RAF ids (used by the visibilitychange handler to pause loops in hidden tabs)
-  let rafRender = 0, rafCompass = 0, rafDwell = 0;
+  // One rAF loop drives pan/zoom/focus/compass. It SLEEPS (rafId = 0) once
+  // everything is at rest and is restarted by wake() on any interaction, so an
+  // untouched plane burns zero CPU instead of asymptotically chasing its target
+  // for minutes. `glide` holds an active dwell glide; the dwell cue and dwell
+  // glide are scheduled with setTimeout rather than polled every frame.
+  let rafId = 0;
+  let glide = null;          // { fromX, fromY, toX, toY, start, dur } or null
+  let dwellTimer = null;     // setTimeout id → dwell-glide trigger
+  let cueTimer = null;       // setTimeout id → dwell-cue (is-dwell) trigger
+
+  // Idempotent: the rafId guard prevents stacking parallel rAF chains.
+  function wake() {
+    if (!rafId) rafId = requestAnimationFrame(render);
+  }
+  function settledNow() {
+    return !dragging && !pinching && Math.abs(vx) < 0.1 && Math.abs(vy) < 0.1;
+  }
 
   function render() {
-    const lerp = TWEAKS.lerp;
-    panX += (panX_target - panX) * lerp;
-    panY += (panY_target - panY) * lerp;
-    zoom += (zoom_target - zoom) * TWEAKS.zoomLerp;
+    if (glide) {
+      // Fixed-duration eased glide overrides lerp/momentum: drive pan directly
+      // to the focused photo center, then settle and let the loop sleep.
+      const t = Math.min(1, (performance.now() - glide.start) / glide.dur);
+      const e = 1 - Math.pow(1 - t, 3);          // cubic ease-out
+      panX = panX_target = glide.fromX + (glide.toX - glide.fromX) * e;
+      panY = panY_target = glide.fromY + (glide.toY - glide.fromY) * e;
+      if (t >= 1) glide = null;
+    } else {
+      const lerp = TWEAKS.lerp;
+      panX += (panX_target - panX) * lerp;
+      panY += (panY_target - panY) * lerp;
 
-    if (!dragging && !pinching && (Math.abs(vx) > 0.05 || Math.abs(vy) > 0.05)) {
-      panX_target += vx;
-      panY_target += vy;
-      vx *= 0.94;
-      vy *= 0.94;
-    } else if (!dragging && !pinching) {
-      vx = 0; vy = 0;
-    }
-
-    const now = performance.now();
-    const idleMs = now - lastInteractionAt;
-    const settled = !dragging && !pinching && Math.abs(vx) < 0.1 && Math.abs(vy) < 0.1;
-    if (settled && idleMs > TWEAKS.dwellDelay && currentFocusKey) {
-      const fk = parseFocusKey(currentFocusKey);
-      if (fk) {
-        const arrOriginX = fk.arrIdx * (TILE_W + GUTTER);
-        const cx0 = fk.slot.x + fk.slot.w / 2;
-        const cy0 = fk.slot.y + fk.slot.h / 2;
-        const px = panX_target;
-        const py = panY_target;
-        let bestDx = 0, bestDy = 0, bestD2 = Infinity;
-        for (const ox of [arrOriginX, arrOriginX + PERIOD_X, arrOriginX - PERIOD_X,
-                          arrOriginX + 2*PERIOD_X, arrOriginX - 2*PERIOD_X]) {
-          for (const oy of [0, PERIOD_Y, -PERIOD_Y, 2*PERIOD_Y, -2*PERIOD_Y]) {
-            const targetX = ox + cx0;
-            const targetY = oy + cy0;
-            const wrappedTargetX = targetX +
-              Math.round((px - targetX) / PERIOD_X) * PERIOD_X;
-            const wrappedTargetY = targetY +
-              Math.round((py - targetY) / PERIOD_Y) * PERIOD_Y;
-            const dx = wrappedTargetX - px;
-            const dy = wrappedTargetY - py;
-            const d2 = dx*dx + dy*dy;
-            if (d2 < bestD2) { bestD2 = d2; bestDx = dx; bestDy = dy; }
-          }
-        }
-        const dist = Math.sqrt(bestD2);
-        if (dist > 0.5) {
-          panX_target += bestDx * TWEAKS.dwellPull;
-          panY_target += bestDy * TWEAKS.dwellPull;
-        }
+      if (!dragging && !pinching && (Math.abs(vx) > 0.05 || Math.abs(vy) > 0.05)) {
+        panX_target += vx;
+        panY_target += vy;
+        vx *= 0.94;
+        vy *= 0.94;
+      } else if (!dragging && !pinching) {
+        vx = 0; vy = 0;
       }
     }
+
+    zoom += (zoom_target - zoom) * TWEAKS.zoomLerp;
+
+    // Everything within snap thresholds and no pending motion → snap exactly,
+    // paint one last frame, and stop the loop until the next wake().
+    const atRest =
+      !dragging && !pinching && !glide &&
+      Math.abs(panX_target - panX) < 0.1 &&
+      Math.abs(panY_target - panY) < 0.1 &&
+      Math.abs(vx) < 0.05 && Math.abs(vy) < 0.05 &&
+      Math.abs(zoom_target - zoom) < 0.001;
+    if (atRest) { panX = panX_target; panY = panY_target; zoom = zoom_target; }
 
     const vp = viewport();
     const wx = ((panX % PERIOD_X) + PERIOD_X) % PERIOD_X;
@@ -432,8 +442,10 @@
     plane.style.transform = `translate3d(${tx}px, ${ty}px, 0) scale(${z})`;
 
     updateFocus(panX, panY);
+    updateCompass();
 
-    rafRender = requestAnimationFrame(render);
+    if (atRest) { rafId = 0; return; }
+    rafId = requestAnimationFrame(render);
   }
 
   // ---------- Focus tracking ----------
@@ -771,16 +783,15 @@
   // Compass updates — show current arrangement letter
   const compassArr = document.getElementById('compass-arr');
   let lastArr = -1;
+  // Called once per render frame (folded into the single loop).
   function updateCompass() {
-    if (compassArr) {
-      const wx = ((panX % PERIOD_X) + PERIOD_X) % PERIOD_X;
-      const arrIdx = Math.floor(wx / (TILE_W + GUTTER)) % ARRANGEMENTS.length;
-      if (arrIdx !== lastArr) {
-        lastArr = arrIdx;
-        compassArr.textContent = ARRANGEMENTS[arrIdx].name;
-      }
+    if (!compassArr) return;
+    const wx = ((panX % PERIOD_X) + PERIOD_X) % PERIOD_X;
+    const arrIdx = Math.floor(wx / (TILE_W + GUTTER)) % ARRANGEMENTS.length;
+    if (arrIdx !== lastArr) {
+      lastArr = arrIdx;
+      compassArr.textContent = ARRANGEMENTS[arrIdx].name;
     }
-    rafCompass = requestAnimationFrame(updateCompass);
   }
 
   // ---------- Species label: bloom interaction ----------
@@ -811,13 +822,72 @@
     }
   });
 
-  function updateDwellCue() {
-    const idle = performance.now() - lastInteractionAt;
-    const settled = !dragging && !pinching && Math.abs(vx) < 0.1 && Math.abs(vy) < 0.1;
-    const blooming = speciesEl.classList.contains('is-blooming');
-    const shouldShow = settled && idle > DWELL_CUE_MS && !blooming;
-    speciesEl.classList.toggle('is-dwell', shouldShow);
-    rafDwell = requestAnimationFrame(updateDwellCue);
+  // Dwell cue — scheduled from the last interaction instead of polled every
+  // frame. If a re-armed timer fires while momentum is still running, it waits
+  // a beat and re-checks rather than showing the cue mid-glide.
+  function scheduleCue() {
+    if (cueTimer) clearTimeout(cueTimer);
+    cueTimer = setTimeout(fireCue, DWELL_CUE_MS);
+  }
+  function fireCue() {
+    cueTimer = null;
+    if (!settledNow()) { cueTimer = setTimeout(fireCue, 200); return; }
+    if (speciesEl.classList.contains('is-blooming')) return;
+    speciesEl.classList.add('is-dwell');
+  }
+
+  // Dwell glide — replaces the old per-frame asymptotic pull (which never
+  // reached its target and kept the loop alive for minutes). After dwellDelay
+  // of settled idle, ease the focused photo to exact center over a fixed
+  // duration, computed once, then settle and sleep.
+  const DWELL_GLIDE_MS = 600;
+  function scheduleDwell() {
+    if (dwellTimer) clearTimeout(dwellTimer);
+    dwellTimer = setTimeout(tryDwellGlide, TWEAKS.dwellDelay);
+  }
+  // Nearest non-brand photo center to a pan position, across all arrangements
+  // and the wrapped tile copies. Driven by panX_target (the user's intended
+  // destination) so the glide centers where the drag was headed, matching the
+  // photo updateFocus will settle on once the plane catches up.
+  function nearestCenterTo(px, py) {
+    let bestX = px, bestY = py, bestD2 = Infinity;
+    for (let arrIdx = 0; arrIdx < ARRANGEMENTS.length; arrIdx++) {
+      const arr = ARRANGEMENTS[arrIdx];
+      const arrOriginX = arrIdx * (TILE_W + GUTTER);
+      for (const slot of arr.slots) {
+        if (slot.brand) continue;
+        const cx0 = slot.x + slot.w / 2, cy0 = slot.y + slot.h / 2;
+        for (const ox of [arrOriginX, arrOriginX + PERIOD_X, arrOriginX - PERIOD_X,
+                          arrOriginX + 2*PERIOD_X, arrOriginX - 2*PERIOD_X]) {
+          for (const oy of [0, PERIOD_Y, -PERIOD_Y, 2*PERIOD_Y, -2*PERIOD_Y]) {
+            const tX = ox + cx0, tY = oy + cy0;
+            const wX = tX + Math.round((px - tX) / PERIOD_X) * PERIOD_X;
+            const wY = tY + Math.round((py - tY) / PERIOD_Y) * PERIOD_Y;
+            const dx = wX - px, dy = wY - py, d2 = dx*dx + dy*dy;
+            if (d2 < bestD2) { bestD2 = d2; bestX = wX; bestY = wY; }
+          }
+        }
+      }
+    }
+    return { x: bestX, y: bestY };
+  }
+  function tryDwellGlide() {
+    dwellTimer = null;
+    if (!settledNow()) { dwellTimer = setTimeout(tryDwellGlide, 120); return; }
+    // Kill residual sub-threshold momentum so it can't resurrect after the
+    // glide and leave a slow lerp tail that never reaches the sleep threshold.
+    vx = 0; vy = 0;
+    const target = nearestCenterTo(panX_target, panY_target);
+    const dx = target.x - panX, dy = target.y - panY;
+    if (dx*dx + dy*dy < 0.25) {                 // already centered (<0.5px): snap + sleep
+      panX = panX_target = target.x;
+      panY = panY_target = target.y;
+      wake();
+      return;
+    }
+    glide = { fromX: panX, fromY: panY, toX: target.x, toY: target.y,
+              start: performance.now(), dur: DWELL_GLIDE_MS };
+    wake();
   }
 
   // ---------- Visibility pause ----------
@@ -825,21 +895,17 @@
   // CPU/GPU on a backgrounded plane. Resume on focus.
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
-      if (rafRender)  cancelAnimationFrame(rafRender);
-      if (rafCompass) cancelAnimationFrame(rafCompass);
-      if (rafDwell)   cancelAnimationFrame(rafDwell);
-      rafRender = rafCompass = rafDwell = 0;
-    } else if (!rafRender) {
-      rafRender  = requestAnimationFrame(render);
-      rafCompass = requestAnimationFrame(updateCompass);
-      rafDwell   = requestAnimationFrame(updateDwellCue);
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = 0;
+    } else {
+      wake();   // repaint once and re-settle; the loop sleeps again if at rest
     }
   });
 
   // Kick off
   populateMobileBloom();
-  rafRender  = requestAnimationFrame(render);
-  rafCompass = requestAnimationFrame(updateCompass);
-  rafDwell   = requestAnimationFrame(updateDwellCue);
+  scheduleCue();
+  scheduleDwell();
+  wake();
 
 })();
