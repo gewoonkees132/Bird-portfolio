@@ -4,6 +4,7 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.PredictiveBackHandler
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -101,12 +102,21 @@ fun SharedTransitionScope.DetailOverlay(
                     )
                 },
         ) { page ->
-            DetailPhotoCard(
-                photo = photos[page],
-                sharedTransitionScope = this@DetailOverlay,
-                animatedVisibilityScope = animatedVisibilityScope,
-                isActivePage = page == pagerState.currentPage,
-            )
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .pointerInput(Unit) {
+                        detectTapGestures { close() } // tap on the dimmed area around the card → never-stuck #3
+                    },
+                contentAlignment = Alignment.Center,
+            ) {
+                DetailPhotoCard(
+                    photo = photos[page],
+                    sharedTransitionScope = this@DetailOverlay,
+                    animatedVisibilityScope = animatedVisibilityScope,
+                    isActivePage = page == pagerState.currentPage,
+                )
+            }
         }
 
         CloseButton(

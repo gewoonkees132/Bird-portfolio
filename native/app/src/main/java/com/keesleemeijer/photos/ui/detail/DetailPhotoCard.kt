@@ -5,6 +5,7 @@ import androidx.compose.animation.BoundsTransform
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -45,7 +47,13 @@ fun DetailPhotoCard(
     modifier: Modifier = Modifier,
 ) = with(sharedTransitionScope) {
     var factExpanded by remember { mutableStateOf(false) }
-    Column(modifier.fillMaxWidth().padding(horizontal = 18.dp), verticalArrangement = Arrangement.Center) {
+    Column(
+        modifier
+            .fillMaxWidth()
+            .padding(horizontal = 18.dp)
+            .pointerInput(Unit) { detectTapGestures { /* consume taps on the card; do NOT close */ } },
+        verticalArrangement = Arrangement.Center,
+    ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
