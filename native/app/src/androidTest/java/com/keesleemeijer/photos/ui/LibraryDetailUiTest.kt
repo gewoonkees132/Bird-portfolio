@@ -35,9 +35,10 @@ import org.junit.runner.RunWith
  * for the Detail screen, hence UiAutomator. Assertions remain exactly as strong as the spec: Detail must
  * appear on tap and must be GONE after each never-stuck exit; the pill must change the columns.
  *
- * RESULT: 5/6 pass. tapBackdrop_dismissesDetail FAILS and exposes a real never-stuck gap — the full-screen
- * HorizontalPager occludes DetailBackdrop, so tapping the dimmed area never reaches its clickable { close() }.
- * See that test for the evidence. The remaining four exits (tap-to-open, ✕, swipe-down, Back) all work.
+ * RESULT: all 6 tests pass. The never-stuck doctrine is fully guarded on-device: Detail opens on tap and is
+ * dismissed by EVERY exit — ✕, backdrop tap, swipe-down, and Back — and the density pill switches columns.
+ * (The backdrop exit was a real never-stuck gap — the full-screen pager used to occlude the backdrop — and was
+ * fixed in commit ee56182; see tapBackdrop_dismissesDetail for the now-guarded contract.)
  */
 @RunWith(AndroidJUnit4::class)
 class LibraryDetailUiTest {
@@ -80,16 +81,13 @@ class LibraryDetailUiTest {
     @Test fun tapBackdrop_dismissesDetail() {
         openDetail()
         // Tap a point that is GENUINELY backdrop — high above the centered photo card and clear of the ✕
-        // — so the tap cannot land on the card (the center-tap targeting trap the spec warns about). The
-        // never-stuck contract (#3) is that tapping the dimmed backdrop dismisses Detail.
+        // — so the tap lands on the dimmed margin, not the card (the center-tap targeting trap the spec
+        // warns about). That is why the y coordinate is near the top (~10% down), clear of the card and ✕.
         //
-        // NOTE / FINDING: this exit DOES NOT currently fire. The full-screen HorizontalPager (with its
-        // detectVerticalDragGestures + horizontal scroll) is layered ON TOP of DetailBackdrop and wins the
-        // pointer/gesture arena for every tap, so the backdrop's clickable { close() } never receives it.
-        // Verified empirically: taps at the very top edge, just below it, mid-upper backdrop, and the very
-        // bottom (all clear of the card at y≈665–1322) ALL leave Detail open. ✕, swipe-down, and Back work.
-        // Per spec this test must keep asserting that the BACKDROP closes Detail; it correctly fails,
-        // exposing the gap. (The other never-stuck exits are proven by the sibling tests.)
+        // FIXED CONTRACT (#3): tapping the dimmed backdrop margin dismisses Detail. Each pager page's
+        // wrapping Box carries detectTapGestures { close() }, so a tap outside the centered card closes
+        // Detail. The earlier backdrop bug — where the full-screen pager ate outside-card taps so the
+        // backdrop's close() never fired — was fixed in DetailOverlay/DetailPhotoCard (commit ee56182).
         val d = device.findObject(tag("detail")).visibleBounds
         device.click(d.left + d.width() / 2, d.top + (d.height() * 0.10f).toInt())
         assertDetailGone("backdrop tap")
@@ -119,12 +117,35 @@ class LibraryDetailUiTest {
         assertEquals("Browse should be 2 columns", 2, retryColumnCount(2))
     }
 
-    /** Distinct left-edge x of every visible tile_* node = number of columns in the staggered grid. */
-    private fun visibleColumnCount(): Int =
-        device.findObjects(By.res(java.util.regex.Pattern.compile("tile_P\\d+")))
-            .map { it.visibleBounds.left }
+    /**
+     * Columns = number of lanes = the count of distinct left-edges of SINGLE-LANE tiles. Full-line
+     * (panorama) tiles span ~the whole grid width and are EXCLUDED: a panorama's left edge coincides
+     * with column-0's left-x today, but that is fixture-dependent coincidence — filtering them out by
+     * WIDTH keeps the count correct if the fixture's panorama placement ever changes. A single-lane tile
+     * is at most ~1/2 of the grid width, so the < 0.7 × gridWidth cutoff cleanly separates the two.
+     */
+    private fun visibleColumnCount(): Int {
+        // Grid/content width from the mosaic_grid node (fall back to the device display width).
+        val gridWidth = boundsOrNull(device.findObject(tag("mosaic_grid")))?.width()
+            ?: device.displayWidth
+        val laneCutoff = gridWidth * 0.7
+        // Snapshot each tile's bounds defensively: the staggered re-layout animates, so a node can go
+        // stale between collection and the bounds read — skip stale handles rather than abort the count.
+        return device.findObjects(By.res(java.util.regex.Pattern.compile("tile_P\\d+")))
+            .mapNotNull { boundsOrNull(it) }
+            .filter { it.width() < laneCutoff }   // drop full-line panoramas; keep single-lane tiles only
+            .map { it.left }
             .distinct()
             .size
+    }
+
+    /** Read a node's visible bounds, tolerating a node that went stale mid-relayout (returns null then). */
+    private fun boundsOrNull(obj: androidx.test.uiautomator.UiObject2?): android.graphics.Rect? =
+        try {
+            obj?.visibleBounds
+        } catch (e: androidx.test.uiautomator.StaleObjectException) {
+            null
+        }
 
     /** The column relayout animates; poll briefly until the geometric count matches [expected] (or give up). */
     private fun retryColumnCount(expected: Int): Int {
