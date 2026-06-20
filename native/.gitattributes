@@ -1,0 +1,4 @@
+# Keep the Unix gradle wrapper LF and the Windows wrapper CRLF regardless of core.autocrlf.
+gradlew     text eol=lf
+*.bat       text eol=crlf
+*.jar       binary
