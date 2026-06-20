@@ -69,7 +69,7 @@ fun PlaneScreen(photos: List<Photo>, onOpenDetail: (Photo) -> Unit, modifier: Mo
                     clamp()
                 }
             }
-            .pointerInput(layout, fitScale, zoom, panX, panY) {
+            .pointerInput(layout, fitScale) {
                 detectTapGestures { tap ->
                     val l = layout ?: return@detectTapGestures
                     val s = fitScale * zoom
