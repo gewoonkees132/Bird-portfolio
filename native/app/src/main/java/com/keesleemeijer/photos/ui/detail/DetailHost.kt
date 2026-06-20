@@ -45,6 +45,10 @@ fun DetailHost(
                     ViewMode.Plane -> plane(sts, this@AnimatedContent)
                 }
             }
+            // NOTE: keyed on detailIndex (not just open/closed), so this re-keys on every page turn.
+            // That is safe ONLY because rememberPagerState reads initialPage once (first composition)
+            // and ignores it afterward — the overlay keeps its place. Do NOT change this key to one
+            // that re-mounts the overlay (it would reset the pager + re-steal focus on each page).
             AnimatedContent(
                 targetState = detailIndex,
                 transitionSpec = { fadeIn(tween(300)) togetherWith fadeOut(tween(300)) },
