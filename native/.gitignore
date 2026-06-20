@@ -1,0 +1,10 @@
+# Gradle / Android build artifacts and local caches — never commit these.
+.gradle/
+build/
+local.properties
+*.iml
+.idea/
+.kotlin/
+captures/
+.externalNativeBuild/
+.cxx/

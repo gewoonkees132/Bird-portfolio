@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="canvas">#161616</color> <!-- guideline §4.1 canvas -->
+    <color name="cobalt">#1635EE</color>
+</resources>
