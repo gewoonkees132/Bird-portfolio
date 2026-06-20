@@ -76,6 +76,11 @@ dependencies {
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.compose.ui.test.junit4)
+    // UiAutomator queries the real view/a11y tree, independent of Compose's idling resource. Required
+    // because the Detail screen's SharedTransition keeps Compose perpetually "busy" (pending lookahead
+    // measure/layout), so every Compose-test finder/assert blocks on idle while Detail is open. The app
+    // exposes testTags as resource-ids (MainActivity: testTagsAsResourceId = true) for By.res().
+    androidTestImplementation(libs.androidx.uiautomator)
     debugImplementation(libs.compose.ui.tooling)
     debugImplementation(libs.compose.ui.test.manifest)
 }

@@ -105,6 +105,7 @@ fun MosaicScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(photo.aspect.ratio)
+                    .testTag("tile_${photo.id}")
                     .animateItem(fadeInSpec = fadeSnap, placementSpec = placementSnap, fadeOutSpec = fadeSnap),
             )
         }
