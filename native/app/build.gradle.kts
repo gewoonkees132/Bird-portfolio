@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.androidx.baselineprofile)
 }
 
 android {
@@ -26,6 +27,12 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             signingConfig = signingConfigs.getByName("debug") // prototype builds without a keystore
         }
+        create("benchmark") {
+            initWith(buildTypes.getByName("release"))
+            signingConfig = signingConfigs.getByName("debug")
+            matchingFallbacks += listOf("release")
+            isDebuggable = false
+        }
     }
 
     compileOptions {
@@ -43,6 +50,16 @@ android {
                 "/META-INF/NOTICE*", "/META-INF/*.kotlin_module", "DebugProbesKt.bin",
             )
         }
+    }
+}
+
+// benchmark 1.5.0-alpha's baselineProfile extension is project-scoped (not per-buildType).
+// Default off; turn on automatic generation only for the shipping `release` variant so
+// `assembleRelease` regenerates the profile, while `benchmark` is measured via CompilationMode in tests.
+baselineProfile {
+    automaticGenerationDuringBuild = false
+    variants {
+        maybeCreate("release").automaticGenerationDuringBuild = true
     }
 }
 
@@ -69,6 +86,8 @@ dependencies {
 
     implementation(libs.androidx.metrics.performance)   // JankStats (wired in Task 10)
     implementation(libs.androidx.profileinstaller)      // baseline profile installer (Task 10)
+
+    baselineProfile(project(":macrobenchmark"))
 
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)

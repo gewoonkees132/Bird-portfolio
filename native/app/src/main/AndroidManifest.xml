@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
     <!-- Prototype is fully offline: photos are bundled in assets/. No permissions. -->
     <application
         android:name=".PhotosApp"
@@ -9,6 +10,8 @@
         android:supportsRtl="true"
         android:enableOnBackInvokedCallback="true"
         android:theme="@style/Theme.Photos">
+        <!-- Lets Macrobenchmark read trace sections from a non-debuggable build. -->
+        <profileable android:shell="true" tools:targetApi="29" />
         <activity
             android:name=".MainActivity"
             android:exported="true"

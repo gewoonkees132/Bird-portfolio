@@ -20,3 +20,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "PhotosNative"
 include(":app")
+include(":macrobenchmark")
