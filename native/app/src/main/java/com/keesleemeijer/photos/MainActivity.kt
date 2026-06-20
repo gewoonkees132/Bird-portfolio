@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import com.keesleemeijer.photos.ui.theme.AppTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,5 +21,7 @@ class MainActivity : ComponentActivity() {
 // Replaced in Task 2 (AppTheme) and Task 6 (LibraryRoot). For now: a dark canvas.
 @Composable
 private fun Root() {
-    Surface(modifier = Modifier.fillMaxSize(), color = Color(0xFF161616)) {}
+    AppTheme {
+        Surface(modifier = Modifier.fillMaxSize(), color = AppTheme.tokens.colors.canvas) {}
+    }
 }
