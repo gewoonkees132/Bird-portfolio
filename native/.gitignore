@@ -1,0 +1,13 @@
+# Gradle / Android build artifacts and local caches — never commit these.
+.gradle/
+build/
+local.properties
+*.iml
+.idea/
+.kotlin/
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Generated baseline profiles (regenerated on-device during assembleRelease; not source).
+app/src/*/generated/
