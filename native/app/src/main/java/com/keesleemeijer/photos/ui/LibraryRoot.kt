@@ -14,5 +14,7 @@ fun LibraryRoot(viewModel: LibraryViewModel = viewModel(factory = LibraryViewMod
         onPinchSettle = viewModel::onPinchSettle,
         onSelectTier = viewModel::selectTier,
         onModeToggle = viewModel::onModeToggle,
+        onDetailPage = viewModel::onDetailPage,
+        onClose = viewModel::close,
     )
 }
