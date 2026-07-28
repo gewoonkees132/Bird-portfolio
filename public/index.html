@@ -93,6 +93,25 @@
     <div>Arrangement <span class="arr" id="compass-arr">A</span></div>
   </div>
 
+  <!-- Full-screen viewer. The top-right control opens the focused photograph
+       full screen and then *is* the close button — it never moves, it only
+       swaps its glyph. The species opener stays layered above the viewer so
+       its plate can still be read and toggled over the image. -->
+  <button class="fs-toggle" id="fs-toggle" type="button"
+          aria-controls="fullscreen" aria-expanded="false"
+          aria-label="View this photograph full screen">
+    <svg class="fs-ico fs-ico--expand" viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+      <path d="M3 7.5V3h4.5M12.5 3H17v4.5M17 12.5V17h-4.5M7.5 17H3v-4.5" />
+    </svg>
+    <svg class="fs-ico fs-ico--close" viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+      <path d="M5 5l10 10M15 5L5 15" />
+    </svg>
+  </button>
+
+  <div class="fullscreen" id="fullscreen" hidden>
+    <img class="fs-img" id="fs-img" alt="" decoding="async" draggable="false" />
+  </div>
+
   <!-- Mobile placeholder edition -->
   <div class="mobile-edition">
     <div class="mobile-identity">

@@ -258,7 +258,9 @@ html, body {
   position: fixed;
   bottom: var(--inset-corner);
   left: var(--inset-corner);
-  z-index: 10;
+  /* Above .fullscreen (15): the opener and its plate stay readable as an
+     overlay on top of the full-screen image. Only .fs-toggle (40) is higher. */
+  z-index: 30;
   pointer-events: none;
   /* No resting padding: the resting label is absolutely pinned to the corner,
      so padding only frames the bloom plate (set on .is-blooming). Padding is no
@@ -517,6 +519,88 @@ html, body {
 }
 
 /* ============================================================
+   Full-screen viewer — top-right toggle + the plate it opens
+   The toggle borrows the bloom plate's surface (cream field,
+   hairline, --radius-card, soft lift) so the two corners read as
+   one family. Open or closed it holds the same spot; only the
+   glyph crossfades, so the control the visitor pressed is the
+   control that closes.
+   ============================================================ */
+.fs-toggle {
+  position: fixed;
+  top: var(--inset-corner);
+  right: var(--inset-corner);
+  z-index: 40;
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  background: var(--field);
+  border: 1px solid rgba(26, 26, 26, 0.22);
+  border-radius: var(--radius-card);
+  box-shadow: 0 6px 24px -8px rgba(0, 0, 0, 0.22);
+  color: var(--charcoal);
+  cursor: pointer;
+  opacity: 0;
+  animation: fadeIn 200ms ease-out 280ms forwards;
+  transition: background var(--label-in) ease;
+}
+.fs-toggle:hover { background: #fff; }
+.fs-toggle:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+/* Both glyphs share one grid cell so the swap costs no layout. */
+.fs-toggle .fs-ico {
+  grid-area: 1 / 1;
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.4;
+  stroke-linecap: square;
+  transition: opacity var(--label-in) ease;
+}
+.fs-toggle .fs-ico--close          { opacity: 0; }
+.fs-toggle.is-open .fs-ico--expand { opacity: 0; }
+.fs-toggle.is-open .fs-ico--close  { opacity: 1; }
+
+.fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 15;
+  background: rgba(12, 12, 12, 0.94);
+  opacity: 0;
+  transition: opacity var(--label-out) ease-in;
+}
+/* [hidden] is a UA rule; the class selector above outranks it, so restate it. */
+.fullscreen[hidden] { display: none; }
+.fullscreen.is-open {
+  opacity: 1;
+  transition: opacity var(--label-in) ease-out;
+}
+/* Fit to screen — the whole frame is always visible, capped by whichever axis
+   runs out first: a wide photograph meets the left and right edges, an upright
+   one meets the top and bottom. `contain` letterboxes the slack axis against the
+   backdrop; no inset and no radius, so the photograph reaches the edges it can.
+
+   The box is pinned to .fullscreen's inset rather than centred in a grid track.
+   A grid row here is auto-sized *from the image*, which makes `height: 100%` a
+   cyclic percentage — it resolved to the natural height, so anything taller than
+   the viewport overflowed and got cropped instead of being capped by it.
+   Absolute inset gives both percentages a definite box: the viewport. */
+.fullscreen .fs-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;       /* object-position defaults to 50% 50% — centred */
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* ============================================================
    Mobile placeholder
    ============================================================ */
 .mobile-edition {
@@ -705,7 +789,8 @@ html, body {
    editorial scroll instead. Mobile visitors get the curated sequence;
    AT users get a properly-structured list with real headings + alts. */
 @media (max-width: 720px) {
-  .stage, .identity, .species, .compass { display: none; }
+  .stage, .identity, .species, .compass,
+  .fs-toggle, .fullscreen { display: none; }
   .mobile-edition { display: block; }
 }
 
@@ -769,5 +854,8 @@ html, body {
   .species,
   .species::before,
   .species .line-name,
+  .fs-toggle,
+  .fs-toggle .fs-ico,
+  .fullscreen,
   .mobile-edition .mcell .mbloom::details-content { transition-duration: 0ms; animation-duration: 0ms; }
 }

@@ -597,7 +597,14 @@
 
     plane.style.transform = `translate3d(${tx}px, ${ty}px, 0) scale(${z})`;
 
-    updateFocus(panX, panY);
+    // Over the plane, focus follows what is on screen — the label should name
+    // the photograph you can see, not the one you are heading for. Behind the
+    // viewer's backdrop there is nothing to see, so it follows intent instead:
+    // reading the mid-lerp position there would find the photograph you just
+    // stepped away from still nearest, and the viewer would flick backwards
+    // before arriving.
+    const byIntent = isFullscreen();
+    updateFocus(byIntent ? panX_target : panX, byIntent ? panY_target : panY);
     updateCompass();
 
     if (atRest) { rafId = 0; return; }
@@ -608,6 +615,7 @@
   let currentFocusKey = null;
   let focusedEls = new Set();
   let labelTimeout = null;
+  let focusedSpecies = null;   // the SPECIES record behind the label — what the full-screen viewer shows
 
   function updateFocus(px, py) {
     const { wx, wy } = wrapWorld(px, py);
@@ -711,6 +719,10 @@
 
     const sp = SPECIES.find(s => s.id === info.slot.id);
     if (!sp) return;
+    focusedSpecies = sp;
+    // The viewer is a window onto whatever the plane is focused on, so it
+    // follows focus rather than keeping a selection of its own.
+    if (isFullscreen()) showInViewer(sp);
     const latinHtml = escapeHtml(sp.latin).replace(/ /g, '&nbsp;');
     // Resting label (uppercased by CSS, announced via aria-live) and bloomed
     // title both get filled; the bloom is an opacity crossfade between them.
@@ -895,14 +907,24 @@
     }
   }, { passive: false });
 
-  // Arrow keys — discrete jumps to nearest photo center
+  // Arrow keys — discrete jumps to nearest photo center. They work over the
+  // plane and inside the full-screen viewer alike. The viewer shows whatever
+  // the plane is focused on, so a step there moves the plane behind the
+  // backdrop and the photograph on screen follows; close it and you are
+  // standing on the photograph you navigated to.
   document.addEventListener('keydown', (e) => {
-    if (['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)) {
-      e.preventDefault();
-      bumpInteraction();
-      jumpToNearestInDir(e.key);
-    }
+    if (!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)) return;
+    e.preventDefault();
+    step(e.key);
   });
+
+  // One directional step, from either input and in either view. bumpInteraction
+  // wakes the render loop, which resolves the new focus on the next frame and —
+  // if the viewer is open — hands it the photograph to show.
+  function step(dir) {
+    bumpInteraction();
+    jumpToNearestInDir(dir);
+  }
 
   function jumpToNearestInDir(dir) {
     const { wx, wy } = wrapWorld(panX_target, panY_target);
@@ -956,6 +978,151 @@
       compassArr.textContent = ARRANGEMENTS[arrIdx].name;
     }
   }
+
+  // ---------- Full-screen viewer ----------
+  // One control, top-right, for the photograph the plane is focused on. It does
+  // not move or get replaced when the viewer opens — the same button becomes the
+  // ✕, so the thing you pressed is the thing that closes. The species opener sits
+  // above the viewer (z-index in styles.css) and keeps working over the image.
+  const fsToggle = document.getElementById('fs-toggle');
+  const fsLayer  = document.getElementById('fullscreen');
+  const fsImg    = document.getElementById('fs-img');
+  const FS_FADE_OUT_MS = 150;   // matches --label-out
+  let fsHideTimer = null;
+
+  function isFullscreen() {
+    return !!fsLayer && !fsLayer.hidden;
+  }
+
+  // Swapping .src on the live <img> leaves it blank until the new file decodes,
+  // which shows as a black flash mid-navigation. Every one of these files is
+  // already in cache from the plane, so decoding an off-screen copy first costs
+  // next to nothing and the swap lands on a frame that can paint immediately.
+  let fsShownSrc = null;
+  let fsSwapToken = 0;
+  function showInViewer(sp) {
+    if (!fsImg || !sp || !sp.image || sp.image === fsShownSrc) return;
+    fsShownSrc = sp.image;
+    const token = ++fsSwapToken;
+    const src = sp.image;
+    const alt = sp.vernacular;
+    const swap = () => {
+      if (token !== fsSwapToken) return;   // a later step overtook this one
+      fsImg.src = src;
+      fsImg.alt = alt;
+    };
+    const pre = new Image();
+    pre.src = src;
+    if (pre.decode) pre.decode().then(swap, swap); else swap();
+  }
+
+  function openFullscreen() {
+    if (!fsLayer || !fsImg || !fsToggle) return;
+    if (!focusedSpecies || !focusedSpecies.image) return;   // nothing focused yet, or a slot with no photo
+    if (fsHideTimer) { clearTimeout(fsHideTimer); fsHideTimer = null; }
+
+    // Straight assignment on open rather than showInViewer's decode round-trip:
+    // the layer fades up from nothing, so there is no old frame to protect.
+    fsSwapToken++;
+    fsShownSrc = focusedSpecies.image;
+    fsImg.src = focusedSpecies.image;
+    fsImg.alt = focusedSpecies.vernacular;
+    fsLayer.hidden = false;
+    // A frame between `hidden` coming off and .is-open going on, or the two
+    // style changes collapse into one and the fade never runs.
+    requestAnimationFrame(() => fsLayer.classList.add('is-open'));
+
+    fsToggle.classList.add('is-open');
+    fsToggle.setAttribute('aria-expanded', 'true');
+    fsToggle.setAttribute('aria-label', 'Close full screen');
+  }
+
+  function closeFullscreen() {
+    if (!isFullscreen() || !fsToggle) return;
+    fsLayer.classList.remove('is-open');
+    fsToggle.classList.remove('is-open');
+    fsToggle.setAttribute('aria-expanded', 'false');
+    fsToggle.setAttribute('aria-label', 'View this photograph full screen');
+    // Hold the node until the fade finishes, then take it out of the tree so it
+    // cannot swallow pointer events from the plane.
+    if (fsHideTimer) clearTimeout(fsHideTimer);
+    fsHideTimer = setTimeout(() => {
+      fsHideTimer = null;
+      fsLayer.hidden = true;
+      fsSwapToken++;              // strand any decode still in flight
+      fsShownSrc = null;
+      fsImg.removeAttribute('src');
+    }, FS_FADE_OUT_MS);
+    fsWheelReset();
+  }
+
+  // ---------- Viewer: wheel / trackpad navigation ----------
+  // One photograph per gesture. A trackpad flick delivers a long momentum tail
+  // and a spun mouse wheel a long burst of clicks; stepping on every event
+  // would fly past a dozen photographs. So accumulate to a threshold, fire
+  // once, then stay locked until the wheel has been quiet for a beat — the
+  // gesture ends when the hand stops, not when the events do.
+  const FS_WHEEL_STEP = 80;       // accumulated px before a step fires
+  const FS_WHEEL_QUIET_MS = 180;  // silence that closes out a gesture
+  let fsAccX = 0, fsAccY = 0;
+  let fsWheelLocked = false;
+  let fsWheelTimer = null;
+
+  function fsWheelReset() {
+    if (fsWheelTimer) { clearTimeout(fsWheelTimer); fsWheelTimer = null; }
+    fsWheelLocked = false;
+    fsAccX = 0; fsAccY = 0;
+  }
+
+  if (fsLayer) {
+    fsLayer.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      if (e.ctrlKey) return;      // trackpad pinch — the viewer has no zoom
+
+      if (fsWheelTimer) clearTimeout(fsWheelTimer);
+      fsWheelTimer = setTimeout(fsWheelReset, FS_WHEEL_QUIET_MS);
+      if (fsWheelLocked) return;
+
+      // deltaMode 1 (lines) / 2 (pages) come from mice and older engines; the
+      // threshold above is in pixels, so bring them onto that scale first. 33
+      // rather than a true line height: Firefox reports 3 lines per wheel notch
+      // where Chrome reports 100px, and one notch should be one photograph on
+      // both — a literal 16 would leave a slowly turned wheel stepping never,
+      // because the quiet timer clears the accumulator between notches.
+      const unit = e.deltaMode === 1 ? 33 : e.deltaMode === 2 ? window.innerHeight : 1;
+      fsAccX += e.deltaX * unit;
+      fsAccY += e.deltaY * unit;
+
+      const vertical = Math.abs(fsAccY) >= Math.abs(fsAccX);
+      const acc = vertical ? fsAccY : fsAccX;
+      if (Math.abs(acc) < FS_WHEEL_STEP) return;
+
+      fsWheelLocked = true;
+      fsAccX = 0; fsAccY = 0;
+      step(vertical
+        ? (acc > 0 ? 'ArrowDown'  : 'ArrowUp')
+        : (acc > 0 ? 'ArrowRight' : 'ArrowLeft'));
+    }, { passive: false });
+  }
+
+  if (fsToggle) {
+    fsToggle.addEventListener('click', (e) => {
+      // Keep this click away from the document handler below, which closes the
+      // bloom on any outside click — the plate is meant to stay open over the viewer.
+      e.stopPropagation();
+      if (isFullscreen()) closeFullscreen(); else openFullscreen();
+      noteUiInteraction();
+    });
+  }
+
+  // Escape closes the viewer, but only once the bloom is down, so one press
+  // never dismisses two layers. Registered ahead of the bloom's own Escape
+  // handler so it reads the bloom state before that handler clears it.
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape' || !isFullscreen()) return;
+    if (speciesEl.classList.contains('is-blooming')) return;
+    closeFullscreen();
+  });
 
   // ---------- Species label: bloom interaction ----------
   const DWELL_CUE_MS = 1800;
