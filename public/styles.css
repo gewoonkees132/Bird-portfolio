@@ -10,9 +10,10 @@
   --field-overlay: rgba(242, 238, 229, 0.95);
   --blue-soft:     rgba(22, 53, 238, 0.6);
 
-  /* Spatial */
+  /* Spatial — 12x8 cells of an 88px module with a 24px gutter. Must stay in
+     sync with TILE_W / TILE_H in app.js. */
   --tile-width:   1320px;
-  --tile-height:   760px;
+  --tile-height:   872px;
   --gutter:         24px;
   --inset-corner:   14px;  /* species plate offset from viewport bottom-left */
   --radius-card:     8px;  /* bloomed species plate corner radius */
@@ -198,46 +199,9 @@ html, body {
 .photo.has-image .photo-img { opacity: 1; }
 .photo.has-image .placeholder { opacity: 0; }
 
-/* Brand card — replaces the longest-aspect slot with wordmark + pictogram. */
-.photo.is-brand {
-  opacity: 1;
-  filter: none;
-  background: var(--field);
-  display: grid;
-  place-items: center;
-  box-shadow: none;
-  cursor: grab;
-}
-/* Brand cards carry no ambient dim or focus shadow — drop the overlays. */
-.photo.is-brand::before,
-.photo.is-brand::after { display: none; }
-.photo.is-brand .brand-inner {
-  display: inline-flex;
-  align-items: center;
-  gap: 18px;
-  font-family: var(--font-stack);
-  font-weight: 500;
-  font-size: 26px;
-  letter-spacing: -0.01em;
-  color: var(--charcoal);
-  white-space: nowrap;
-}
-.photo.is-brand .brand-picto {
-  width: 38px;
-  height: 38px;
-  display: block;
-  border-radius: 1px;
-  flex-shrink: 0;
-}
-.photo.is-brand .brand-dot { color: var(--blue); }
-.photo.is-brand.is-focused {
-  /* brand cards aren't focus targets, but guard the rule anyway */
-  box-shadow: none;
-}
-.photo.is-brand.is-entering {
-  opacity: 0;
-  transform: translateY(4px);
-}
+/* The plane once carried a brand card in one slot per tile (.photo.is-brand).
+   Removed 2026-07-28 so every slot is a bird; identity is the .identity corner
+   element below. */
 
 /* ============================================================
    Identity — wordmark + pictogram (top-left)

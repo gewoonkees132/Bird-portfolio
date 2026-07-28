@@ -7,13 +7,16 @@
   'use strict';
 
   // ---------- Species data (16 photos) ----------
-  // Shapes: L landscape 16:9 (1,3,5,7,9,10,11,12,14,15) · V portrait 2:3
+  // Shapes: L landscape (1,3,5,7,9,10,11,12,14,15) · V portrait 2:3
   //   (2,6,13,16) · W super-wide letterbox (4,8). Repeats are intentional —
   //   Weaver appears twice (2 nest / 6 flight) and the Raw-todo batch adds more
-  //   Great Tit + Robin tiles. Image assignment matches each photo's native
-  //   aspect to its slot shape:
-  //   L slots ← landscape photos (~3:2)   V slots ← vertical photos (~2:3)
-  //   W slots ← landscape photos cropped wide via object-fit: cover
+  //   Great Tit + Robin tiles. The shape decides which slot kind a photo may
+  //   occupy; tools/gen-arrangements.js reads the same mapping when it builds
+  //   ARRANGEMENTS, so the two must agree.
+  //   Note the L files are currently 16:9 (2160x1215), not 3:2 — they were
+  //   cropped that way by tools/convert-raw.py. Slots now target 3:2, so an L
+  //   photo loses a sliver of its sides to object-fit: cover until the batch is
+  //   re-exported at 3:2 from the originals.
   const F = (n) => 'files/' + encodeURI(n);
   const SPECIES = [
     { id: 1, vernacular: 'European Robin',        latin: 'Erithacus rubecula',     shape: 'L',
@@ -181,106 +184,122 @@
   }
 
   // ---------- Arrangements ----------
-  // Tile: 1320 x 760. 12×7 cell grid, module 88, gutter 24, no outer margin.
-  // Each arrangement is an exact tiling: 6 photo slots + 1 brand slot, every
-  // cell covered once. A–D draw from the original 8 ids; E–H bring the
-  // Raw-todo ids (7,9–16) onto the cycle. The union of A–H references all 16
-  // ids (~3 appearances each). Place V ids in tall slots, L ids in wide ones.
+  // Tile: 1320 x 872. 12×8 cell grid, module 88, gutter 24, no outer margin.
+  // GENERATED — do not hand-edit. Regenerate with:
+  //     node tools/gen-arrangements.js
+  //
+  // Every slot span is drawn from a palette that lands near 3:2 on this
+  // lattice. With a square module and one uniform gutter no span is EXACTLY
+  // 3:2 (it would need gutter/pitch to be an integer), but the (3n,2n) family
+  // converges on it: 3×2 is +4.0%, 6×4 +1.9%, 9×6 +1.2%. Portrait mirrors it
+  // with (2n,3n): 2×3 −3.8%, 4×6 −1.9%. 3×4 (+10.4%) is the one compromise —
+  // its height of 4 divides an 8-row tile, and without it the tiling space
+  // collapses from 768 usable layouts to 24. 6×2 is the deliberate letterbox
+  // for the two panoramic photos (P4 3.00, P8 3.80) and is exempt.
+  //
+  // The 8-row tile is what makes this work: the old 12×7 tile admits exactly
+  // ONE layout from this palette, because 7 rows cannot carry a 2-row rhythm.
+  //
+  // Each arrangement is an exact tiling of all 96 cells — 6 to 8 photo slots,
+  // every one a bird. There is no brand card on the plane; site identity is the
+  // fixed .identity corner element in index.html. Slot ids are unique within an
+  // arrangement (focus tracking looks slots up by id) and no species appears
+  // more than twice in one tile. Across the eight, each photo appears 2–5 times.
   const ARRANGEMENTS = [
     {
       name: 'A',
       slots: [
-        { c:0, r:0, cw:7, ch:4, id: 5 },
-        { c:7, r:0, cw:5, ch:3, id: 3 },
-        { c:7, r:3, cw:5, ch:1, id: 4 },
-        { c:0, r:4, cw:3, ch:3, id: 1 },
-        { c:3, r:4, cw:6, ch:2, id: 8 },
-        { c:9, r:4, cw:3, ch:3, id: 6 },
-        { c:3, r:6, cw:6, ch:1, brand: true },
+        { c: 0, r:0, cw: 3, ch:2, id:  5 },
+        { c: 3, r:0, cw: 3, ch:2, id:  3 },
+        { c: 6, r:0, cw: 6, ch:4, id:  9 },
+        { c: 0, r:2, cw: 2, ch:3, id:  6 },  // V
+        { c: 2, r:2, cw: 4, ch:6, id: 13 },  // V
+        { c: 6, r:4, cw: 6, ch:4, id:  1 },
+        { c: 0, r:5, cw: 2, ch:3, id: 16 },  // V
       ]
     },
     {
       name: 'B',
       slots: [
-        { c:5, r:0, cw:7, ch:4, id: 3 },
-        { c:0, r:0, cw:3, ch:4, id: 6 },
-        { c:3, r:0, cw:2, ch:4, id: 2 },
-        { c:0, r:4, cw:5, ch:3, id: 5 },
-        { c:5, r:4, cw:7, ch:2, id: 8 },
-        { c:5, r:6, cw:5, ch:1, brand: true },
-        { c:10, r:6, cw:2, ch:1, id: 4 },
+        { c: 0, r:0, cw: 4, ch:6, id:  2 },  // V
+        { c: 4, r:0, cw: 4, ch:6, id: 13 },  // V
+        { c: 8, r:0, cw: 4, ch:6, id: 16 },  // V
+        { c: 0, r:6, cw: 3, ch:2, id: 14 },
+        { c: 3, r:6, cw: 3, ch:2, id: 11 },
+        { c: 6, r:6, cw: 3, ch:2, id:  5 },
+        { c: 9, r:6, cw: 3, ch:2, id:  3 },
       ]
     },
     {
       name: 'C',
       slots: [
-        { c:0, r:0, cw:6, ch:2, id: 4 },
-        { c:6, r:0, cw:3, ch:3, id: 2 },
-        { c:9, r:0, cw:3, ch:2, id: 6 },
-        { c:9, r:2, cw:3, ch:1, id: 5 },
-        { c:0, r:2, cw:6, ch:1, brand: true },
-        { c:0, r:3, cw:7, ch:4, id: 7 },
-        { c:7, r:3, cw:5, ch:4, id: 1 },
+        { c: 0, r:0, cw: 3, ch:2, id: 15 },
+        { c: 3, r:0, cw: 3, ch:2, id:  7 },
+        { c: 6, r:0, cw: 6, ch:2, id:  8 },  // letterbox
+        { c: 0, r:2, cw: 6, ch:2, id:  4 },  // letterbox
+        { c: 6, r:2, cw: 2, ch:3, id:  6 },  // V
+        { c: 8, r:2, cw: 4, ch:6, id:  2 },  // V
+        { c: 0, r:4, cw: 6, ch:4, id:  1 },
+        { c: 6, r:5, cw: 2, ch:3, id: 13 },  // V
       ]
     },
     {
       name: 'D',
       slots: [
-        { c:0, r:0, cw:6, ch:2, id: 8 },
-        { c:6, r:0, cw:6, ch:2, id: 4 },
-        { c:0, r:2, cw:2, ch:4, id: 6 },
-        { c:2, r:2, cw:7, ch:4, id: 1 },
-        { c:9, r:2, cw:3, ch:4, id: 2 },
-        { c:0, r:6, cw:6, ch:1, brand: true },
-        { c:6, r:6, cw:6, ch:1, id: 3 },
+        { c: 0, r:0, cw: 3, ch:2, id: 12 },
+        { c: 3, r:0, cw: 3, ch:2, id: 10 },
+        { c: 6, r:0, cw: 6, ch:2, id:  8 },  // letterbox
+        { c: 0, r:2, cw: 4, ch:6, id: 16 },  // V
+        { c: 4, r:2, cw: 4, ch:6, id:  2 },  // V
+        { c: 8, r:2, cw: 4, ch:6, id:  6 },  // V
       ]
     },
     {
       name: 'E',
       slots: [
-        { c:0, r:0, cw:8, ch:3, id: 9 },
-        { c:8, r:0, cw:4, ch:3, id: 14 },
-        { c:0, r:3, cw:3, ch:4, id: 13 },   // V
-        { c:3, r:3, cw:5, ch:2, id: 7 },
-        { c:8, r:3, cw:4, ch:3, id: 15 },
-        { c:3, r:5, cw:5, ch:2, id: 10 },
-        { c:8, r:6, cw:4, ch:1, brand: true },
+        { c: 0, r:0, cw: 3, ch:2, id: 15 },
+        { c: 3, r:0, cw: 3, ch:4, id: 13 },  // V
+        { c: 6, r:0, cw: 6, ch:4, id:  9 },
+        { c: 0, r:2, cw: 3, ch:2, id: 14 },
+        { c: 0, r:4, cw: 6, ch:4, id:  5 },
+        { c: 6, r:4, cw: 6, ch:2, id:  4 },  // letterbox
+        { c: 6, r:6, cw: 6, ch:2, id:  8 },  // letterbox
       ]
     },
     {
       name: 'F',
       slots: [
-        { c:0, r:0, cw:3, ch:5, id: 16 },   // V
-        { c:3, r:0, cw:9, ch:2, id: 11 },
-        { c:3, r:2, cw:4, ch:2, id: 12 },
-        { c:7, r:2, cw:5, ch:2, id: 15 },
-        { c:3, r:4, cw:9, ch:2, id: 14 },
-        { c:0, r:5, cw:3, ch:2, id: 9 },
-        { c:3, r:6, cw:9, ch:1, brand: true },
+        { c: 0, r:0, cw: 6, ch:4, id:  7 },
+        { c: 6, r:0, cw: 6, ch:4, id: 11 },
+        { c: 0, r:4, cw: 6, ch:4, id:  1 },
+        { c: 6, r:4, cw: 3, ch:2, id:  3 },
+        { c: 9, r:4, cw: 3, ch:4, id:  6 },  // V
+        { c: 6, r:6, cw: 3, ch:2, id: 15 },
       ]
     },
     {
       name: 'G',
       slots: [
-        { c:0, r:0, cw:3, ch:4, id: 13 },   // V
-        { c:9, r:0, cw:3, ch:4, id: 16 },   // V
-        { c:3, r:0, cw:6, ch:2, id: 11 },
-        { c:3, r:2, cw:6, ch:2, id: 12 },
-        { c:0, r:4, cw:7, ch:3, id: 10 },
-        { c:7, r:4, cw:5, ch:2, id: 7 },
-        { c:7, r:6, cw:5, ch:1, brand: true },
+        { c: 0, r:0, cw: 3, ch:2, id: 10 },
+        { c: 3, r:0, cw: 3, ch:2, id: 12 },
+        { c: 6, r:0, cw: 3, ch:2, id: 14 },
+        { c: 9, r:0, cw: 3, ch:2, id:  5 },
+        { c: 0, r:2, cw: 3, ch:4, id:  2 },  // V
+        { c: 3, r:2, cw: 9, ch:6, id:  3 },
+        { c: 0, r:6, cw: 3, ch:2, id:  1 },
       ]
     },
     {
       name: 'H',
       slots: [
-        { c:0, r:0, cw:4, ch:2, id: 11 },
-        { c:4, r:0, cw:5, ch:2, id: 12 },
-        { c:9, r:0, cw:3, ch:4, id: 13 },   // V
-        { c:0, r:2, cw:3, ch:4, id: 16 },   // V
-        { c:3, r:2, cw:6, ch:2, id: 14 },
-        { c:3, r:4, cw:9, ch:2, id: 15 },
-        { c:0, r:6, cw:12, ch:1, brand: true },
+        { c: 0, r:0, cw: 3, ch:2, id: 11 },
+        { c: 3, r:0, cw: 3, ch:4, id:  6 },  // V
+        { c: 6, r:0, cw: 3, ch:2, id:  9 },
+        { c: 9, r:0, cw: 3, ch:4, id:  2 },  // V
+        { c: 0, r:2, cw: 3, ch:2, id: 15 },
+        { c: 6, r:2, cw: 3, ch:2, id: 14 },
+        { c: 0, r:4, cw: 6, ch:4, id:  5 },
+        { c: 6, r:4, cw: 6, ch:4, id:  3 },
       ]
     },
   ];
@@ -297,9 +316,9 @@
     });
   });
 
-  const ARRANGEMENT_LEAD = { 0: 5, 1: 3, 2: 7, 3: 1, 4: 9, 5: 16, 6: 13, 7: 11 };
+  const ARRANGEMENT_LEAD = { 0: 9, 1: 2, 2: 2, 3: 16, 4: 9, 5: 7, 6: 3, 7: 5 };
   const TILE_W = 12 * 88 + 11 * 24;
-  const TILE_H =  7 * 88 +  6 * 24;
+  const TILE_H =  8 * 88 +  7 * 24;
   const GUTTER = 24;
   const STRIP_W = (TILE_W + GUTTER) * ARRANGEMENTS.length;
 
@@ -344,21 +363,6 @@
         pEl.style.top    = slot.y + 'px';
         pEl.style.width  = slot.w + 'px';
         pEl.style.height = slot.h + 'px';
-
-        if (slot.brand) {
-          pEl.className = 'photo is-brand is-entering';
-          pEl.innerHTML =
-            '<div class="brand-inner">' +
-              '<img class="brand-picto" src="files/logo/SVG/logo.svg" alt="" aria-hidden="true" />' +
-              '<span class="brand-wordmark">' +
-                '<span class="brand-name">Kees Leemeijer</span>' +
-                '<span class="brand-dot">.</span>' +
-              '</span>' +
-            '</div>';
-          tileEl.appendChild(pEl);
-          photos.push({ el: pEl, slot, sp: null });
-          return;
-        }
 
         const sp = SPECIES.find(s => s.id === slot.id);
         if (!sp) return;
@@ -576,7 +580,6 @@
       const candidatesX = [arrOriginX, arrOriginX + PERIOD_X, arrOriginX - PERIOD_X];
       const candidatesY = [0, PERIOD_Y, -PERIOD_Y];
       for (const slot of arr.slots) {
-        if (slot.brand) continue;
         const cx0 = slot.x + slot.w / 2;
         const cy0 = slot.y + slot.h / 2;
         for (const ox of candidatesX) {
@@ -862,7 +865,6 @@
       const arr = ARRANGEMENTS[arrIdx];
       const arrOriginX = arrIdx * (TILE_W + GUTTER);
       for (const slot of arr.slots) {
-        if (slot.brand) continue;
         for (const ox of [arrOriginX, arrOriginX + PERIOD_X, arrOriginX - PERIOD_X]) {
           for (const oy of [0, PERIOD_Y, -PERIOD_Y]) {
             const cx = ox + slot.x + slot.w/2;
@@ -969,7 +971,7 @@
     if (dwellTimer) clearTimeout(dwellTimer);
     dwellTimer = setTimeout(tryDwell, TWEAKS.dwellDelay);
   }
-  // Nearest non-brand photo center to a pan position, across all arrangements
+  // Nearest photo center to a pan position, across all arrangements
   // and the wrapped tile copies. Driven by panX_target (the user's intended
   // destination) so the pull centers where the drag was headed, matching the
   // photo updateFocus will settle on once the plane catches up.
@@ -979,7 +981,6 @@
       const arr = ARRANGEMENTS[arrIdx];
       const arrOriginX = arrIdx * (TILE_W + GUTTER);
       for (const slot of arr.slots) {
-        if (slot.brand) continue;
         const cx0 = slot.x + slot.w / 2, cy0 = slot.y + slot.h / 2;
         for (const ox of [arrOriginX, arrOriginX + PERIOD_X, arrOriginX - PERIOD_X,
                           arrOriginX + 2*PERIOD_X, arrOriginX - 2*PERIOD_X]) {
