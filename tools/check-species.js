@@ -264,11 +264,30 @@ else {
 // The mobile edition is hand-written markup, one block per photograph. Every
 // SPECIES id must appear exactly once, pointing at the same file with the same
 // label — populateMobileBloom() only supplies the prose.
+//
+// Since the mobile set switcher landed, each tile also carries data-cat naming
+// the body of work it belongs to. That attribute is load-bearing: the switcher
+// hides every [data-cat] that does not match .mobile-edition[data-set], so a
+// tile that omits it matches no hide rule and would bleed into all three sets.
 const cells = [...html.matchAll(
-  /<div class="mcell" data-sp="(\d+)">([\s\S]*?)<div class="mlabel">([\s\S]*?)<\/div>/g
+  /<div class="mcell"([^>]*)>([\s\S]*?)<div class="mlabel">([\s\S]*?)<\/div>/g
 )];
+const catCounts = {};
 const seen = new Set();
-cells.forEach(([, idStr, body, label]) => {
+cells.forEach(([, attrs, body, label]) => {
+  const cat = (attrs.match(/data-cat="([^"]+)"/) || [])[1];
+  const idStr = (attrs.match(/data-sp="(\d+)"/) || [])[1];
+  if (!cat) {
+    return fail(`index.html: .mcell data-sp="${idStr}" has no data-cat — it would show in every set`);
+  }
+  catCounts[cat] = (catCounts[cat] || 0) + 1;
+
+  // Only the birds set is SPECIES-backed. The events and products tiles carry
+  // their own titles and no data-sp, so there is nothing to cross-check them
+  // against beyond the per-set totals asserted below.
+  if (cat !== 'birds') return;
+  if (!idStr) return fail('index.html: a birds .mcell carries no data-sp');
+
   const id = +idStr;
   const sp = byId.get(id);
   if (!sp) return fail(`index.html: .mcell data-sp="${id}" has no SPECIES entry`);
@@ -293,6 +312,16 @@ cells.forEach(([, idStr, body, label]) => {
 });
 SPECIES.forEach((sp) => {
   if (!seen.has(sp.id)) fail(`index.html: no .mcell tile for P${sp.id} (${sp.vernacular})`);
+});
+
+// The switcher writes its own counts from the DOM at runtime, so the menu can
+// never lie about these — but a set the mobile edition never got is silently
+// short rather than visibly broken, so assert each one arrived whole.
+[['birds', SPECIES], ...EXTRA.map((c) => [c.key, c.items])].forEach(([key, items]) => {
+  const got = catCounts[key] || 0;
+  if (got !== items.length) {
+    fail(`index.html: ${got} .mcell tiles for data-cat="${key}", app.js has ${items.length}`);
+  }
 });
 
 // ---------- native/app/src/main/assets/photos.json ----------
