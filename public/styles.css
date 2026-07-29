@@ -624,6 +624,11 @@ html, body {
   background: rgba(12, 12, 12, 0.94);
   opacity: 0;
   transition: opacity var(--label-out) ease-in;
+  /* Every touch gesture over the viewer is ours (app.js reads swipes as steps
+     between photographs), so hand none of them to the browser — no scroll, no
+     pull-to-refresh, no double-tap zoom stealing the swipe. Same reason .stage
+     sets it. */
+  touch-action: none;
 }
 /* [hidden] is a UA rule; the class selector above outranks it, so restate it. */
 .fullscreen[hidden] { display: none; }
@@ -649,7 +654,15 @@ html, body {
   object-fit: contain;       /* object-position defaults to 50% 50% — centred */
   user-select: none;
   -webkit-user-drag: none;
+  /* A held finger on an image raises iOS's save/copy callout, which eats the
+     start of a swipe. The plane's photographs are backgrounds and never had the
+     problem; this one is a real <img>. */
+  -webkit-touch-callout: none;
+  /* Only the snap-back rides this. While the finger is down the offset must
+     track it frame for frame, so .is-swiping switches the transition off. */
+  transition: transform var(--label-out) ease-out;
 }
+.fullscreen.is-swiping .fs-img { transition: none; }
 
 /* ============================================================
    Mobile placeholder
@@ -1078,6 +1091,7 @@ html, body {
   .fs-toggle .fs-ico,
   .collections .coll-btn,
   .fullscreen,
+  .fullscreen .fs-img,
   .set-toggle,
   .set-toggle .set-ico,
   .set-backdrop,

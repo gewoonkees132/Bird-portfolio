@@ -1562,6 +1562,11 @@
       fsImg.removeAttribute('src');
     }, FS_FADE_OUT_MS);
     fsWheelReset();
+    // A finger can still be down when the ✕ is tapped, and its pointerup will
+    // land on a hidden layer. Forget the gesture here so the next open starts
+    // clean instead of locked.
+    fsPointers.clear();
+    fsSwipeRelease();
   }
 
   // ---------- Viewer: wheel / trackpad navigation ----------
@@ -1611,6 +1616,88 @@
         ? (acc > 0 ? 'ArrowDown'  : 'ArrowUp')
         : (acc > 0 ? 'ArrowRight' : 'ArrowLeft'));
     }, { passive: false });
+  }
+
+  // ---------- Viewer: touch navigation ----------
+  // Past 720px a touchscreen gets the desktop plane, so the viewer has to be
+  // navigable by hand as well as by wheel. Same contract as the wheel above —
+  // one photograph per gesture, then locked until the fingers lift — with the
+  // image trailing the finger a damped fraction of the way first, so a swipe is
+  // visibly taken before it fires and a short one that fires nothing snaps back
+  // rather than reading as a dead layer.
+  //
+  // Two fingers govern nothing: a pinch is a zoom request the viewer has no
+  // answer for, and whichever finger travelled furthest must not be mistaken
+  // for a swipe. The mouse keeps the wheel and is left out of this entirely.
+  const FS_SWIPE_STEP = 48;      // px of travel before a step fires
+  const FS_SWIPE_FOLLOW = 0.32;  // how far the image trails the finger
+  const fsPointers = new Set();  // ids down on the layer — the count is the question
+  let fsSwipe = null;            // { id, x, y } of the one pointer that can navigate
+  let fsSwipeSpent = false;      // this gesture already stepped
+
+  // Offset lives on the element rather than in the render loop: the viewer is a
+  // still image over a backdrop, not part of the plane's transform chain.
+  function fsFollow(dx, dy) {
+    if (!fsImg) return;
+    fsImg.style.transform = (dx || dy)
+      ? `translate3d(${dx * FS_SWIPE_FOLLOW}px, ${dy * FS_SWIPE_FOLLOW}px, 0)`
+      : '';
+  }
+
+  // Drop the gesture and ease the photograph back to centre. Taking .is-swiping
+  // off first is what restores the transition, so the release animates where the
+  // follow did not.
+  function fsSwipeRelease() {
+    fsSwipe = null;
+    fsSwipeSpent = false;
+    if (fsLayer) fsLayer.classList.remove('is-swiping');
+    fsFollow(0, 0);
+  }
+
+  if (fsLayer) {
+    fsLayer.addEventListener('pointerdown', (e) => {
+      fsPointers.add(e.pointerId);
+      if (fsPointers.size > 1) { fsSwipeRelease(); return; }
+      if (e.pointerType === 'mouse') return;
+      fsSwipe = { id: e.pointerId, x: e.clientX, y: e.clientY };
+      fsSwipeSpent = false;
+      fsLayer.classList.add('is-swiping');
+      // Capture so a swipe that runs off the image — or under the corner
+      // controls layered above it — still reports its own pointerup.
+      try { fsLayer.setPointerCapture(e.pointerId); } catch (_) {}
+    });
+
+    fsLayer.addEventListener('pointermove', (e) => {
+      if (!fsSwipe || e.pointerId !== fsSwipe.id) return;
+      if (fsSwipeSpent || fsPointers.size > 1) return;
+      const dx = e.clientX - fsSwipe.x;
+      const dy = e.clientY - fsSwipe.y;
+
+      const vertical = Math.abs(dy) >= Math.abs(dx);
+      const travel = vertical ? dy : dx;
+      if (Math.abs(travel) < FS_SWIPE_STEP) { fsFollow(dx, dy); return; }
+
+      // Against the travel, the way the plane moves under a drag: pulling the
+      // photograph up asks for the one below it. Fire the moment the threshold
+      // is crossed rather than on release — the swap is the feedback, and the
+      // hand is still moving when it lands.
+      fsSwipeSpent = true;
+      fsLayer.classList.remove('is-swiping');
+      fsFollow(0, 0);
+      step(vertical
+        ? (travel < 0 ? 'ArrowDown'  : 'ArrowUp')
+        : (travel < 0 ? 'ArrowRight' : 'ArrowLeft'));
+    });
+
+    const fsPointerEnd = (e) => {
+      fsPointers.delete(e.pointerId);
+      try { fsLayer.releasePointerCapture(e.pointerId); } catch (_) {}
+      // A gesture abandoned to a pinch does not resume from the finger left
+      // behind — the next swipe starts on a fresh touch.
+      if (fsPointers.size === 0 || (fsSwipe && e.pointerId === fsSwipe.id)) fsSwipeRelease();
+    };
+    fsLayer.addEventListener('pointerup', fsPointerEnd);
+    fsLayer.addEventListener('pointercancel', fsPointerEnd);
   }
 
   if (fsToggle) {
