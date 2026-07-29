@@ -1023,11 +1023,51 @@
   const TWEAKS = {
     lerp: 0.02,
     zoomLerp: 0.02,
-    zoomMin: 1.6,
+    zoomMin: 1.6,   // the authored floor; zoomFloor() goes under it on small screens
     zoomMax: 4.0,
     dwellDelay: 400,
     dwellPull: 0.0015
   };
+
+  // ---------- How far the plane can pull back ----------
+  // The plane is drawn at an absolute scale, so how much of a photograph fits is
+  // entirely a question of the screen. The largest slot in the palette is 984x648
+  // world px, which at the authored floor of 1.6 wants 1574x1037 CSS px to be seen
+  // whole: a 1080p monitor has that, a laptop or a tablet does not. And 1.6 was
+  // also as far back as the plane would go, so on those screens no gesture could
+  // take the photograph in — including the opening one, which gen-arrangements
+  // picks as its tile's largest.
+  //
+  // So the floor is per screen: the zoom at which the largest slot fits inside the
+  // viewport. Never tighter than 1.6, so a screen that already had the room keeps
+  // exactly the composition it was authored with; never below ZOOM_HARD_FLOOR,
+  // which is a rail against a freak viewport (a 200px-tall window would otherwise
+  // shrink the plane to thumbnails), not a design value — every real screen down to
+  // a landscape phone fits well above it.
+  const ZOOM_HARD_FLOOR = 0.5;
+
+  // Slot extents are a property of the arrangement palette rather than of any one
+  // table — all three collections top out at the same 9x6 — so this is measured
+  // across every collection once, and the floor then stays put when the collection
+  // switches instead of re-zooming the visitor.
+  const LARGEST_SLOT = (() => {
+    let w = 0, h = 0;
+    for (const c of COLLECTIONS) {
+      for (const arr of c.arrangements) {
+        for (const slot of arr.slots) {
+          if (slot.w > w) w = slot.w;
+          if (slot.h > h) h = slot.h;
+        }
+      }
+    }
+    return { w, h };
+  })();
+
+  function zoomFloor() {
+    const vp = viewport();
+    const fit = Math.min(vp.w / LARGEST_SLOT.w, vp.h / LARGEST_SLOT.h);
+    return Math.max(ZOOM_HARD_FLOOR, Math.min(TWEAKS.zoomMin, fit));
+  }
 
   // ---------- Render loop ----------
   function viewport() {
@@ -1325,7 +1365,7 @@
 
       const ratio = dist / pinchStart.dist;
       let newZoom = pinchStart.zoom * ratio;
-      newZoom = Math.min(TWEAKS.zoomMax, Math.max(TWEAKS.zoomMin, newZoom));
+      newZoom = Math.min(TWEAKS.zoomMax, Math.max(zoomFloor(), newZoom));
 
       const vp = viewport();
       // Anchor the world point that was under the original midpoint at the
@@ -1398,7 +1438,7 @@
       const factor = Math.exp(-norm);
       const newZoom = Math.min(
         TWEAKS.zoomMax,
-        Math.max(TWEAKS.zoomMin, zoom_target * factor)
+        Math.max(zoomFloor(), zoom_target * factor)
       );
 
       const vp = viewport();
@@ -1983,6 +2023,20 @@
     } else {
       wake();   // repaint once and re-settle; the loop sleeps again if at rest
     }
+  });
+
+  // ---------- Resize / rotation ----------
+  // Rotating a tablet fires this, and it changes both what fits on screen and
+  // where the centre of it is. render() reads viewport() every frame, but the loop
+  // sleeps once the plane settles, so one wake() is what actually re-pins the
+  // plane to the new centre.
+  window.addEventListener('resize', () => {
+    // Shrinking only lowers the floor, which needs no correction. Growing raises
+    // it, and can leave the plane pulled further back than a screen with that
+    // much room is allowed to go.
+    const floor = zoomFloor();
+    if (zoom_target < floor) zoom_target = floor;
+    wake();
   });
 
   // ---------- Collection switcher ----------
