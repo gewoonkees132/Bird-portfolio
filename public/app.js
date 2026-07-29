@@ -244,48 +244,60 @@
     { id: 16, vernacular: 'Addidex 2026',     latin: '30 June – 1 July 2026',  shape: 'L',
       band_a: '#f8f8f8', band_b: '#dadada',
       image: F('events/E16-Addidex_2026.webp') },
-    // Seven frames that arrived as bare UUIDs with every field stripped.
-    { id: 17, vernacular: 'Untitled Event',   latin: 'Caption pending',        shape: 'L',
+    // The wedding in Italy — seven frames that arrived as bare UUIDs with every
+    // field stripped. The photographer named the occasion on 2026-07-29; the
+    // files still carry no date, which is why the subtitle says so.
+    { id: 17, vernacular: 'Italian Wedding',  latin: 'Italy · undated',        shape: 'L',
       band_a: '#f8f8f8', band_b: '#dadada',
-      image: F('events/E17-Untitled_Event.webp') },
-    { id: 18, vernacular: 'Untitled Event',   latin: 'Caption pending',        shape: 'L',
+      image: F('events/E17-Italian_Wedding.webp') },
+    { id: 18, vernacular: 'Italian Wedding',  latin: 'Italy · undated',        shape: 'L',
       band_a: '#e8e8f8', band_b: '#ccccda',
-      image: F('events/E18-Untitled_Event.webp') },
-    { id: 19, vernacular: 'Untitled Event',   latin: 'Caption pending',        shape: 'L',
+      image: F('events/E18-Italian_Wedding.webp') },
+    { id: 19, vernacular: 'Italian Wedding',  latin: 'Italy · undated',        shape: 'L',
       band_a: '#283828', band_b: '#233123',
-      image: F('events/E19-Untitled_Event.webp') },
-    { id: 20, vernacular: 'Untitled Event',   latin: 'Caption pending',        shape: 'V',
+      image: F('events/E19-Italian_Wedding.webp') },
+    { id: 20, vernacular: 'Italian Wedding',  latin: 'Italy · undated',        shape: 'V',
       band_a: '#f8f8f8', band_b: '#dadada',
-      image: F('events/E20-Untitled_Event.webp') },
-    { id: 21, vernacular: 'Untitled Event',   latin: 'Caption pending',        shape: 'V',
+      image: F('events/E20-Italian_Wedding.webp') },
+    { id: 21, vernacular: 'Italian Wedding',  latin: 'Italy · undated',        shape: 'V',
       band_a: '#f8f8f8', band_b: '#dadada',
-      image: F('events/E21-Untitled_Event.webp') },
-    { id: 22, vernacular: 'Untitled Event',   latin: 'Caption pending',        shape: 'V',
+      image: F('events/E21-Italian_Wedding.webp') },
+    { id: 22, vernacular: 'Italian Wedding',  latin: 'Italy · undated',        shape: 'V',
       band_a: '#181818', band_b: '#151515',
-      image: F('events/E22-Untitled_Event.webp') },
-    { id: 23, vernacular: 'Untitled Event',   latin: 'Caption pending',        shape: 'V',
+      image: F('events/E22-Italian_Wedding.webp') },
+    { id: 23, vernacular: 'Italian Wedding',  latin: 'Italy · undated',        shape: 'V',
       band_a: '#f8f8f8', band_b: '#dadada',
-      image: F('events/E23-Untitled_Event.webp') },
+      image: F('events/E23-Italian_Wedding.webp') },
   ];
 
+  // One voice across events and products, so a visitor moving between the two
+  // never feels the register change:
+  //   vitals   the same four labels in the same order — Frames / Shot / Format
+  //            / Camera — with 'Not recorded' where the export stripped it
+  //   lede     what the shoot was and when, subject first
+  //   fun_fact one concrete thing worth knowing: taken from the shoot itself
+  //            where the files record one, and from the subject where they do not
+  // What the files happen to be — pixel sizes, UUID names, dropped EXIF blocks —
+  // is archive bookkeeping and stays out of the prose. It reads as an apology
+  // for the photograph rather than a caption for it.
   const EVENT_FACTS = {
     1: {
-      vitals: [['Frames', '7'], ['Dates', '24–25 Jun 2026'],
+      vitals: [['Frames', '7'], ['Shot', '24–25 Jun 2026'],
                ['Format', '3:2 · 2:3'], ['Camera', 'Not recorded']],
-      lede: 'Bouwen met Aarde — building with earth — over two days, 24 and 25 June 2026. Seven frames survive the export: five landscape, two upright, all at a 2560-pixel long edge with the camera data stripped out.',
-      fun_fact: 'The file names keep what the metadata lost. Each one carries its date and a two-part sequence number, 91 or 92, so the batch can still be put back into the order it was shot.'
+      lede: 'Bouwen met Aarde — building with earth — over two days, the 24th and 25th of June 2026. Seven frames from the two days are held here, five landscape and two upright, taken while the work was going on rather than after it.',
+      fun_fact: 'Earth is the oldest building material still in daily use, and by most estimates around a third of the world still lives in a house made of it. A wall built this way can be taken down, wetted, and mixed straight into the next one.'
     },
     8: {
-      vitals: [['Frames', '9'], ['Dates', '30 Jun – 1 Jul 2026'],
+      vitals: [['Frames', '9'], ['Shot', '30 Jun – 1 Jul 2026'],
                ['Format', '3:2 · 2:3'], ['Camera', 'Sony α7R V · 50 mm']],
-      lede: 'Two days at Addidex 2026, the 30th of June and the 1st of July, all nine frames on a single 50 mm lens. The timestamps run from a quarter past nine in the morning to twenty to five in the afternoon.',
-      fun_fact: 'Every frame sits between f/2 and f/2.2 on a lens that opens to f/1.2. The aperture was set two thirds of a stop down on the first morning and left there for two days.'
+      lede: 'Two days on the floor at Addidex 2026, the 30th of June and the 1st of July, working a single 50 mm lens. Nine frames are held here; the timestamps run from a quarter past nine in the morning to twenty to five in the afternoon.',
+      fun_fact: 'Every one of them sits between f/2 and f/2.2 on a lens that opens to f/1.2. The aperture was set two thirds of a stop down on the first morning and left there for two days — one decision made once, instead of again at every stand.'
     },
     17: {
-      vitals: [['Frames', '7'], ['Dates', 'Not recorded'],
+      vitals: [['Frames', '7'], ['Shot', 'Not recorded'],
                ['Format', '3:2 · 2:3'], ['Camera', 'Not recorded']],
-      lede: 'Seven frames filed under events with nothing else attached: no date, no camera, no name — the file names are raw UUIDs. Three landscape, four upright, all exported at a 2048-pixel long edge.',
-      fun_fact: 'Eight files came in, seven are shown. Two of them were byte-for-byte identical, so one copy was dropped before any of this was built.'
+      lede: 'A wedding in Italy. Seven frames, three landscape and four upright, held in the order they arrived. No date and no camera came with them, so what is known about the day is what is in the pictures.',
+      fun_fact: 'In Italy the confetti are not paper. They are sugared almonds, handed to each guest in odd numbers — five of them, for health, wealth, happiness, fertility and long life. The paper kind thrown at the couple is coriandoli.'
     }
   };
   EVENT_FACTS[2] = EVENT_FACTS[3] = EVENT_FACTS[4] = EVENT_FACTS[1];
@@ -309,69 +321,76 @@
     { id: 4, vernacular: 'Colour Printing',   latin: 'Reference sheet',             shape: 'L',
       band_a: '#181818', band_b: '#151515',
       image: F('products/R4-Colour_Printing.webp') },
-    { id: 5, vernacular: 'Addidex Showpiece', latin: 'Addidex 2026 · stand',        shape: 'L',
+    { id: 5, vernacular: 'Addidex Showpiece', latin: 'Stand piece · Addidex 2026',  shape: 'L',
       band_a: '#281818', band_b: '#231515',
       image: F('products/R5-Addidex_Showpiece.webp') },
-    { id: 6, vernacular: 'Addidex Showpiece', latin: 'Addidex 2026 · stand',        shape: 'V',
+    { id: 6, vernacular: 'Addidex Showpiece', latin: 'Stand piece · Addidex 2026',  shape: 'V',
       band_a: '#180808', band_b: '#150707',
       image: F('products/R6-Addidex_Showpiece.webp') },
-    { id: 7, vernacular: 'Studio Piece',      latin: 'Undocumented · 2021',         shape: 'L',
+    { id: 7, vernacular: 'Studio Piece',      latin: 'Studio frame · 2021',         shape: 'L',
       band_a: '#583838', band_b: '#4d3131',
       image: F('products/R7-Studio_Piece.webp') },
-    // Seven frames that arrived numbered 1, 3, 4, 5, 10, 14, 15 and nothing else.
-    { id: 8, vernacular: 'Untitled Piece',    latin: 'Caption pending',             shape: 'L',
+    // Seven frames that arrived numbered 1, 3, 4, 5, 10, 14, 15 and nothing
+    // else. The photographer confirmed on 2026-07-29 that the pieces are
+    // designed and printed, which is what they are named for until the
+    // individual captions exist.
+    { id: 8, vernacular: 'Printed Piece',     latin: 'Designed and printed',        shape: 'L',
       band_a: '#281818', band_b: '#231515',
-      image: F('products/R8-Untitled_Piece.webp') },
-    { id: 9, vernacular: 'Untitled Piece',    latin: 'Caption pending',             shape: 'L',
+      image: F('products/R8-Printed_Piece.webp') },
+    { id: 9, vernacular: 'Printed Piece',     latin: 'Designed and printed',        shape: 'L',
       band_a: '#281818', band_b: '#231515',
-      image: F('products/R9-Untitled_Piece.webp') },
-    { id: 10, vernacular: 'Untitled Piece',   latin: 'Caption pending',             shape: 'L',
+      image: F('products/R9-Printed_Piece.webp') },
+    { id: 10, vernacular: 'Printed Piece',    latin: 'Designed and printed',        shape: 'L',
       band_a: '#f8f8f8', band_b: '#dadada',
-      image: F('products/R10-Untitled_Piece.webp') },
-    { id: 11, vernacular: 'Untitled Piece',   latin: 'Caption pending',             shape: 'L',
+      image: F('products/R10-Printed_Piece.webp') },
+    { id: 11, vernacular: 'Printed Piece',    latin: 'Designed and printed',        shape: 'L',
       band_a: '#181818', band_b: '#151515',
-      image: F('products/R11-Untitled_Piece.webp') },
-    { id: 12, vernacular: 'Untitled Piece',   latin: 'Caption pending',             shape: 'L',
+      image: F('products/R11-Printed_Piece.webp') },
+    { id: 12, vernacular: 'Printed Piece',    latin: 'Designed and printed',        shape: 'L',
       band_a: '#483838', band_b: '#3f3131',
-      image: F('products/R12-Untitled_Piece.webp') },
-    { id: 13, vernacular: 'Untitled Piece',   latin: 'Caption pending',             shape: 'V',
+      image: F('products/R12-Printed_Piece.webp') },
+    { id: 13, vernacular: 'Printed Piece',    latin: 'Designed and printed',        shape: 'V',
       band_a: '#483838', band_b: '#3f3131',
-      image: F('products/R13-Untitled_Piece.webp') },
-    { id: 14, vernacular: 'Untitled Piece',   latin: 'Caption pending',             shape: 'V',
+      image: F('products/R13-Printed_Piece.webp') },
+    { id: 14, vernacular: 'Printed Piece',    latin: 'Designed and printed',        shape: 'V',
       band_a: '#585858', band_b: '#4d4d4d',
-      image: F('products/R14-Untitled_Piece.webp') },
+      image: F('products/R14-Printed_Piece.webp') },
   ];
 
+  // Same four labels, same order, same voice as EVENT_FACTS above — see the
+  // note there. A product lede says what the piece is and when it was
+  // photographed; the fun fact takes one thing further, either from the shoot
+  // or from how the piece was made.
   const PRODUCT_FACTS = {
     1: {
-      vitals: [['Frames', '3 of 39'], ['Year', '2024'],
+      vitals: [['Frames', '3'], ['Shot', '26 Jun 2024'],
                ['Format', '3:2 · 2:3'], ['Camera', 'Sony α7 III · 85 mm']],
-      lede: 'Thirty-nine frames were shot across one afternoon of column production on 26 June 2024; three of them are held here. The file names carry the material — Sika’s two-component mortar — and the sequence numbers place these either side of half past two.',
-      fun_fact: 'The whole set was taken on an 85 mm at f/1.4 and ISO 100, wide open in daylight. Frames 23 and 24 are twenty-nine seconds apart: one step back, one turn to upright.'
+      lede: 'A column in Sika’s two-component mortar, photographed on the afternoon of 26 June 2024 while the run was still going. Thirty-nine frames were shot that day; three are held here, taken either side of half past two.',
+      fun_fact: 'Two-component means the mortar meets its accelerator at the nozzle, a second or two before it is laid down — loose enough to pump along the hose, stiff enough to carry the next layer as soon as it arrives.'
     },
     4: {
-      vitals: [['Frames', '1'], ['Year', 'Not recorded'],
+      vitals: [['Frames', '1'], ['Shot', 'Not recorded'],
                ['Format', '3:2 landscape'], ['Camera', 'Not recorded']],
-      lede: 'A single frame from a reference sheet of colour printing work. The file has been through a resize that stripped its metadata, so all that survives of the making is the name it was given and a 5228-pixel master.',
-      fun_fact: 'At 5228 x 3485 it is the widest original in the collection, and it is filed as reference number five. The other four are not in this batch.'
+      lede: 'A single frame of a colour reference sheet: printed colour kept as a physical thing, because a printed surface is the only place it can honestly be judged. The sheet is filed as reference number five — the other four are not in this batch.',
+      fun_fact: 'Colour on a screen is light added together. Colour on a printed surface is what is left over once the pigment has taken the rest away. The two ranges overlap but never meet, which is why the sheet exists at all.'
     },
     5: {
-      vitals: [['Frames', '2'], ['Year', '2026'],
+      vitals: [['Frames', '2'], ['Shot', '30 Jun – 1 Jul 2026'],
                ['Format', '3:2 · 2:3'], ['Camera', 'Sony α7R V · 50 mm']],
-      lede: 'Two frames of stand pieces from Addidex 2026, shot a day apart on the same 50 mm — one on the Tuesday afternoon at f/2.2, one late on the Wednesday, wide open at f/1.2.',
-      fun_fact: 'The Wednesday frame is 1/4000 second at f/1.2 and ISO 125. That is bright daylight through a very fast lens, and almost nothing behind the subject stays in focus.'
+      lede: 'A piece made for the Addidex 2026 stand, photographed on two days running with the same 50 mm — once on the Tuesday afternoon at f/2.2, once late on the Wednesday, wide open at f/1.2.',
+      fun_fact: 'The Wednesday frame is 1/4000 of a second at f/1.2 and ISO 125: bright daylight through a very fast lens, with almost nothing behind the piece left in focus. On a trade floor, that is one way to take the hall out of the photograph.'
     },
     7: {
-      vitals: [['Frames', '1'], ['Year', '2021'],
+      vitals: [['Frames', '1'], ['Shot', '14 May 2021'],
                ['Format', '3:2 landscape'], ['Camera', 'Sony α7 · 85 mm']],
-      lede: 'The oldest frame in the portfolio outside the birds — 14 May 2021, on the original α7 body with an 85 mm wide open. It is also the largest master here at 5956 pixels on the long edge.',
-      fun_fact: 'ISO 500 at f/1.4 and 1/160 puts this indoors under mixed light: a working room rather than a lit set.'
+      lede: 'A single piece, photographed where it was made on 14 May 2021 — the oldest frame in the portfolio outside the birds, taken on the original α7 body with an 85 mm wide open.',
+      fun_fact: 'ISO 500 at f/1.4 and 1/160 of a second puts this indoors under mixed light: a working room with whatever was already switched on, rather than a lit set.'
     },
     8: {
-      vitals: [['Frames', '7'], ['Year', 'Not recorded'],
+      vitals: [['Frames', '7'], ['Shot', 'Not recorded'],
                ['Format', '3:2 · 2:3'], ['Camera', 'Not recorded']],
-      lede: 'Seven frames that arrived without names, dates or camera data — five landscape, two upright, every one already resized to a 2048-pixel long edge before it reached this repository. They are held in file order until they are captioned.',
-      fun_fact: 'Metadata survives a great deal, but not a web export. All seven have been through a resize that dropped the EXIF block, so the only thing the files still record about their making is their shape.'
+      lede: 'Seven frames of pieces that were designed first and printed second — five landscape, two upright, held in the order they arrived. No names, dates or camera data came with them, so the work stands on its own until each one is captioned.',
+      fun_fact: 'What they have in common is the order of things: the drawing exists before the object does, and the object is made straight from the drawing, at the size it will be used.'
     }
   };
   PRODUCT_FACTS[2] = PRODUCT_FACTS[3] = PRODUCT_FACTS[1];

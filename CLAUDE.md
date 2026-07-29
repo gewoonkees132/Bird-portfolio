@@ -4,8 +4,8 @@ Vanilla HTML/CSS/JS photography portfolio. No build step, no dependencies.
 Desktop is a pannable, infinitely-tiling photo plane (drag / pinch / arrow keys)
 with a per-photo caption label that blooms into a fact card, and a three-button
 switcher top-right for the three collections — **birds, events, products**;
-mobile is a placeholder editorial scroll (birds only). Alongside the site live a
-set of Node/Python authoring tools, an Android prototype, and reference material.
+mobile is a placeholder editorial scroll with its own set switcher. Alongside
+the site live a set of Node/Python authoring tools, an Android prototype, and reference material.
 
 The repo is still called Bird-portfolio and the birds are still the front door;
 events and products were added on 2026-07-29 from two batches the photographer
@@ -84,8 +84,11 @@ is written around them, and a species with no published wingspan carries
 explicit four-row `vitals: [[label, value], …]` array instead. `vitalRows()`
 takes either.
 
-The mobile placeholder edition is **birds only** — the `.mcell` tiles are
-hand-written markup and no switcher exists there.
+The mobile placeholder edition carries all three sets as hand-written `.mcell`
+markup, each tile tagged `data-cat`, with the set switcher choosing between
+them. Only the birds tiles carry `data-sp` and get their prose from
+`populateMobileBloom()`; the events and products tiles are title and subtitle
+only, so a rename has to be typed into both `app.js` and the markup.
 
 ## The layout invariant
 
@@ -151,15 +154,35 @@ apostrophe) are normalised before comparison, so only real renames fail.
 `check-arrangements.js` and `gen-arrangements.js` both derive their shape and
 series maps from `app.js` for the same reason, so they need no hand-syncing.
 
-## The events / products captions are provisional
+## The events / products captions
 
-Every lede, fun fact and vitals row in `EVENT_FACTS` / `PRODUCT_FACTS` was
-written from what the *files* record — names, frame counts, and the EXIF that
-survived the export — because the token rules above forbid opening the imagery,
-and a plausible invention would be worse than a visible gap. Two series
-(`Untitled Event`, `Untitled Piece`) arrived with no name, date or camera data
-at all and say so in their subtitle. Replace them with real captions when they
-exist; nothing in the structure depends on what the prose says.
+Events are three bodies of work: **Bouwen met Aarde** (building with earth),
+**Addidex 2026**, and a **wedding in Italy**. Products are pieces that were
+designed and then printed; the seven that arrived nameless are titled `Printed
+Piece` for that reason. The photographer named all of this on 2026-07-29 — the
+two series that used to read `Untitled Event` / `Untitled Piece` were renamed
+then, along with their files under `public/files/`.
+
+Beyond those names, the prose is still written from what the *files* record —
+frame counts, dates and the EXIF that survived the export — because the token
+rules above forbid opening the imagery, and a plausible invention would be worse
+than a visible gap. Nothing in the structure depends on what the prose says, so
+replace it freely as real captions arrive.
+
+One voice runs across both collections, and it is worth keeping:
+
+- **vitals** — the same four labels in the same order, `Frames · Shot · Format ·
+  Camera`, with `Not recorded` where the export stripped it.
+- **lede** — what the shoot or the piece is, subject first, then when.
+- **fun fact** — one concrete thing worth knowing: from the shoot where the
+  files record one (the aperture left alone for two days at Addidex), from the
+  subject where they do not (what Italian confetti actually are).
+
+What the files *happen to be* — pixel dimensions, UUID names, dropped EXIF
+blocks — is archive bookkeeping and stays out of the prose. On a fact card it
+reads as an apology for the photograph rather than a caption for it. The one
+exception is a genuine gap the visitor can see for themselves, like an undated
+series, which is stated plainly and once.
 
 Presentation values (ambient dim, focus-fade, brand colours) belong in
 `styles.css` only. `app.js` deliberately does **not** mirror them into custom
