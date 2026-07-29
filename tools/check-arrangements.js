@@ -1,13 +1,16 @@
 #!/usr/bin/env node
-/* Validate the ARRANGEMENTS table in public/app.js.
+/* Validate the ARRANGEMENTS tables in public/app.js.
  *
- * Checks the invariants the render + focus code relies on:
+ * Checks the invariants the render + focus code relies on, for each of the
+ * three collections (birds, events, products):
  *   - every slot span comes from the near-3:2 palette
  *   - each arrangement covers all 12x8 cells exactly once, none out of bounds
  *   - slot ids are unique per arrangement (focus tracking looks slots up by id)
  *   - each photo sits in a slot matching its shape (L/V/letterbox)
- *   - no species appears more than twice in one arrangement
- *   - every slot is a photo (no brand card) with a valid ARRANGEMENT_LEAD id
+ *   - no series appears more often in one arrangement than its cap allows
+ *   - every slot is a photo (no brand card) with a valid lead id
+ *   - every collection is the same length, because the plane's lattice
+ *     constants (PERIOD_X, the shear, the tile grid) are sized once from it
  *   - TILE_W / TILE_H agree with --tile-width / --tile-height in styles.css
  *
  *   node tools/check-arrangements.js
@@ -20,33 +23,33 @@ const ROOT = path.dirname(__dirname);
 const src = fs.readFileSync(path.join(ROOT, 'public', 'app.js'), 'utf8');
 const css = fs.readFileSync(path.join(ROOT, 'public', 'styles.css'), 'utf8');
 
-const ARR = eval(src.match(/const ARRANGEMENTS = (\[[\s\S]*?\n {2}\];)/)[1].replace(/;$/, ''));
-const LEAD = eval('(' + src.match(/const ARRANGEMENT_LEAD = (\{[^}]*\})/)[1] + ')');
 const tw = src.match(/const TILE_W =\s+(\d+) \* 88 \+\s+(\d+) \* 24/);
 const th = src.match(/const TILE_H =\s+(\d+) \* 88 \+\s+(\d+) \* 24/);
 const COLS = +tw[1], ROWS = +th[1];
 
-// Slot kind and species grouping are DERIVED from the SPECIES table in app.js
-// rather than restated here. They used to be hand-copied, which meant a
-// re-identified photo (the 2026-07-28 tit split) had to be remembered in one
-// more place, and a forgotten edit made this validator quietly wrong.
-// tools/check-species.js checks the remaining copies against the same source.
-const speciesFrom = src.indexOf('const F = (n) =>');
-const speciesTo = src.indexOf('const BIRD_FACTS');
-const SPECIES_TABLE = new Function(
-  src.slice(speciesFrom, speciesTo) + '\nreturn SPECIES;'
+// Slot kind and series grouping are DERIVED from the inventory in app.js rather
+// than restated here. They used to be hand-copied, which meant a re-identified
+// photo (the 2026-07-28 tit split) had to be remembered in one more place, and a
+// forgotten edit made this validator quietly wrong.
+const invFrom = src.indexOf('const F = (n) =>');
+const invTo = src.indexOf('const vitalRows');
+const inventory = new Function(
+  src.slice(invFrom, invTo) + '\nreturn { SPECIES, EVENTS, PRODUCTS };'
 )();
+
+// maxPerSeries mirrors tools/gen-arrangements.js. Events has only three series
+// and products two singleton series, so neither can hold to the birds' cap of
+// two — see the notes there.
+const SETS = [
+  { key: 'birds',    arrVar: 'ARR_BIRDS',    leadVar: 'LEAD_BIRDS',    items: inventory.SPECIES,  maxPerSeries: 2 },
+  { key: 'events',   arrVar: 'ARR_EVENTS',   leadVar: 'LEAD_EVENTS',   items: inventory.EVENTS,   maxPerSeries: 3 },
+  { key: 'products', arrVar: 'ARR_PRODUCTS', leadVar: 'LEAD_PRODUCTS', items: inventory.PRODUCTS, maxPerSeries: 3 },
+];
+
 const KIND_FOR = { L: 'L', V: 'V', W: 'P' };
-const KIND = {};
-const SPECIES = {};
-SPECIES_TABLE.forEach((sp) => {
-  KIND[sp.id] = KIND_FOR[sp.shape];
-  SPECIES[sp.id] = sp.vernacular;
-});
 const PALETTE = { '9x6': 'L', '6x4': 'L', '3x2': 'L', '4x6': 'V', '3x4': 'V', '2x3': 'V', '6x2': 'P' };
 
 const fails = [];
-const use = {};
 
 const pxW = COLS * 88 + (COLS - 1) * 24;
 const pxH = ROWS * 88 + (ROWS - 1) * 24;
@@ -55,47 +58,81 @@ const cssH = +css.match(/--tile-height:\s*(\d+)px/)[1];
 if (pxW !== cssW) fails.push(`TILE_W ${pxW}px != --tile-width ${cssW}px`);
 if (pxH !== cssH) fails.push(`TILE_H ${pxH}px != --tile-height ${cssH}px`);
 
-ARR.forEach((a, ai) => {
-  const grid = Array.from({ length: ROWS }, () => new Array(COLS).fill(0));
-  const ids = new Set();
-  const speciesCount = {};
-  a.slots.forEach((s) => {
-    const span = s.cw + 'x' + s.ch;
-    if (!PALETTE[span]) fails.push(`${a.name}: span ${span} is not in the palette`);
-    if (s.c < 0 || s.r < 0 || s.c + s.cw > COLS || s.r + s.ch > ROWS) {
-      fails.push(`${a.name}: slot ${span}@${s.c},${s.r} out of bounds`);
-      return;
+const lengths = new Set();
+
+console.log(`tile ${COLS}x${ROWS} = ${pxW}x${pxH}px`);
+
+SETS.forEach((set) => {
+  const arrM = src.match(new RegExp(`const ${set.arrVar} = (\\[[\\s\\S]*?\\n {2}\\];)`));
+  const leadM = src.match(new RegExp(`const ${set.leadVar} = (\\{[^}]*\\})`));
+  if (!arrM || !leadM) {
+    fails.push(`${set.key}: could not find ${set.arrVar} / ${set.leadVar} in app.js`);
+    return;
+  }
+  const ARR = eval(arrM[1].replace(/;$/, ''));
+  const LEAD = eval('(' + leadM[1] + ')');
+  lengths.add(ARR.length);
+
+  const KIND = {}, SERIES = {};
+  set.items.forEach((it) => {
+    KIND[it.id] = KIND_FOR[it.shape];
+    SERIES[it.id] = it.vernacular;
+  });
+
+  const use = {};
+  ARR.forEach((a, ai) => {
+    const grid = Array.from({ length: ROWS }, () => new Array(COLS).fill(0));
+    const ids = new Set();
+    const seriesCount = {};
+    a.slots.forEach((s) => {
+      const span = s.cw + 'x' + s.ch;
+      const where = `${set.key} ${a.name}`;
+      if (!PALETTE[span]) fails.push(`${where}: span ${span} is not in the palette`);
+      if (s.c < 0 || s.r < 0 || s.c + s.cw > COLS || s.r + s.ch > ROWS) {
+        fails.push(`${where}: slot ${span}@${s.c},${s.r} out of bounds`);
+        return;
+      }
+      for (let y = s.r; y < s.r + s.ch; y++) for (let x = s.c; x < s.c + s.cw; x++) grid[y][x]++;
+      if (s.brand) { fails.push(`${where}: brand slot present — every slot is a photograph`); return; }
+      if (ids.has(s.id)) fails.push(`${where}: duplicate id ${s.id}`);
+      ids.add(s.id);
+      use[s.id] = (use[s.id] || 0) + 1;
+      if (!KIND[s.id]) { fails.push(`${where}: id ${s.id} has no entry in the inventory`); return; }
+      const sp = SERIES[s.id];
+      seriesCount[sp] = (seriesCount[sp] || 0) + 1;
+      if (PALETTE[span] !== KIND[s.id]) {
+        fails.push(`${where}: ${s.id} (${KIND[s.id]}) placed in a ${PALETTE[span]} slot ${span}`);
+      }
+    });
+    const cover = [...new Set(grid.flat())];
+    if (cover.length !== 1 || cover[0] !== 1) {
+      fails.push(`${set.key} ${a.name}: not an exact tiling — cells covered ${cover.join('/')} times`);
     }
-    for (let y = s.r; y < s.r + s.ch; y++) for (let x = s.c; x < s.c + s.cw; x++) grid[y][x]++;
-    if (s.brand) { fails.push(`${a.name}: brand slot present — the plane is birds only`); return; }
-    if (ids.has(s.id)) fails.push(`${a.name}: duplicate id ${s.id}`);
-    ids.add(s.id);
-    use[s.id] = (use[s.id] || 0) + 1;
-    const sp = SPECIES[s.id];
-    speciesCount[sp] = (speciesCount[sp] || 0) + 1;
-    if (PALETTE[span] !== KIND[s.id]) {
-      fails.push(`${a.name}: P${s.id} (${KIND[s.id]}) placed in a ${PALETTE[span]} slot ${span}`);
+    Object.entries(seriesCount).forEach(([k, v]) => {
+      if (v > set.maxPerSeries) {
+        fails.push(`${set.key} ${a.name}: series ${k} appears ${v} times in one tile (cap ${set.maxPerSeries})`);
+      }
+    });
+    if (!a.slots.some((s) => s.id === LEAD[ai])) {
+      fails.push(`${set.key} ${a.name}: ${set.leadVar}[${ai}] = ${LEAD[ai]} is not a slot here`);
     }
   });
-  const cover = [...new Set(grid.flat())];
-  if (cover.length !== 1 || cover[0] !== 1) {
-    fails.push(`${a.name}: not an exact tiling — cells covered ${cover.join('/')} times`);
-  }
-  Object.entries(speciesCount).forEach(([k, v]) => {
-    if (v > 2) fails.push(`${a.name}: species ${k} appears ${v} times in one tile`);
+
+  set.items.forEach((it) => {
+    if (!use[it.id]) fails.push(`${set.key}: photo ${it.id} (${it.vernacular}) never appears`);
   });
-  if (!a.slots.some((s) => s.id === LEAD[ai])) {
-    fails.push(`${a.name}: ARRANGEMENT_LEAD[${ai}] = ${LEAD[ai]} is not a slot here`);
-  }
+
+  const total = Object.values(use).reduce((a, b) => a + b, 0);
+  console.log(`  ${set.key.padEnd(8)} ${ARR.length} arrangements · ` +
+              `${set.items.length} photographs · ${total} photo slots`);
+  console.log(`    usage: ${JSON.stringify(use)}`);
 });
 
-Object.keys(KIND).map(Number).forEach((id) => {
-  if (!use[id]) fails.push(`photo P${id} never appears`);
-});
+if (lengths.size > 1) {
+  fails.push(`collections differ in length (${[...lengths].join('/')}) — ` +
+             'the plane sizes PERIOD_X and the shear from one count');
+}
 
-const total = Object.values(use).reduce((a, b) => a + b, 0);
-console.log(`tile ${COLS}x${ROWS} = ${pxW}x${pxH}px · ${ARR.length} arrangements · ${total} photo slots`);
-console.log('usage per photo:', JSON.stringify(use));
 if (fails.length) {
   console.error('\nFAILURES:\n  ' + fails.join('\n  '));
   process.exit(1);

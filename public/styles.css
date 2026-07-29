@@ -1,5 +1,5 @@
 /* ============================================================
-   Bird Photography Portfolio — Kees Leemeijer
+   Photography Portfolio — Kees Leemeijer
    Munich '72 spirited inheritance · alectear-feel craft
    ============================================================ */
 
@@ -560,6 +560,63 @@ html, body {
 .fs-toggle.is-open .fs-ico--expand { opacity: 0; }
 .fs-toggle.is-open .fs-ico--close  { opacity: 1; }
 
+/* ============================================================
+   Collection switcher — birds / events / products, right edge
+   A vertical column of *individual* plates hanging down the
+   right-hand side, under the viewer toggle. Each button carries
+   its own cream field, hairline, radius and lift — the same
+   surface family as the toggle and the bloom plate — rather than
+   sharing one strip, so the three read as three separate marks
+   against the photo plane. They hang from the right (align-items:
+   flex-end), so each one is only as wide as its own label and the
+   ragged edge falls inward, away from the viewport edge.
+   The active button inverts to the brand blue.
+   ============================================================ */
+.collections {
+  position: fixed;
+  /* Clear the 38px toggle plus a gutter, so the two never overlap. */
+  top: calc(var(--inset-corner) + 38px + 8px);
+  right: var(--inset-corner);
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  opacity: 0;
+  animation: fadeIn 200ms ease-out 280ms forwards;
+}
+.collections .coll-btn {
+  appearance: none;
+  background: var(--field);
+  border: 1px solid rgba(26, 26, 26, 0.22);
+  border-radius: var(--radius-card);
+  box-shadow: 0 6px 24px -8px rgba(0, 0, 0, 0.22);
+  padding: 0 12px;
+  height: 32px;
+  font: inherit;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(26, 26, 26, 0.55);
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background var(--label-in) ease,
+    border-color var(--label-in) ease,
+    color var(--label-in) ease;
+}
+.collections .coll-btn:hover { color: var(--charcoal); background: #fff; }
+.collections .coll-btn.is-active {
+  background: var(--blue);
+  border-color: var(--blue);
+  color: #fff;
+}
+.collections .coll-btn:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
 .fullscreen {
   position: fixed;
   inset: 0;
@@ -784,7 +841,7 @@ html, body {
    AT users get a properly-structured list with real headings + alts. */
 @media (max-width: 720px) {
   .stage, .identity, .species, .compass,
-  .fs-toggle, .fullscreen { display: none; }
+  .fs-toggle, .fullscreen, .collections { display: none; }
   .mobile-edition { display: block; }
 }
 
@@ -850,6 +907,7 @@ html, body {
   .species .line-name,
   .fs-toggle,
   .fs-toggle .fs-ico,
+  .collections .coll-btn,
   .fullscreen,
   .mobile-edition .mcell .mbloom::details-content { transition-duration: 0ms; animation-duration: 0ms; }
 }

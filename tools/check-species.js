@@ -1,18 +1,21 @@
 #!/usr/bin/env node
-/* Validate that every copy of the species data still agrees.
+/* Validate that every copy of the photo data still agrees.
  *
- * Species names, latin names, vitals and photo filenames are duplicated across
- * five places, and no generator ties them together:
+ * Names, latin names / subtitles, vitals and filenames are duplicated across
+ * several places, and no generator ties them together:
  *
- *   public/app.js                            SPECIES + BIRD_FACTS  (authoritative)
- *   public/index.html                        schema.org gallery + .mcell tiles
+ *   public/app.js                            SPECIES / EVENTS / PRODUCTS and
+ *                                            their facts tables (authoritative)
+ *   public/index.html                        schema.org gallery, .mcell tiles,
+ *                                            collection switcher buttons
  *   native/app/src/main/assets/photos.json   the Android prototype's manifest
- *   tools/gen-arrangements.js                SPECIES_OF + KIND_OF
+ *                                            (birds only)
  *   tools/check-arrangements.js              derives its maps from app.js
+ *   tools/gen-arrangements.js                derives its maps from app.js
  *
- * Renaming or re-identifying a species means editing all of them by hand. This
- * script is what catches the one you forgot — it treats public/app.js as the
- * source of truth and asserts the rest match, including the files on disk.
+ * Renaming or re-identifying a photograph means editing all of them by hand.
+ * This script is what catches the one you forgot — it treats public/app.js as
+ * the source of truth and asserts the rest match, including the files on disk.
  *
  * Prose is deliberately NOT compared: the native manifest carries shortened
  * ledes written for a phone screen. Identity fields (name, latin, shape,
@@ -30,24 +33,33 @@ const read = (...p) => fs.readFileSync(path.join(ROOT, ...p), 'utf8');
 const appJs = read('public', 'app.js');
 const html = read('public', 'index.html');
 const manifest = JSON.parse(read('native', 'app', 'src', 'main', 'assets', 'photos.json'));
-const genJs = read('tools', 'gen-arrangements.js');
 
 const fails = [];
 const fail = (msg) => fails.push(msg);
 
-// ---------- source of truth: lift SPECIES + BIRD_FACTS out of app.js ----------
+// ---------- source of truth: lift the inventory out of app.js ----------
 // The slice runs from the `F` filename helper to `vitalRows`, so it carries the
-// literals AND the alias assignments that share one species' prose across its
+// literals AND the alias assignments that share one subject's prose across its
 // repeat photos (BIRD_FACTS[9] = BIRD_FACTS[13] = BIRD_FACTS[7], etc).
 const from = appJs.indexOf('const F = (n) =>');
 const to = appJs.indexOf('const vitalRows');
 if (from < 0 || to < 0 || to < from) {
-  console.error('FAILURE: could not locate the SPECIES / BIRD_FACTS block in public/app.js');
+  console.error('FAILURE: could not locate the inventory block in public/app.js');
   process.exit(1);
 }
-const { SPECIES, BIRD_FACTS } = new Function(
-  appJs.slice(from, to) + '\nreturn { SPECIES, BIRD_FACTS };'
+const { SPECIES, BIRD_FACTS, EVENTS, EVENT_FACTS, PRODUCTS, PRODUCT_FACTS } = new Function(
+  appJs.slice(from, to) +
+  '\nreturn { SPECIES, BIRD_FACTS, EVENTS, EVENT_FACTS, PRODUCTS, PRODUCT_FACTS };'
 )();
+
+// The two later collections share the record shape but not the bird-specific
+// vitals fields; `dir` is their subfolder under public/files and `prefix` the
+// letter their filenames carry. Birds sit at the root of public/files with no
+// subfolder, which is why they are described separately below.
+const EXTRA = [
+  { key: 'events',   label: 'Events',   dir: 'events',   prefix: 'E', items: EVENTS,   facts: EVENT_FACTS },
+  { key: 'products', label: 'Products', dir: 'products', prefix: 'R', items: PRODUCTS, facts: PRODUCT_FACTS },
+];
 
 // Typographic variants are allowed to differ between platforms (the JSON
 // manifest uses ASCII hyphens where the web copy uses en dashes). Compare on a
@@ -109,22 +121,94 @@ Object.keys(BIRD_FACTS).forEach((id) => {
   });
 });
 
+// ---------- the later collections: shape, ids, filenames, facts ----------
+// Same record shape as SPECIES, so the same identity rules apply. What differs
+// is the facts object: these carry an explicit four-row `vitals` array instead
+// of the wingspan/weight/range/habitat fields vitalRows() was written around.
+EXTRA.forEach((coll) => {
+  const seenIds = new Set();
+  coll.items.forEach((it) => {
+    if (seenIds.has(it.id)) fail(`app.js: duplicate ${coll.key} id ${it.id}`);
+    seenIds.add(it.id);
+    const want = `files/${coll.dir}/${coll.prefix}${it.id}-`;
+    if (!decodeURI(it.image).startsWith(want)) {
+      fail(`app.js: ${coll.key} ${it.id} image "${it.image}" does not start with ${want}`);
+    }
+    // No letterbox photograph exists outside the birds, so W is not allowed
+    // here — a W would ask for a 6x2 slot the generator never emits.
+    if (!'LV'.includes(it.shape)) fail(`app.js: ${coll.key} ${it.id} has shape "${it.shape}", expected L or V`);
+    ['vernacular', 'latin', 'band_a', 'band_b'].forEach((k) => {
+      if (!it[k]) fail(`app.js: ${coll.key} ${it.id} is missing ${k}`);
+    });
+    const f = coll.facts[it.id];
+    if (!f) return fail(`app.js: ${coll.key} ${it.id} (${it.vernacular}) has no facts entry`);
+    if (!Array.isArray(f.vitals) || f.vitals.length !== 4 ||
+        f.vitals.some((r) => !Array.isArray(r) || r.length !== 2 || !r[0] || !r[1])) {
+      fail(`app.js: ${coll.key} ${it.id} vitals must be four [label, value] pairs`);
+    }
+    ['lede', 'fun_fact'].forEach((k) => {
+      if (!f[k]) fail(`app.js: ${coll.key} ${it.id} is missing ${k}`);
+    });
+  });
+
+  // One title carries one subtitle, and every frame of one series shares one
+  // facts object — otherwise the plate would state two different dates for the
+  // same shoot depending on which tile you are standing on.
+  const latinOfIt = new Map();
+  const factsOf = new Map();
+  coll.items.forEach((it) => {
+    if (latinOfIt.has(it.vernacular) && latinOfIt.get(it.vernacular) !== it.latin) {
+      fail(`app.js: ${coll.key} "${it.vernacular}" is both "${latinOfIt.get(it.vernacular)}" and "${it.latin}"`);
+    }
+    latinOfIt.set(it.vernacular, it.latin);
+    const f = coll.facts[it.id];
+    if (factsOf.has(it.vernacular) && factsOf.get(it.vernacular) !== f) {
+      fail(`app.js: ${coll.key} "${it.vernacular}" frames do not share one facts object ` +
+           `(${it.id} differs) — alias them as EVENT_FACTS[n] = EVENT_FACTS[m]`);
+    }
+    factsOf.set(it.vernacular, f);
+  });
+});
+
 // ---------- photographs on disk ----------
+// public/ is the deployed artifact, so anything unreferenced sitting there
+// ships to visitors for free. The tree is exactly: the bird .webp files and
+// logo.svg at the root, plus one folder per later collection holding only its
+// own .webp files.
 const webDir = path.join(ROOT, 'public', 'files');
-const onDisk = fs.readdirSync(webDir).filter((f) => f.endsWith('.webp'));
-const wanted = SPECIES.map((sp) => decodeURI(sp.image).replace(/^files\//, ''));
-wanted.forEach((f, i) => {
-  if (!onDisk.includes(f)) fail(`public/files/: P${SPECIES[i].id} references ${f}, which is not on disk`);
-});
-onDisk.forEach((f) => {
-  if (!wanted.includes(f)) fail(`public/files/: ${f} is on disk but no SPECIES entry references it`);
-});
-// public/ is the deployed artifact — anything unreferenced there ships for free.
+const ALLOWED_DIRS = EXTRA.map((c) => c.dir);
+
+const checkDir = (dir, wantedNames, label) => {
+  const onDisk = fs.readdirSync(dir).filter((f) => f.endsWith('.webp'));
+  wantedNames.forEach((f) => {
+    if (!onDisk.includes(f)) fail(`${label}: ${f} is referenced but not on disk`);
+  });
+  onDisk.forEach((f) => {
+    if (!wantedNames.includes(f)) fail(`${label}: ${f} is on disk but nothing references it`);
+  });
+};
+
+checkDir(webDir, SPECIES.map((sp) => decodeURI(sp.image).replace(/^files\//, '')), 'public/files/');
 fs.readdirSync(webDir, { withFileTypes: true }).forEach((e) => {
-  if (e.isDirectory()) fail(`public/files/: unexpected directory "${e.name}" — only photographs and logo.svg ship`);
-  else if (!e.name.endsWith('.webp') && e.name !== 'logo.svg') {
+  if (e.isDirectory()) {
+    if (!ALLOWED_DIRS.includes(e.name)) {
+      fail(`public/files/: unexpected directory "${e.name}" — only ${ALLOWED_DIRS.join(', ')} ship`);
+    }
+  } else if (!e.name.endsWith('.webp') && e.name !== 'logo.svg') {
     fail(`public/files/: unexpected file "${e.name}" — only photographs and logo.svg ship`);
   }
+});
+
+EXTRA.forEach((coll) => {
+  const dir = path.join(webDir, coll.dir);
+  if (!fs.existsSync(dir)) return fail(`public/files/${coll.dir}/ does not exist`);
+  checkDir(dir, coll.items.map((it) => decodeURI(it.image).replace(`files/${coll.dir}/`, '')),
+           `public/files/${coll.dir}/`);
+  fs.readdirSync(dir, { withFileTypes: true }).forEach((e) => {
+    if (e.isDirectory() || !e.name.endsWith('.webp')) {
+      fail(`public/files/${coll.dir}/: unexpected entry "${e.name}" — only photographs ship`);
+    }
+  });
 });
 
 // ---------- public/index.html: canonical host ----------
@@ -260,47 +344,43 @@ nativeDisk.forEach((f) => {
   }
 });
 
-// ---------- tools/gen-arrangements.js ----------
-// The generator groups photos by species and by slot kind. Both maps are hand
-// written, so they drift the moment a photo is re-identified — which is exactly
-// what happened when the Great Tit batch turned out to hold Blue Tits.
-const evalMap = (name) => {
-  const m = genJs.match(new RegExp(`const ${name} = (\\{[\\s\\S]*?\\n\\};)`));
-  return m ? new Function('return ' + m[1].replace(/;$/, ''))() : null;
-};
-const KIND_OF = evalMap('KIND_OF');
-const SPECIES_OF = evalMap('SPECIES_OF');
-if (!KIND_OF || !SPECIES_OF) fail('gen-arrangements.js: could not read KIND_OF / SPECIES_OF');
+// ---------- public/index.html: the collection switcher ----------
+// The buttons are hand-written markup so the labels are in the document without
+// JS; app.js binds them by data-collection. A key typo there is a button that
+// silently does nothing, which is exactly the failure this catches.
+const collM = appJs.match(/const COLLECTIONS = \[([\s\S]*?)\n {2}\];/);
+if (!collM) fail('app.js: could not find the COLLECTIONS registry');
 else {
-  // KIND_OF uses P for the letterbox photos where SPECIES uses W.
-  const KIND_FOR = { L: 'L', V: 'V', W: 'P' };
-  SPECIES.forEach((sp) => {
-    if (KIND_OF[sp.id] !== KIND_FOR[sp.shape]) {
-      fail(`gen-arrangements.js: KIND_OF[${sp.id}] = ${KIND_OF[sp.id]}, app.js shape is ${sp.shape}`);
-    }
-    if (!SPECIES_OF[sp.id]) fail(`gen-arrangements.js: SPECIES_OF has no entry for ${sp.id}`);
+  const declared = [...collM[1].matchAll(/key: '([^']+)',\s*label: '([^']+)'/g)]
+    .map((m) => ({ key: m[1], label: m[2] }));
+  const buttons = [...html.matchAll(/data-collection="([^"]+)"[^>]*>([^<]*)</g)]
+    .map((m) => ({ key: m[1], label: m[2].trim() }));
+  if (!declared.length) fail('app.js: COLLECTIONS declares no key/label pairs');
+  if (declared.length !== buttons.length) {
+    fail(`index.html: ${buttons.length} switcher buttons, app.js declares ${declared.length} collections`);
+  }
+  declared.forEach((c, i) => {
+    const b = buttons[i];
+    if (!b) return fail(`index.html: no switcher button for collection "${c.key}"`);
+    if (b.key !== c.key) fail(`index.html: switcher button ${i + 1} is "${b.key}", app.js has "${c.key}"`);
+    if (!same(b.label, c.label)) fail(`index.html: switcher button "${b.key}" reads "${b.label}", app.js label is "${c.label}"`);
   });
-  Object.keys(KIND_OF).forEach((id) => {
-    if (!byId.has(+id)) fail(`gen-arrangements.js: KIND_OF has id ${id}, which app.js does not define`);
+  // Every collection the registry names must have an inventory behind it.
+  const known = ['birds', ...EXTRA.map((c) => c.key)];
+  declared.forEach((c) => {
+    if (!known.includes(c.key)) fail(`app.js: COLLECTIONS names "${c.key}", which this check does not know about`);
   });
-  // The generator's species labels are short codes, not vernaculars, so check
-  // the PARTITION rather than the names: two photos share a code iff they share
-  // a vernacular.
-  SPECIES.forEach((a) => SPECIES.forEach((b) => {
-    if (a.id >= b.id) return;
-    const sameCode = SPECIES_OF[a.id] === SPECIES_OF[b.id];
-    const sameBird = a.vernacular === b.vernacular;
-    if (sameCode !== sameBird) {
-      fail(`gen-arrangements.js: P${a.id}/P${b.id} grouped as ` +
-           `${SPECIES_OF[a.id]}/${SPECIES_OF[b.id]} but named "${a.vernacular}"/"${b.vernacular}"`);
-    }
-  }));
 }
 
 // ---------- report ----------
 const species = [...new Set(SPECIES.map((s) => s.vernacular))];
-console.log(`${SPECIES.length} photographs · ${species.length} species · 5 copies cross-checked`);
+console.log(`birds     ${SPECIES.length} photographs · ${species.length} species`);
 console.log('  ' + species.map((v) => `${v} (${SPECIES.filter((s) => s.vernacular === v).length})`).join(', '));
+EXTRA.forEach((coll) => {
+  const names = [...new Set(coll.items.map((i) => i.vernacular))];
+  console.log(`${coll.key.padEnd(9)} ${coll.items.length} photographs · ${names.length} series`);
+  console.log('  ' + names.map((v) => `${v} (${coll.items.filter((i) => i.vernacular === v).length})`).join(', '));
+});
 if (fails.length) {
   console.error('\nFAILURES:\n  ' + fails.join('\n  '));
   process.exit(1);

@@ -3,22 +3,22 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>Kees Leemeijer · Bird Photography</title>
-<meta name="description" content="Portfolio of bird photography by Kees Leemeijer — a hand-arranged, pannable plane of species portraits from Europe and beyond." />
+<title>Kees Leemeijer · Photography</title>
+<meta name="description" content="Photography by Kees Leemeijer — a hand-arranged, pannable plane in three collections: birds, events and products." />
 <link rel="canonical" href="https://gewoonkees132.github.io/Bird-portfolio/" />
 <meta name="theme-color" content="#1635ee" />
 
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Kees Leemeijer" />
-<meta property="og:title" content="Kees Leemeijer · Bird Photography" />
-<meta property="og:description" content="Portfolio of bird photography by Kees Leemeijer — a hand-arranged, pannable plane of species portraits from Europe and beyond." />
+<meta property="og:title" content="Kees Leemeijer · Photography" />
+<meta property="og:description" content="Photography by Kees Leemeijer — a hand-arranged, pannable plane in three collections: birds, events and products." />
 <meta property="og:url" content="https://gewoonkees132.github.io/Bird-portfolio/" />
 <meta property="og:image" content="https://gewoonkees132.github.io/Bird-portfolio/files/P5-Green_Bee-eater.webp" />
 <meta property="og:image:alt" content="Asian Green Bee-eater perched in evening light." />
 
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="Kees Leemeijer · Bird Photography" />
-<meta name="twitter:description" content="Portfolio of bird photography by Kees Leemeijer — a hand-arranged, pannable plane of species portraits from Europe and beyond." />
+<meta name="twitter:title" content="Kees Leemeijer · Photography" />
+<meta name="twitter:description" content="Photography by Kees Leemeijer — a hand-arranged, pannable plane in three collections: birds, events and products." />
 <meta name="twitter:image" content="https://gewoonkees132.github.io/Bird-portfolio/files/P5-Green_Bee-eater.webp" />
 
 <link rel="icon" type="image/svg+xml" href="files/logo.svg" />
@@ -100,6 +100,16 @@
     <div>Arrangement <span class="arr" id="compass-arr">A</span></div>
   </div>
 
+  <!-- Collection switcher — three bodies of work share one plane. Three
+       separate buttons stacked down the right-hand edge, under the viewer
+       toggle. The data-collection keys match COLLECTIONS in app.js, and
+       tools/check-species.js asserts that they still do. -->
+  <div class="collections" id="collections" role="group" aria-label="Choose a collection">
+    <button class="coll-btn" type="button" data-collection="birds"    aria-pressed="true">Birds</button>
+    <button class="coll-btn" type="button" data-collection="events"   aria-pressed="false">Events</button>
+    <button class="coll-btn" type="button" data-collection="products" aria-pressed="false">Products</button>
+  </div>
+
   <!-- Full-screen viewer. The top-right control opens the focused photograph
        full screen and then *is* the close button — it never moves, it only
        swaps its glyph. The species opener stays layered above the viewer so
@@ -125,7 +135,7 @@
       <img class="pictogram" src="files/logo.svg" alt="" aria-hidden="true" />
       <h1 class="mobile-name"><span class="name">Kees Leemeijer</span><span class="dot">.</span></h1>
     </div>
-    <div class="mobile-note">Mobile edition — placeholder. Final order is editorial, hand-ordered, opening with Arrangement A's lead.</div>
+    <div class="mobile-note">Mobile edition — placeholder, birds only. The events and products collections are on the desktop plane; the final mobile order is editorial, hand-ordered, opening with Arrangement A's lead.</div>
 
     <div class="mcell" data-sp="5">
       <div class="mphoto" style="aspect-ratio: 3/2; --ph-band-a:#a87a3e; --ph-band-b:#b8893f;">
