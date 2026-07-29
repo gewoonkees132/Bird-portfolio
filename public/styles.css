@@ -663,20 +663,42 @@ html, body {
   overflow-y: auto;
   z-index: 20;
 }
+/* Wordmark left, current-set count right. Full-width flex rather than the old
+   inline-flex so the count can sit at the far end and so the gradient masks the
+   whole strip the photos scroll under. The right padding is the corner control's
+   footprint (--inset-corner + 44px button, less the edition's own 18px padding)
+   plus breathing room, so the count can never slide under the button. */
 .mobile-edition .mobile-identity {
   position: sticky;
   top: 0;
-  padding: 10px 0 18px;
+  padding: 10px 50px 18px 0;
   background: linear-gradient(to bottom, var(--field) 60%, transparent);
   font-size: var(--wm-size-m);
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 9px;
+  justify-content: space-between;
+  gap: 12px;
   color: var(--charcoal);
   font-weight: 500;
   z-index: 2;
 }
+.mobile-edition .mobile-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+}
 .mobile-edition .mobile-identity .pictogram { width: 14px; height: 14px; }
+/* "Where am I" — written by JS from the same data-set the CSS filters on, so
+   the header and the menu cannot drift apart. */
+.mobile-edition .mobile-count {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(26, 26, 26, 0.5);
+  white-space: nowrap;
+}
 .mobile-edition .mobile-note {
   font-family: ui-monospace, "SF Mono", Menlo, monospace;
   font-size: 11px;
@@ -836,6 +858,145 @@ html, body {
   }
 }
 
+/* ============================================================
+   Mobile set switcher
+   One attribute drives everything: .mobile-edition[data-set] vs
+   [data-cat] on each cell. Switching sets is an attribute write —
+   no re-render, no rebuild, no reflow of anything but visibility.
+
+   Because the inactive cells are display:none they generate no box,
+   never intersect the viewport, and so their loading="lazy" images
+   are never fetched. An unvisited set costs nothing.
+   ============================================================ */
+.mobile-edition[data-set="birds"]    [data-cat]:not([data-cat="birds"]),
+.mobile-edition[data-set="products"] [data-cat]:not([data-cat="products"]),
+.mobile-edition[data-set="events"]   [data-cat]:not([data-cat="events"]) {
+  display: none;
+}
+
+/* The corner control. Same family as .fs-toggle — same corner, same plate,
+   same "the button you pressed is the button that closes" glyph swap — but
+   44px, the touch minimum, because this one is only ever tapped.
+   Hidden by default; the mobile breakpoint below turns it on. */
+.set-toggle {
+  display: none;
+  position: fixed;
+  top: var(--inset-corner);
+  right: var(--inset-corner);
+  z-index: 41;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  padding: 0;
+  background: var(--field);
+  border: 1px solid rgba(26, 26, 26, 0.22);
+  border-radius: var(--radius-card);
+  box-shadow: 0 6px 24px -8px rgba(0, 0, 0, 0.22);
+  color: var(--charcoal);
+  cursor: pointer;
+  transition: background var(--label-in) ease;
+}
+.set-toggle:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+/* Both glyphs share one grid cell so the swap costs no layout. */
+.set-toggle .set-ico {
+  grid-area: 1 / 1;
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.4;
+  stroke-linecap: square;
+  transition: opacity var(--label-in) ease;
+}
+.set-toggle .set-ico--close        { opacity: 0; }
+.set-toggle.is-open .set-ico--open  { opacity: 0; }
+.set-toggle.is-open .set-ico--close { opacity: 1; }
+
+/* Catches the tap that dismisses. Barely tinted — the photographs stay
+   readable behind it; it is there to be pressed, not to be looked at. */
+.set-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 38;
+  background: rgba(26, 26, 26, 0.12);
+  opacity: 0;
+  transition: opacity var(--label-out) ease-in;
+}
+.set-backdrop[hidden] { display: none; }
+.set-backdrop.is-open {
+  opacity: 1;
+  transition: opacity var(--label-in) ease-out;
+}
+
+/* Directly beneath the button, hung from the same right edge, so it reads as
+   having come out of the control that opened it. */
+.set-menu {
+  position: fixed;
+  top: calc(var(--inset-corner) + 44px + 8px);
+  right: var(--inset-corner);
+  z-index: 40;
+  min-width: 176px;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: var(--field);
+  border: 1px solid rgba(26, 26, 26, 0.22);
+  border-radius: var(--radius-card);
+  box-shadow: 0 12px 32px -10px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  transform: translateY(-6px) scale(0.97);
+  transform-origin: top right;
+  transition: opacity var(--label-out) ease-in, transform var(--label-out) ease-in;
+}
+.set-menu[hidden] { display: none; }
+.set-menu.is-open {
+  opacity: 1;
+  transform: none;
+  transition: opacity var(--label-in) ease-out, transform var(--label-in) var(--focus-easing);
+}
+
+/* Stacked, left-aligned, the count trailing quietly on the right. */
+.set-opt {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+  width: 100%;
+  min-height: 40px;
+  padding: 9px 11px;
+  border: 0;
+  border-radius: 5px;
+  background: none;
+  font-family: inherit;
+  font-size: var(--label-size-m);
+  font-weight: 500;
+  text-align: left;
+  color: var(--charcoal);
+  cursor: pointer;
+  transition: background var(--label-out) ease;
+}
+.set-opt .set-n {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  color: rgba(26, 26, 26, 0.45);
+}
+.set-opt:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: -2px;
+}
+/* The one you are looking at is filled. */
+.set-opt[aria-current="true"] {
+  background: var(--blue);
+  color: var(--field);
+}
+.set-opt[aria-current="true"] .set-n { color: rgba(242, 238, 229, 0.7); }
+
 /* Below the mobile breakpoint: hide the spatial plane and show the
    editorial scroll instead. Mobile visitors get the curated sequence;
    AT users get a properly-structured list with real headings + alts. */
@@ -843,6 +1004,14 @@ html, body {
   .stage, .identity, .species, .compass,
   .fs-toggle, .fullscreen, .collections { display: none; }
   .mobile-edition { display: block; }
+  .set-toggle { display: grid; }
+}
+
+/* The switcher is a mobile-only control: above the breakpoint the plane is the
+   navigation, so the panel must never appear even if a stale open state or a
+   resize mid-gesture left the class on. */
+@media (min-width: 721px) {
+  .set-toggle, .set-backdrop, .set-menu { display: none !important; }
 }
 
 /* ============================================================
@@ -909,5 +1078,10 @@ html, body {
   .fs-toggle .fs-ico,
   .collections .coll-btn,
   .fullscreen,
+  .set-toggle,
+  .set-toggle .set-ico,
+  .set-backdrop,
+  .set-menu,
+  .set-opt,
   .mobile-edition .mcell .mbloom::details-content { transition-duration: 0ms; animation-duration: 0ms; }
 }

@@ -1723,6 +1723,150 @@
     wake();
   }
 
+  // ---------- Mobile set switcher ----------
+  // The whole feature is one attribute. `data-set` on .mobile-edition says what
+  // is on screen; CSS hides every [data-cat] that does not match. Switching is
+  // an attribute write — nothing re-renders, nothing rebuilds, and the images of
+  // an unvisited set are never fetched because a display:none cell never
+  // intersects the viewport for its loading="lazy" to resolve against.
+  //
+  // Header and menu read that same attribute, so "where am I" and "where can I
+  // go" cannot contradict each other.
+  const SET_LABELS = { birds: 'Birds', products: 'Products', events: 'Events' };
+
+  const mobileEdition = document.getElementById('mobile-edition');
+  const setToggle     = document.getElementById('set-toggle');
+  const setMenu       = document.getElementById('set-menu');
+  const setBackdrop   = document.getElementById('set-backdrop');
+  const mobileCount   = document.getElementById('mobile-count');
+  const setOpts       = setMenu ? Array.from(setMenu.querySelectorAll('.set-opt')) : [];
+
+  let setMenuOpen = false;
+  let setMenuHideTimer = null;
+
+  // Counted from the DOM rather than hardcoded, so adding a cell to a set can
+  // never leave the menu or the header lying about how many there are.
+  function countOf(set) {
+    return mobileEdition
+      ? mobileEdition.querySelectorAll('.mcell[data-cat="' + set + '"]').length
+      : 0;
+  }
+
+  function applySet(set) {
+    if (!mobileEdition || !SET_LABELS[set]) return;
+    mobileEdition.dataset.set = set;
+    if (mobileCount) mobileCount.textContent = SET_LABELS[set] + ' · ' + countOf(set);
+    setOpts.forEach((opt) => {
+      const active = opt.dataset.setOpt === set;
+      // aria-current, not aria-pressed: these are not toggles, they name the
+      // one body of work you are currently reading.
+      if (active) opt.setAttribute('aria-current', 'true');
+      else opt.removeAttribute('aria-current');
+      // Same source as the header count — the numbers in the HTML are only a
+      // no-JS fallback and get overwritten from the DOM on first paint.
+      const n = opt.querySelector('.set-n');
+      if (n) n.textContent = countOf(opt.dataset.setOpt);
+    });
+  }
+
+  function openSetMenu() {
+    if (setMenuOpen || !setMenu || !setBackdrop || !setToggle) return;
+    setMenuOpen = true;
+    if (setMenuHideTimer) { clearTimeout(setMenuHideTimer); setMenuHideTimer = null; }
+
+    setBackdrop.hidden = false;
+    setMenu.hidden = false;
+    // A frame between `hidden` coming off and .is-open going on, or the two
+    // style changes collapse into one and the transition never runs.
+    requestAnimationFrame(() => {
+      setBackdrop.classList.add('is-open');
+      setMenu.classList.add('is-open');
+    });
+
+    setToggle.classList.add('is-open');
+    setToggle.setAttribute('aria-expanded', 'true');
+    setToggle.setAttribute('aria-label', 'Close the set menu');
+
+    const current = setOpts.find((o) => o.hasAttribute('aria-current'));
+    (current || setOpts[0])?.focus();
+
+    // So the hardware/browser back gesture dismisses the panel instead of
+    // leaving the site — the thing a visitor expects from an open sheet.
+    history.pushState({ setMenu: true }, '');
+  }
+
+  // fromPop: the entry is already off the stack, so do not pop it again.
+  function closeSetMenu(opts) {
+    if (!setMenuOpen || !setMenu || !setBackdrop || !setToggle) return;
+    const fromPop = !!(opts && opts.fromPop);
+    const restoreFocus = !(opts && opts.restoreFocus === false);
+    setMenuOpen = false;
+
+    setMenu.classList.remove('is-open');
+    setBackdrop.classList.remove('is-open');
+    setToggle.classList.remove('is-open');
+    setToggle.setAttribute('aria-expanded', 'false');
+    setToggle.setAttribute('aria-label', 'Choose a body of work');
+
+    // Focus would otherwise be stranded on a button that is about to leave the
+    // tree, which drops the caret to the top of the document.
+    if (restoreFocus && setMenu.contains(document.activeElement)) setToggle.focus();
+
+    // Hold the nodes until the fade finishes, then take them out of the tree so
+    // the backdrop cannot swallow taps meant for the photographs.
+    if (setMenuHideTimer) clearTimeout(setMenuHideTimer);
+    setMenuHideTimer = setTimeout(() => {
+      setMenuHideTimer = null;
+      setMenu.hidden = true;
+      setBackdrop.hidden = true;
+    }, 200);
+
+    if (!fromPop && history.state && history.state.setMenu) history.back();
+  }
+
+  if (setToggle && setMenu && mobileEdition) {
+    setToggle.addEventListener('click', () => {
+      if (setMenuOpen) closeSetMenu();
+      else openSetMenu();
+    });
+
+    setBackdrop?.addEventListener('click', () => closeSetMenu());
+
+    setOpts.forEach((opt) => {
+      opt.addEventListener('click', () => {
+        const set = opt.dataset.setOpt;
+        const changed = mobileEdition.dataset.set !== set;
+        applySet(set);
+        // A new body of work starts at its beginning, not at the scroll depth
+        // of the one before it. .mobile-edition is its own scroll container.
+        if (changed) mobileEdition.scrollTop = 0;
+        // Focus goes back to the corner control, which is where the visitor's
+        // thumb already is and the only thing left on screen.
+        closeSetMenu({ restoreFocus: false });
+        setToggle.focus();
+      });
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && setMenuOpen) {
+        e.preventDefault();
+        closeSetMenu();
+      }
+    });
+
+    window.addEventListener('popstate', () => {
+      if (setMenuOpen) closeSetMenu({ fromPop: true });
+    });
+
+    // Crossing up past the breakpoint hands navigation back to the plane; a
+    // panel left open would be hidden by CSS but still holding a history entry.
+    window.addEventListener('resize', () => {
+      if (setMenuOpen && window.innerWidth > 720) closeSetMenu();
+    });
+
+    applySet(mobileEdition.dataset.set || 'birds');
+  }
+
   // ---------- Visibility pause ----------
   // Stop all RAF loops while the tab is hidden so the page does not burn
   // CPU/GPU on a backgrounded plane. Resume on focus.

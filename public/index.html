@@ -129,125 +129,422 @@
     <img class="fs-img" id="fs-img" alt="" decoding="async" draggable="false" />
   </div>
 
-  <!-- Mobile placeholder edition -->
-  <div class="mobile-edition">
-    <div class="mobile-identity">
-      <img class="pictogram" src="files/logo.svg" alt="" aria-hidden="true" />
-      <h1 class="mobile-name"><span class="name">Kees Leemeijer</span><span class="dot">.</span></h1>
-    </div>
-    <div class="mobile-note">Mobile edition — placeholder, birds only. The events and products collections are on the desktop plane; the final mobile order is editorial, hand-ordered, opening with Arrangement A's lead.</div>
+  <!-- Mobile set control. Mirrors .fs-toggle's contract: fixed in the top-right
+       corner, never moves, never disappears, and becomes its own close button by
+       swapping its glyph. 44px rather than 38px because this one is only ever
+       touched. Lives outside .mobile-edition so the scroll container can never
+       clip or scroll it. -->
+  <button class="set-toggle" id="set-toggle" type="button"
+          aria-controls="set-menu" aria-expanded="false"
+          aria-label="Choose a body of work">
+    <svg class="set-ico set-ico--open" viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+      <path d="M3 5.5h14M3 10h14M3 14.5h14" />
+    </svg>
+    <svg class="set-ico set-ico--close" viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+      <path d="M5 5l10 10M15 5L5 15" />
+    </svg>
+  </button>
 
-    <div class="mcell" data-sp="5">
+  <div class="set-backdrop" id="set-backdrop" hidden></div>
+
+  <div class="set-menu" id="set-menu" role="group" aria-label="Bodies of work" hidden>
+    <button class="set-opt" type="button" data-set-opt="birds">Birds<span class="set-n">16</span></button>
+    <button class="set-opt" type="button" data-set-opt="products">Products<span class="set-n">14</span></button>
+    <button class="set-opt" type="button" data-set-opt="events">Events<span class="set-n">23</span></button>
+  </div>
+
+  <!-- Mobile placeholder edition.
+       data-set is the single source of truth for what is on screen: CSS hides
+       every [data-cat] that does not match it, and JS reads the same attribute
+       to write the header count. Menu and header can never disagree. -->
+  <div class="mobile-edition" id="mobile-edition" data-set="birds">
+    <div class="mobile-identity">
+      <span class="mobile-mark">
+        <img class="pictogram" src="files/logo.svg" alt="" aria-hidden="true" />
+        <h1 class="mobile-name"><span class="name">Kees Leemeijer</span><span class="dot">.</span></h1>
+      </span>
+      <span class="mobile-count" id="mobile-count" aria-live="polite"></span>
+    </div>
+    <div class="mobile-note" data-cat="birds">Mobile edition — placeholder. Final order is editorial, hand-ordered, opening with Arrangement A's lead.</div>
+    <div class="mobile-note" data-cat="products">Mobile edition — placeholder. Printed and cast pieces, in production order.</div>
+    <div class="mobile-note" data-cat="events">Mobile edition — placeholder. Exhibitions and build days, in chronological order.</div>
+
+    <div class="mcell" data-cat="birds" data-sp="5">
       <div class="mphoto" style="aspect-ratio: 3/2; --ph-band-a:#a87a3e; --ph-band-b:#b8893f;">
         <img src="files/P5-Green_Bee-eater.webp" alt="" fetchpriority="high" decoding="async" />
         <span>P5 · ASIAN GREEN BEE-EATER</span>
       </div>
       <div class="mlabel">Asian Green Bee-eater<span class="latin">Merops orientalis</span></div>
     </div>
-    <div class="mcell" data-sp="13">
+    <div class="mcell" data-cat="birds" data-sp="13">
       <div class="mphoto" style="aspect-ratio: 2/3; --ph-band-a:#6e5444; --ph-band-b:#7e6454;">
         <img src="files/P13-Eurasian_Blue_Tit.webp" alt="" loading="lazy" decoding="async" />
         <span>P13 · EURASIAN BLUE TIT</span>
       </div>
       <div class="mlabel">Eurasian Blue Tit<span class="latin">Cyanistes caeruleus</span></div>
     </div>
-    <div class="mcell" data-sp="1">
+    <div class="mcell" data-cat="birds" data-sp="1">
       <div class="mphoto" style="aspect-ratio: 3/2; --ph-band-a:#3d6b8a; --ph-band-b:#4a7c9a;">
         <img src="files/P1-European_Robin.webp" alt="" loading="lazy" decoding="async" />
         <span>P1 · EUROPEAN ROBIN</span>
       </div>
       <div class="mlabel">European Robin<span class="latin">Erithacus rubecula</span></div>
     </div>
-    <div class="mcell" data-sp="2">
+    <div class="mcell" data-cat="birds" data-sp="2">
       <div class="mphoto" style="aspect-ratio: 2/3; --ph-band-a:#c79e6e; --ph-band-b:#b88c5e;">
         <img src="files/P2-Baya_Weaver.webp" alt="" loading="lazy" decoding="async" />
         <span>P2 · BAYA WEAVER</span>
       </div>
       <div class="mlabel">Baya Weaver<span class="latin">Ploceus philippinus</span></div>
     </div>
-    <div class="mcell" data-sp="7">
+    <div class="mcell" data-cat="birds" data-sp="7">
       <div class="mphoto" style="aspect-ratio: 3/2; --ph-band-a:#6e5444; --ph-band-b:#7e6454;">
         <img src="files/P7-Eurasian_Blue_Tit.webp" alt="" loading="lazy" decoding="async" />
         <span>P7 · EURASIAN BLUE TIT</span>
       </div>
       <div class="mlabel">Eurasian Blue Tit<span class="latin">Cyanistes caeruleus</span></div>
     </div>
-    <div class="mcell" data-sp="3">
+    <div class="mcell" data-cat="birds" data-sp="3">
       <div class="mphoto" style="aspect-ratio: 3/2; --ph-band-a:#7a8b76; --ph-band-b:#8a9c86;">
         <img src="files/P3-Eurasian_Jay.webp" alt="" loading="lazy" decoding="async" />
         <span>P3 · EURASIAN JAY</span>
       </div>
       <div class="mlabel">Eurasian Jay<span class="latin">Garrulus glandarius</span></div>
     </div>
-    <div class="mcell" data-sp="16">
+    <div class="mcell" data-cat="birds" data-sp="16">
       <div class="mphoto" style="aspect-ratio: 2/3; --ph-band-a:#3d6b8a; --ph-band-b:#4a7c9a;">
         <img src="files/P16-European_Robin.webp" alt="" loading="lazy" decoding="async" />
         <span>P16 · EUROPEAN ROBIN</span>
       </div>
       <div class="mlabel">European Robin<span class="latin">Erithacus rubecula</span></div>
     </div>
-    <div class="mcell" data-sp="9">
+    <div class="mcell" data-cat="birds" data-sp="9">
       <div class="mphoto" style="aspect-ratio: 3/2; --ph-band-a:#6e5444; --ph-band-b:#7e6454;">
         <img src="files/P9-Eurasian_Blue_Tit.webp" alt="" loading="lazy" decoding="async" />
         <span>P9 · EURASIAN BLUE TIT</span>
       </div>
       <div class="mlabel">Eurasian Blue Tit<span class="latin">Cyanistes caeruleus</span></div>
     </div>
-    <div class="mcell" data-sp="6">
+    <div class="mcell" data-cat="birds" data-sp="6">
       <div class="mphoto" style="aspect-ratio: 2/3; --ph-band-a:#8b7848; --ph-band-b:#9a8758;">
         <img src="files/P6-Baya_Weaver_display.webp" alt="" loading="lazy" decoding="async" />
         <span>P6 · BAYA WEAVER</span>
       </div>
       <div class="mlabel">Baya Weaver<span class="latin">Ploceus philippinus</span></div>
     </div>
-    <div class="mcell" data-sp="10">
+    <div class="mcell" data-cat="birds" data-sp="10">
       <div class="mphoto" style="aspect-ratio: 3/2; --ph-band-a:#6e5444; --ph-band-b:#7e6454;">
         <img src="files/P10-Great_Tit.webp" alt="" loading="lazy" decoding="async" />
         <span>P10 · GREAT TIT</span>
       </div>
       <div class="mlabel">Great Tit<span class="latin">Parus major</span></div>
     </div>
-    <div class="mcell" data-sp="14">
+    <div class="mcell" data-cat="birds" data-sp="14">
       <div class="mphoto" style="aspect-ratio: 3/2; --ph-band-a:#3d6b8a; --ph-band-b:#4a7c9a;">
         <img src="files/P14-European_Robin.webp" alt="" loading="lazy" decoding="async" />
         <span>P14 · EUROPEAN ROBIN</span>
       </div>
       <div class="mlabel">European Robin<span class="latin">Erithacus rubecula</span></div>
     </div>
-    <div class="mcell" data-sp="4">
+    <div class="mcell" data-cat="birds" data-sp="4">
       <div class="mphoto" style="aspect-ratio: 21/9; --ph-band-a:#3a4a3e; --ph-band-b:#48584c;">
         <img src="files/P4-Dunnock.webp" alt="" loading="lazy" decoding="async" />
         <span>P4 · DUNNOCK</span>
       </div>
       <div class="mlabel">Dunnock<span class="latin">Prunella modularis</span></div>
     </div>
-    <div class="mcell" data-sp="11">
+    <div class="mcell" data-cat="birds" data-sp="11">
       <div class="mphoto" style="aspect-ratio: 3/2; --ph-band-a:#6e5444; --ph-band-b:#7e6454;">
         <img src="files/P11-Great_Tit.webp" alt="" loading="lazy" decoding="async" />
         <span>P11 · GREAT TIT</span>
       </div>
       <div class="mlabel">Great Tit<span class="latin">Parus major</span></div>
     </div>
-    <div class="mcell" data-sp="15">
+    <div class="mcell" data-cat="birds" data-sp="15">
       <div class="mphoto" style="aspect-ratio: 3/2; --ph-band-a:#3d6b8a; --ph-band-b:#4a7c9a;">
         <img src="files/P15-European_Robin.webp" alt="" loading="lazy" decoding="async" />
         <span>P15 · EUROPEAN ROBIN</span>
       </div>
       <div class="mlabel">European Robin<span class="latin">Erithacus rubecula</span></div>
     </div>
-    <div class="mcell" data-sp="8">
+    <div class="mcell" data-cat="birds" data-sp="8">
       <div class="mphoto" style="aspect-ratio: 21/9; --ph-band-a:#cdc4b0; --ph-band-b:#bdb4a0;">
         <img src="files/P8-Jerdons_Bushlark.webp" alt="" loading="lazy" decoding="async" />
         <span>P8 · JERDON&rsquo;S BUSHLARK</span>
       </div>
       <div class="mlabel">Jerdon&rsquo;s Bushlark<span class="latin">Plocealauda affinis</span></div>
     </div>
-    <div class="mcell" data-sp="12">
+    <div class="mcell" data-cat="birds" data-sp="12">
       <div class="mphoto" style="aspect-ratio: 3/2; --ph-band-a:#6e5444; --ph-band-b:#7e6454;">
         <img src="files/P12-Great_Tit.webp" alt="" loading="lazy" decoding="async" />
         <span>P12 · GREAT TIT</span>
       </div>
       <div class="mlabel">Great Tit<span class="latin">Parus major</span></div>
+    </div>
+
+    <!-- Products set — hidden unless .mobile-edition[data-set="products"].
+         Every image stays loading="lazy": a display:none cell never intersects
+         the viewport, so an inactive set costs no bytes until it is chosen. -->
+    <div class="mcell" data-cat="products">
+      <div class="mphoto" style="aspect-ratio: 3/2; --ph-band-a:#483838; --ph-band-b:#3f3131;">
+        <img src="files/products/R1-Sika_2K_Column.webp" alt="" loading="lazy" decoding="async" />
+        <span>R1 · SIKA 2K COLUMN</span>
+      </div>
+      <div class="mlabel">Sika 2K Column</div>
+    </div>
+    <div class="mcell" data-cat="products">
+      <div class="mphoto" style="aspect-ratio: 2/3; --ph-band-a:#181818; --ph-band-b:#151515;">
+        <img src="files/products/R2-Sika_2K_Column.webp" alt="" loading="lazy" decoding="async" />
+        <span>R2 · SIKA 2K COLUMN</span>
+      </div>
+      <div class="mlabel">Sika 2K Column</div>
+    </div>
+    <div class="mcell" data-cat="products">
+      <div class="mphoto" style="aspect-ratio: 2/3; --ph-band-a:#888878; --ph-band-b:#78786a;">
+        <img src="files/products/R3-Sika_2K_Column.webp" alt="" loading="lazy" decoding="async" />
+        <span>R3 · SIKA 2K COLUMN</span>
+      </div>
+      <div class="mlabel">Sika 2K Column</div>
+    </div>
+    <div class="mcell" data-cat="products">
+      <div class="mphoto" style="aspect-ratio: 3/2; --ph-band-a:#181818; --ph-band-b:#151515;">
+        <img src="files/products/R4-Colour_Printing.webp" alt="" loading="lazy" decoding="async" />
+        <span>R4 · COLOUR PRINTING</span>
+      </div>
+      <div class="mlabel">Colour Printing</div>
+    </div>
+    <div class="mcell" data-cat="products">
+      <div class="mphoto" style="aspect-ratio: 3/2; --ph-band-a:#281818; --ph-band-b:#231515;">
+        <img src="files/products/R5-Addidex_Showpiece.webp" alt="" loading="lazy" decoding="async" />
+        <span>R5 · ADDIDEX SHOWPIECE</span>
+      </div>
+      <div class="mlabel">Addidex Showpiece</div>
+    </div>
+    <div class="mcell" data-cat="products">
+      <div class="mphoto" style="aspect-ratio: 2/3; --ph-band-a:#180808; --ph-band-b:#150707;">
+        <img src="files/products/R6-Addidex_Showpiece.webp" alt="" loading="lazy" decoding="async" />
+        <span>R6 · ADDIDEX SHOWPIECE</span>
+      </div>
+      <div class="mlabel">Addidex Showpiece</div>
+    </div>
+    <div class="mcell" data-cat="products">
+      <div class="mphoto" style="aspect-ratio: 3/2; --ph-band-a:#583838; --ph-band-b:#4d3131;">
+        <img src="files/products/R7-Studio_Piece.webp" alt="" loading="lazy" decoding="async" />
+        <span>R7 · STUDIO PIECE</span>
+      </div>
+      <div class="mlabel">Studio Piece</div>
+    </div>
+    <div class="mcell" data-cat="products">
+      <div class="mphoto" style="aspect-ratio: 3/2; --ph-band-a:#281818; --ph-band-b:#231515;">
+        <img src="files/products/R8-Untitled_Piece.webp" alt="" loading="lazy" decoding="async" />
+        <span>R8 · UNTITLED PIECE</span>
+      </div>
+      <div class="mlabel">Untitled Piece</div>
+    </div>
+    <div class="mcell" data-cat="products">
+      <div class="mphoto" style="aspect-ratio: 3/2; --ph-band-a:#281818; --ph-band-b:#231515;">
+        <img src="files/products/R9-Untitled_Piece.webp" alt="" loading="lazy" decoding="async" />
+        <span>R9 · UNTITLED PIECE</span>
+      </div>
+      <div class="mlabel">Untitled Piece</div>
+    </div>
+    <div class="mcell" data-cat="products">
+      <div class="mphoto" style="aspect-ratio: 3/2; --ph-band-a:#f8f8f8; --ph-band-b:#dadada;">
+        <img src="files/products/R10-Untitled_Piece.webp" alt="" loading="lazy" decoding="async" />
+        <span>R10 · UNTITLED PIECE</span>
+      </div>
+      <div class="mlabel">Untitled Piece</div>
+    </div>
+    <div class="mcell" data-cat="products">
+      <div class="mphoto" style="aspect-ratio: 3/2; --ph-band-a:#181818; --ph-band-b:#151515;">
+        <img src="files/products/R11-Untitled_Piece.webp" alt="" loading="lazy" decoding="async" />
+        <span>R11 · UNTITLED PIECE</span>
+      </div>
+      <div class="mlabel">Untitled Piece</div>
+    </div>
+    <div class="mcell" data-cat="products">
+      <div class="mphoto" style="aspect-ratio: 3/2; --ph-band-a:#483838; --ph-band-b:#3f3131;">
+        <img src="files/products/R12-Untitled_Piece.webp" alt="" loading="lazy" decoding="async" />
+        <span>R12 · UNTITLED PIECE</span>
+      </div>
+      <div class="mlabel">Untitled Piece</div>
+    </div>
+    <div class="mcell" data-cat="products">
+      <div class="mphoto" style="aspect-ratio: 2/3; --ph-band-a:#483838; --ph-band-b:#3f3131;">
+        <img src="files/products/R13-Untitled_Piece.webp" alt="" loading="lazy" decoding="async" />
+        <span>R13 · UNTITLED PIECE</span>
+      </div>
+      <div class="mlabel">Untitled Piece</div>
+    </div>
+    <div class="mcell" data-cat="products">
+      <div class="mphoto" style="aspect-ratio: 2/3; --ph-band-a:#585858; --ph-band-b:#4d4d4d;">
+        <img src="files/products/R14-Untitled_Piece.webp" alt="" loading="lazy" decoding="async" />
+        <span>R14 · UNTITLED PIECE</span>
+      </div>
+      <div class="mlabel">Untitled Piece</div>
+    </div>
+
+    <!-- Events set — same contract as products. -->
+    <div class="mcell" data-cat="events">
+      <div class="mphoto" style="aspect-ratio: 3/2; --ph-band-a:#885838; --ph-band-b:#784d31;">
+        <img src="files/events/E1-Bouwen_met_Aarde.webp" alt="" loading="lazy" decoding="async" />
+        <span>E1 · BOUWEN MET AARDE</span>
+      </div>
+      <div class="mlabel">Bouwen met Aarde</div>
+    </div>
+    <div class="mcell" data-cat="events">
+      <div class="mphoto" style="aspect-ratio: 3/2; --ph-band-a:#181818; --ph-band-b:#151515;">
+        <img src="files/events/E2-Bouwen_met_Aarde.webp" alt="" loading="lazy" decoding="async" />
+        <span>E2 · BOUWEN MET AARDE</span>
+      </div>
+      <div class="mlabel">Bouwen met Aarde</div>
+    </div>
+    <div class="mcell" data-cat="events">
+      <div class="mphoto" style="aspect-ratio: 3/2; --ph-band-a:#181818; --ph-band-b:#151515;">
+        <img src="files/events/E3-Bouwen_met_Aarde.webp" alt="" loading="lazy" decoding="async" />
+        <span>E3 · BOUWEN MET AARDE</span>
+      </div>
+      <div class="mlabel">Bouwen met Aarde</div>
+    </div>
+    <div class="mcell" data-cat="events">
+      <div class="mphoto" style="aspect-ratio: 2/3; --ph-band-a:#181818; --ph-band-b:#151515;">
+        <img src="files/events/E4-Bouwen_met_Aarde.webp" alt="" loading="lazy" decoding="async" />
+        <span>E4 · BOUWEN MET AARDE</span>
+      </div>
+      <div class="mlabel">Bouwen met Aarde</div>
+    </div>
+    <div class="mcell" data-cat="events">
+      <div class="mphoto" style="aspect-ratio: 3/2; --ph-band-a:#180808; --ph-band-b:#150707;">
+        <img src="files/events/E5-Bouwen_met_Aarde.webp" alt="" loading="lazy" decoding="async" />
+        <span>E5 · BOUWEN MET AARDE</span>
+      </div>
+      <div class="mlabel">Bouwen met Aarde</div>
+    </div>
+    <div class="mcell" data-cat="events">
+      <div class="mphoto" style="aspect-ratio: 2/3; --ph-band-a:#f8f8f8; --ph-band-b:#dadada;">
+        <img src="files/events/E6-Bouwen_met_Aarde.webp" alt="" loading="lazy" decoding="async" />
+        <span>E6 · BOUWEN MET AARDE</span>
+      </div>
+      <div class="mlabel">Bouwen met Aarde</div>
+    </div>
+    <div class="mcell" data-cat="events">
+      <div class="mphoto" style="aspect-ratio: 3/2; --ph-band-a:#180808; --ph-band-b:#150707;">
+        <img src="files/events/E7-Bouwen_met_Aarde.webp" alt="" loading="lazy" decoding="async" />
+        <span>E7 · BOUWEN MET AARDE</span>
+      </div>
+      <div class="mlabel">Bouwen met Aarde</div>
+    </div>
+    <div class="mcell" data-cat="events">
+      <div class="mphoto" style="aspect-ratio: 3/2; --ph-band-a:#e8e8f8; --ph-band-b:#ccccda;">
+        <img src="files/events/E8-Addidex_2026.webp" alt="" loading="lazy" decoding="async" />
+        <span>E8 · ADDIDEX 2026</span>
+      </div>
+      <div class="mlabel">Addidex 2026</div>
+    </div>
+    <div class="mcell" data-cat="events">
+      <div class="mphoto" style="aspect-ratio: 3/2; --ph-band-a:#181818; --ph-band-b:#151515;">
+        <img src="files/events/E9-Addidex_2026.webp" alt="" loading="lazy" decoding="async" />
+        <span>E9 · ADDIDEX 2026</span>
+      </div>
+      <div class="mlabel">Addidex 2026</div>
+    </div>
+    <div class="mcell" data-cat="events">
+      <div class="mphoto" style="aspect-ratio: 2/3; --ph-band-a:#181818; --ph-band-b:#151515;">
+        <img src="files/events/E10-Addidex_2026.webp" alt="" loading="lazy" decoding="async" />
+        <span>E10 · ADDIDEX 2026</span>
+      </div>
+      <div class="mlabel">Addidex 2026</div>
+    </div>
+    <div class="mcell" data-cat="events">
+      <div class="mphoto" style="aspect-ratio: 3/2; --ph-band-a:#f8f8f8; --ph-band-b:#dadada;">
+        <img src="files/events/E11-Addidex_2026.webp" alt="" loading="lazy" decoding="async" />
+        <span>E11 · ADDIDEX 2026</span>
+      </div>
+      <div class="mlabel">Addidex 2026</div>
+    </div>
+    <div class="mcell" data-cat="events">
+      <div class="mphoto" style="aspect-ratio: 3/2; --ph-band-a:#181818; --ph-band-b:#151515;">
+        <img src="files/events/E12-Addidex_2026.webp" alt="" loading="lazy" decoding="async" />
+        <span>E12 · ADDIDEX 2026</span>
+      </div>
+      <div class="mlabel">Addidex 2026</div>
+    </div>
+    <div class="mcell" data-cat="events">
+      <div class="mphoto" style="aspect-ratio: 3/2; --ph-band-a:#281818; --ph-band-b:#231515;">
+        <img src="files/events/E13-Addidex_2026.webp" alt="" loading="lazy" decoding="async" />
+        <span>E13 · ADDIDEX 2026</span>
+      </div>
+      <div class="mlabel">Addidex 2026</div>
+    </div>
+    <div class="mcell" data-cat="events">
+      <div class="mphoto" style="aspect-ratio: 3/2; --ph-band-a:#f8f8f8; --ph-band-b:#dadada;">
+        <img src="files/events/E14-Addidex_2026.webp" alt="" loading="lazy" decoding="async" />
+        <span>E14 · ADDIDEX 2026</span>
+      </div>
+      <div class="mlabel">Addidex 2026</div>
+    </div>
+    <div class="mcell" data-cat="events">
+      <div class="mphoto" style="aspect-ratio: 3/2; --ph-band-a:#181818; --ph-band-b:#151515;">
+        <img src="files/events/E15-Addidex_2026.webp" alt="" loading="lazy" decoding="async" />
+        <span>E15 · ADDIDEX 2026</span>
+      </div>
+      <div class="mlabel">Addidex 2026</div>
+    </div>
+    <div class="mcell" data-cat="events">
+      <div class="mphoto" style="aspect-ratio: 3/2; --ph-band-a:#f8f8f8; --ph-band-b:#dadada;">
+        <img src="files/events/E16-Addidex_2026.webp" alt="" loading="lazy" decoding="async" />
+        <span>E16 · ADDIDEX 2026</span>
+      </div>
+      <div class="mlabel">Addidex 2026</div>
+    </div>
+    <div class="mcell" data-cat="events">
+      <div class="mphoto" style="aspect-ratio: 3/2; --ph-band-a:#f8f8f8; --ph-band-b:#dadada;">
+        <img src="files/events/E17-Untitled_Event.webp" alt="" loading="lazy" decoding="async" />
+        <span>E17 · UNTITLED EVENT</span>
+      </div>
+      <div class="mlabel">Untitled Event</div>
+    </div>
+    <div class="mcell" data-cat="events">
+      <div class="mphoto" style="aspect-ratio: 3/2; --ph-band-a:#e8e8f8; --ph-band-b:#ccccda;">
+        <img src="files/events/E18-Untitled_Event.webp" alt="" loading="lazy" decoding="async" />
+        <span>E18 · UNTITLED EVENT</span>
+      </div>
+      <div class="mlabel">Untitled Event</div>
+    </div>
+    <div class="mcell" data-cat="events">
+      <div class="mphoto" style="aspect-ratio: 3/2; --ph-band-a:#283828; --ph-band-b:#233123;">
+        <img src="files/events/E19-Untitled_Event.webp" alt="" loading="lazy" decoding="async" />
+        <span>E19 · UNTITLED EVENT</span>
+      </div>
+      <div class="mlabel">Untitled Event</div>
+    </div>
+    <div class="mcell" data-cat="events">
+      <div class="mphoto" style="aspect-ratio: 2/3; --ph-band-a:#f8f8f8; --ph-band-b:#dadada;">
+        <img src="files/events/E20-Untitled_Event.webp" alt="" loading="lazy" decoding="async" />
+        <span>E20 · UNTITLED EVENT</span>
+      </div>
+      <div class="mlabel">Untitled Event</div>
+    </div>
+    <div class="mcell" data-cat="events">
+      <div class="mphoto" style="aspect-ratio: 2/3; --ph-band-a:#f8f8f8; --ph-band-b:#dadada;">
+        <img src="files/events/E21-Untitled_Event.webp" alt="" loading="lazy" decoding="async" />
+        <span>E21 · UNTITLED EVENT</span>
+      </div>
+      <div class="mlabel">Untitled Event</div>
+    </div>
+    <div class="mcell" data-cat="events">
+      <div class="mphoto" style="aspect-ratio: 2/3; --ph-band-a:#181818; --ph-band-b:#151515;">
+        <img src="files/events/E22-Untitled_Event.webp" alt="" loading="lazy" decoding="async" />
+        <span>E22 · UNTITLED EVENT</span>
+      </div>
+      <div class="mlabel">Untitled Event</div>
+    </div>
+    <div class="mcell" data-cat="events">
+      <div class="mphoto" style="aspect-ratio: 2/3; --ph-band-a:#f8f8f8; --ph-band-b:#dadada;">
+        <img src="files/events/E23-Untitled_Event.webp" alt="" loading="lazy" decoding="async" />
+        <span>E23 · UNTITLED EVENT</span>
+      </div>
+      <div class="mlabel">Untitled Event</div>
     </div>
   </div>
 
