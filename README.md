@@ -4,7 +4,7 @@ A slow, pannable plane of bird photographs. Drag, pinch, or use the arrow keys t
 
 Built as vanilla HTML, CSS, and JavaScript — no build step.
 
-**Live site:** https://verticokees.github.io/Bird-portfolio/
+**Live site:** https://gewoonkees132.github.io/Bird-portfolio/
 
 ## Project layout
 
@@ -13,15 +13,21 @@ public/            ← what gets deployed to GitHub Pages
   index.html
   app.js
   styles.css
-  files/           ← .webp photos + logo SVG
+  files/           ← .webp photos + logo.svg
   404.html
   robots.txt
   sitemap.xml
+tools/             ← arrangement + species validators, generator, RAW→webp converter
+docs/              ← design guideline, plans, specs
+design/            ← standalone tessellation + design-tool experiments
+brand/logo/        ← logo variants the site does not use
+native/            ← Android/Compose photo-app prototype
+style-reference/   ← separate workspace for the brand style
 .github/workflows/
   deploy.yml       ← pushes public/ to GitHub Pages on every push to main
 ```
 
-Everything outside `public/` — `style-reference/`, `docs/`, `aspect-tessellation.html`, the `.jsx` design tools, `CLAUDE.md`, `audit.md` — stays in the repo for reference but is **not** part of the deployed site.
+Everything outside `public/` stays in the repo for reference but is **not** part of the deployed site.
 
 ## Run locally
 
@@ -31,6 +37,17 @@ python -m http.server
 ```
 
 Then open <http://localhost:8000>.
+
+## Checks
+
+No test runner and no build step — two validators guard the invariants that are
+easy to break by hand. Both must pass before a change to the layout or the
+species data is committed.
+
+```
+node tools/check-arrangements.js   # tiling, slot ids, shape/slot agreement, tile size
+node tools/check-species.js        # species data agrees across every copy of it
+```
 
 ## Deploy
 

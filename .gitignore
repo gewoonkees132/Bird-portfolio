@@ -1,5 +1,8 @@
 high quality/
 public/files/Raw todo/
+# Anything staged on the photographer's machine that is not part of the site.
+# public/ is what ships, so nothing unreferenced may live there — park it here.
+local-scratch/
 .mcp.json
 .DS_Store
 Thumbs.db

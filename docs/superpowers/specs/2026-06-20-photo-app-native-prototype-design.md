@@ -2,7 +2,7 @@
 
 > **Status:** Draft v1 · 2026-06-20
 > **Codename:** TBD
-> **Binding design reference:** [`app/designguideline.md`](../../../app/designguideline.md) — the visual/interaction language is normative; this spec covers the native build and architecture only.
+> **Binding design reference:** [`docs/designguideline.md`](../../designguideline.md) — the visual/interaction language is normative; this spec covers the native build and architecture only.
 > **Origin:** Distilled from a grilling + brainstorming session over the *Kees Leemeijer · Bird Photography* portfolio (`public/`), which serves as the experiential pilot.
 
 ---
@@ -41,7 +41,7 @@ Search · albums · people/faces · map · light theme · upload/cloud sync · m
 
 ### 2.3 Design language
 
-Governed verbatim by `app/designguideline.md`: the All→Some→One scale model (§6), the soft dark "BMW-instrument over an Aicher grid" aesthetic, tokens (§3–4.6), components (§9), the never-stuck exit doctrine (§8), accessibility (§10). The guideline's three web-specific sections (§11 performance, §12 transitions, §14 vanilla-JS) are **translated to native equivalents** here (§6 below).
+Governed verbatim by `docs/designguideline.md`: the All→Some→One scale model (§6), the soft dark "BMW-instrument over an Aicher grid" aesthetic, tokens (§3–4.6), components (§9), the never-stuck exit doctrine (§8), accessibility (§10). The guideline's three web-specific sections (§11 performance, §12 transitions, §14 vanilla-JS) are **translated to native equivalents** here (§6 below).
 
 ---
 
@@ -244,5 +244,5 @@ Inherited from guideline §16, plus prototype-specific:
 
 - **Android only**, native Kotlin/Compose, single Gradle module.
 - **No** Room, Hilt, multi-module, cloud, accounts, permissions, or device-library access in the prototype.
-- The design language is **not** re-litigated here — `app/designguideline.md` is binding.
+- The design language is **not** re-litigated here — `docs/designguideline.md` is binding.
 - The prototype is a **funding artifact**, optimized for felt experience + demonstrated architecture, not production robustness at scale.
