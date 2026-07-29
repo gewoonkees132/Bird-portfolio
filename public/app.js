@@ -9,10 +9,11 @@
   // ---------- Species data (16 photos) ----------
   // Shapes: L landscape (1,3,5,7,9,10,11,12,14,15) · V portrait 2:3
   //   (2,6,13,16) · W super-wide letterbox (4,8). Repeats are intentional —
-  //   Weaver appears twice (2 nest / 6 flight) and the Raw-todo batch adds more
-  //   Great Tit + Robin tiles. The shape decides which slot kind a photo may
-  //   occupy; tools/gen-arrangements.js reads the same mapping when it builds
-  //   ARRANGEMENTS, so the two must agree.
+  //   Baya Weaver appears twice (2 nest / 6 display) and the Raw-todo batch
+  //   adds Blue Tit, Great Tit and Robin tiles. The shape decides which slots a
+  //   photo can occupy; tools/gen-arrangements.js reads the same mapping when it
+  //   builds ARRANGEMENTS, so the two must agree — tools/check-species.js
+  //   asserts it, along with the copies in index.html and the native manifest.
   //   Note the L files are currently 16:9 (2160x1215), not 3:2 — they were
   //   cropped that way by tools/convert-raw.py. Slots now target 3:2, so an L
   //   photo loses a sliver of its sides to object-fit: cover until the batch is
@@ -22,33 +23,35 @@
     { id: 1, vernacular: 'European Robin',        latin: 'Erithacus rubecula',     shape: 'L',
       band_a: '#3d6b8a', band_b: '#4a7c9a',
       image: F('P1-European_Robin.webp') },
-    { id: 2, vernacular: 'Weaver Bird',           latin: 'Ploceus cucullatus',     shape: 'V',
+    { id: 2, vernacular: 'Baya Weaver',           latin: 'Ploceus philippinus',    shape: 'V',
       band_a: '#c79e6e', band_b: '#b88c5e',
-      image: F('P2-Weaver_Bird.webp') },
+      image: F('P2-Baya_Weaver.webp') },
     { id: 3, vernacular: 'Eurasian Jay',          latin: 'Garrulus glandarius',    shape: 'L',
       band_a: '#7a8b76', band_b: '#8a9c86',
       image: F('P3-Eurasian_Jay.webp') },
     { id: 4, vernacular: 'Dunnock',               latin: 'Prunella modularis',     shape: 'W',
       band_a: '#3a4a3e', band_b: '#48584c',
       image: F('P4-Dunnock.webp') },
-    { id: 5, vernacular: 'Green Bee-eater',       latin: 'Merops orientalis',      shape: 'L',
+    { id: 5, vernacular: 'Asian Green Bee-eater', latin: 'Merops orientalis',      shape: 'L',
       band_a: '#a87a3e', band_b: '#b8893f',
       image: F('P5-Green_Bee-eater.webp') },
-    { id: 6, vernacular: 'Weaver Bird',           latin: 'Ploceus cucullatus',     shape: 'V',
+    { id: 6, vernacular: 'Baya Weaver',           latin: 'Ploceus philippinus',    shape: 'V',
       band_a: '#8b7848', band_b: '#9a8758',
-      image: F('P6-Weaver_Bird_flapping.webp') },
-    { id: 7, vernacular: 'Great Tit',             latin: 'Parus major',            shape: 'L',
+      image: F('P6-Baya_Weaver_display.webp') },
+    { id: 7, vernacular: 'Eurasian Blue Tit',     latin: 'Cyanistes caeruleus',    shape: 'L',
       band_a: '#6e5444', band_b: '#7e6454',
-      image: F('P7-Great_Tit.webp') },
-    { id: 8, vernacular: 'Lark',                  latin: 'Alauda arvensis',        shape: 'W',
+      image: F('P7-Eurasian_Blue_Tit.webp') },
+    { id: 8, vernacular: 'Jerdon’s Bushlark',     latin: 'Plocealauda affinis',    shape: 'W',
       band_a: '#cdc4b0', band_b: '#bdb4a0',
-      image: F('P8-Lark.webp') },
-    // Raw-todo batch (2026-06-13). Great Tit reuses P7's browns + Parus major;
-    // Robin reuses P1's blues + Erithacus rubecula. Facts shared per species
-    // below. id 7's image was replaced in the same batch (entry unchanged).
-    { id: 9,  vernacular: 'Great Tit',            latin: 'Parus major',            shape: 'L',
+      image: F('P8-Jerdons_Bushlark.webp') },
+    // Raw-todo batch (2026-06-13). The batch arrived filed as Great Tit and
+    // Robin; a 2026-07-28 identification pass found 7, 9 and 13 are Blue Tits.
+    // Band colours are sampled per photo, so they stayed put through the
+    // relabel. Facts shared per species below. id 7's image was replaced in the
+    // same batch (entry unchanged).
+    { id: 9,  vernacular: 'Eurasian Blue Tit',    latin: 'Cyanistes caeruleus',    shape: 'L',
       band_a: '#6e5444', band_b: '#7e6454',
-      image: F('P9-Great_Tit.webp') },
+      image: F('P9-Eurasian_Blue_Tit.webp') },
     { id: 10, vernacular: 'Great Tit',            latin: 'Parus major',            shape: 'L',
       band_a: '#6e5444', band_b: '#7e6454',
       image: F('P10-Great_Tit.webp') },
@@ -58,9 +61,9 @@
     { id: 12, vernacular: 'Great Tit',            latin: 'Parus major',            shape: 'L',
       band_a: '#6e5444', band_b: '#7e6454',
       image: F('P12-Great_Tit.webp') },
-    { id: 13, vernacular: 'Great Tit',            latin: 'Parus major',            shape: 'V',
+    { id: 13, vernacular: 'Eurasian Blue Tit',    latin: 'Cyanistes caeruleus',    shape: 'V',
       band_a: '#6e5444', band_b: '#7e6454',
-      image: F('P13-Great_Tit.webp') },
+      image: F('P13-Eurasian_Blue_Tit.webp') },
     { id: 14, vernacular: 'European Robin',       latin: 'Erithacus rubecula',     shape: 'L',
       band_a: '#3d6b8a', band_b: '#4a7c9a',
       image: F('P14-European_Robin.webp') },
@@ -76,17 +79,21 @@
   // Vitals from Cornell Lab Birds of the World, BirdLife, RSPB, BTO.
   // Lede + fun-fact prose written at CEFR B1 reading level. Sources:
   //   1 Robin       — Lack (1943) territorial decoy experiments.
-  //   2 Weaver nest — Collias & Victoria (1978) on grass-freshness rejection.
+  //   2 Weaver nest — Davis (1973, JBNHS) and Pandian (2022, J Threat Taxa
+  //                   14(5): 20970) mud plastering, 90% of helmet-stage nests.
   //   3 Jay         — Parnell et al. (2015, Sci Reports) structural-blue feathers.
   //   4 Dunnock     — Davies, ~600-year cuckoo-host evolutionary lag.
   //   5 Bee-eater   — Watve et al. (2002, Anim Cognition) gaze-sensitivity.
-  //   6 Weaver flt  — Olaleye et al. (1982, Trop Pest Mgmt) maize-raid commute.
-  //   7 Great Tit   — Estók, Zsebok & Siemers (2010, Biol Letters) bat predation.
-  //   8 Skylark     — Cresswell (1994, Behav Ecol Sociobiol) merlin pursuit-deterrent song.
-  // Keyed by SPECIES.id. Bespoke prose for ids 1–8; the repeated Raw-todo
-  // tiles share existing per-species prose via the alias assignments after
-  // the literal (Great Tit 9–13 → 7, Robin 14–16 → 1). No new prose is
-  // written; the two distinct Weaver entries (2 nest / 6 flight) are preserved.
+  //   6 Weaver dsp  — Quader (2006, The Auk 123: 475) nest site beats structure.
+  //   7 Blue Tit    — Petit et al. (2002, Ecology Letters 5: 585) aromatic herbs.
+  //   8 Bushlark    — Alström (1998, Forktail 13: 97) four-way species split.
+  //  10 Great Tit   — Estók, Zsebok & Siemers (2010, Biol Letters) bat predation.
+  // Keyed by SPECIES.id. Bespoke prose for ids 1–8 and 10; the remaining
+  // Raw-todo tiles share per-species prose via the alias assignments after the
+  // literal (Blue Tit 9, 13 → 7, Great Tit 11, 12 → 10, Robin 14–16 → 1). The
+  // two Baya Weaver entries stay distinct (2 nest-building / 6 display).
+  // A species with no published wingspan carries `length` instead, and the
+  // vitals row relabels itself — see vitalRows().
   const BIRD_FACTS = {
     1: {
       wingspan: '20–22 cm', weight: '16–22 g',
@@ -95,10 +102,10 @@
       fun_fact: 'In a famous test, a wild robin attacked a small bundle of red feathers with no head and no body. In some places, fights between robins cause about one in ten adult deaths.'
     },
     2: {
-      wingspan: '24–28 cm', weight: '30–45 g',
-      range: 'Sub-Saharan Africa', habitat: 'Savanna, villages',
-      lede: 'A male Village Weaver is a builder who works for an audience. He strips long green strips from leaves and knots them into a hanging pouch. Then he hangs upside down beneath it, fans his wings, and waits for a female to inspect his work.',
-      fun_fact: 'A female checks the grass for freshness before she moves in. In one study, scientists painted dead grass green to fool her. She still walked away. A male may build twenty nests in a season to keep her happy.'
+      length: '15 cm', weight: '18–27 g',
+      range: 'S & SE Asia', habitat: 'Grassland, farmland',
+      lede: 'The male Baya Weaver weaves the nest alone, tearing long strips from grass and palm leaves and knotting them into a hanging flask. He works at one nest for over two weeks, flying hundreds of trips to a single branch. The bright yellow crown appears only for the breeding season.',
+      fun_fact: 'Male Bayas plaster wet mud and dung onto the inside walls of the unfinished nest. It is not decoration. In one survey of Tamil Nadu colonies, nine in ten half-built nests carried clay on the inner wall, and the weight is thought to steady the nest in wind.'
     },
     3: {
       wingspan: '52–58 cm', weight: '140–190 g',
@@ -115,34 +122,54 @@
     5: {
       wingspan: '29–30 cm', weight: '15–20 g',
       range: 'S & SE Asia', habitat: 'Open scrub',
-      lede: 'The Green Bee-eater is a small jewel of dry, open country, bright green with a long pair of tail streamers. It hunts from a bare twig, darts out to grab a bee in the air, and carries it back to the same perch to deal with it.',
+      lede: 'The Asian Green Bee-eater is a small jewel of dry, open country, bright green with a long pair of tail streamers. It hunts from a bare twig, darts out to grab a bee in the air, and carries it back to the same perch to deal with it.',
       fun_fact: 'The bird seems to track what a watcher can see. In one test, it slipped into its nest tunnel far more often when the human nearby was looking the other way, as if it knew which eyes were a problem.'
     },
     6: {
-      wingspan: '24–28 cm', weight: '30–45 g',
-      range: 'Sub-Saharan Africa', habitat: 'Savanna, villages',
-      lede: 'A Village Weaver in flight is a quick, bouncing shape against the sky, wings beating in short bursts. Birds pour from the colony tree at dawn and again in the late afternoon, all heading the same way, like workers leaving for a shift.',
-      fun_fact: 'These flights run on a clock. Flocks raid the maize fields from about eight to eleven in the morning, then again from four to six in the evening, almost every day of the season. It is, quite literally, a daily commute.'
+      length: '15 cm', weight: '18–27 g',
+      range: 'S & SE Asia', habitat: 'Grassland, farmland',
+      lede: 'A male stops building at the half-made stage and hangs beneath the shell to advertise it. He throws his wings open, quivers them, and sings a fast rattle that runs into a long wheeze. Females come to inspect, and only when one accepts does he finish the entrance tube.',
+      fun_fact: 'A male may build several nests in a season and pair with more than one female. In a study of Indian colonies, where he put the nest predicted his success slightly better than how well he had woven it. Address beat architecture.'
     },
     7: {
+      wingspan: '17–20 cm', weight: '9–13 g',
+      range: 'Europe, W Asia', habitat: 'Woodland, gardens',
+      lede: 'The Eurasian Blue Tit is a small, restless bird with a sky-blue cap, white cheeks and a dark line through the eye. The belly is yellow. It feeds hanging upside down from a twig or a peanut feeder, hardly ever sitting still, and it nests happily in a garden box.',
+      fun_fact: 'Female blue tits on Corsica line the nest with scraps of lavender, mint and other strong-smelling herbs, and add fresh pieces almost every day. When researchers stripped the plants out, the females put them back. They were working by smell, in a bird long thought to have almost none.'
+    },
+    8: {
+      length: '14–15 cm', weight: '25–26 g',
+      range: 'S India, Sri Lanka', habitat: 'Scrub, fallow fields',
+      lede: 'Jerdon’s Bushlark is a stocky brown lark of dry, open ground in southern India and Sri Lanka. It has a heavy, blunt bill and a patch of warm rust in the wing. The male climbs a few metres into the air, then floats back down with his wings held in a shallow V, legs dangling, singing all the way.',
+      fun_fact: 'For most of the twentieth century these bushlarks were filed as one species. In 1998 Per Alström showed there were four, separated less by their feathers than by their songs and their display flights. A silent bird in a photograph can still be hard to name.'
+    },
+    10: {
       wingspan: '22–26 cm', weight: '14–22 g',
       range: 'Europe, Asia, N Africa', habitat: 'Woodland, gardens',
       lede: 'The Great Tit is the loud yellow bird at the garden feeder, with a black cap and a black stripe down its belly. It is bold and clever, and will pull the lid off a milk bottle or work out a puzzle box in a few tries.',
       fun_fact: 'In a Hungarian cave one winter, great tits were filmed flying in to find sleeping bats. They pecked them on the head, killed them, and ate them. Eighteen times in two winters. The bird-table cutie hunts mammals.'
-    },
-    8: {
-      wingspan: '30–36 cm', weight: '33–45 g',
-      range: 'Europe, Asia, N Africa', habitat: 'Open farmland',
-      lede: 'The Eurasian Skylark is a small brown bird of open farmland with one big trick. The male climbs almost out of sight on whirring wings, then hangs there and pours out a long, bubbling song over the field below.',
-      fun_fact: 'When a merlin gives chase, the skylark sings while it flees. The better the song in mid-air, the sooner the falcon gives up and turns away. The song is not for show. It is a message that says, save your effort, you will not catch me.'
     }
   };
 
   // Repeated Raw-todo species reuse the existing per-species prose (shared
-  // object reference — facts are read-only). All Great Tit ids point at the
-  // Great Tit entry (7); all Robin ids at the Robin entry (1).
-  BIRD_FACTS[9] = BIRD_FACTS[10] = BIRD_FACTS[11] = BIRD_FACTS[12] = BIRD_FACTS[13] = BIRD_FACTS[7];
+  // object reference — facts are read-only). Blue Tit ids point at the Blue Tit
+  // entry (7), the remaining Great Tit ids at the Great Tit entry (10), and all
+  // Robin ids at the Robin entry (1).
+  BIRD_FACTS[9] = BIRD_FACTS[13] = BIRD_FACTS[7];
+  BIRD_FACTS[11] = BIRD_FACTS[12] = BIRD_FACTS[10];
   BIRD_FACTS[14] = BIRD_FACTS[15] = BIRD_FACTS[16] = BIRD_FACTS[1];
+
+  // Wingspan is the first vitals row for every European species here, but no
+  // wingspan has ever been published for Baya Weaver or for any Asian bushlark
+  // — the literature records body length and wing chord only. Those entries
+  // carry `length`, and the row relabels rather than printing a number the
+  // sources do not support.
+  const vitalRows = (f) => [
+    f.length ? ['Length', f.length] : ['Wingspan', f.wingspan],
+    ['Weight',  f.weight],
+    ['Range',   f.range],
+    ['Habitat', f.habitat],
+  ];
 
   // ---------- Mobile bloom population ----------
   // Each .mcell[data-sp="N"] gets a <details> appended with the same lede /
@@ -157,12 +184,7 @@
       const f = BIRD_FACTS[id];
       if (!sp || !f) return;
 
-      const vitalsHtml = [
-        ['Wingspan', f.wingspan],
-        ['Weight',   f.weight],
-        ['Range',    f.range],
-        ['Habitat',  f.habitat],
-      ].map(([k, v]) =>
+      const vitalsHtml = vitalRows(f).map(([k, v]) =>
         `<span class="stat"><span class="k">${escapeHtml(k)}</span><span class="v">${escapeHtml(v)}</span></span>`
       ).join('');
 
@@ -304,23 +326,25 @@
     },
   ];
 
-  const U = 88;
-  const GUT = 24;
+  // The 88px module and 24px gutter of the cell grid. TILE_W / TILE_H restate
+  // them as literals rather than referencing the constants because
+  // tools/check-arrangements.js parses that exact form out of this file to
+  // cross-check --tile-width / --tile-height in styles.css.
+  const MODULE = 88;
+  const GUTTER = 24;
 
   ARRANGEMENTS.forEach(arr => {
     arr.slots.forEach(s => {
-      s.x = s.c * (U + GUT);
-      s.y = s.r * (U + GUT);
-      s.w = s.cw * U + (s.cw - 1) * GUT;
-      s.h = s.ch * U + (s.ch - 1) * GUT;
+      s.x = s.c * (MODULE + GUTTER);
+      s.y = s.r * (MODULE + GUTTER);
+      s.w = s.cw * MODULE + (s.cw - 1) * GUTTER;
+      s.h = s.ch * MODULE + (s.ch - 1) * GUTTER;
     });
   });
 
   const ARRANGEMENT_LEAD = { 0: 9, 1: 2, 2: 2, 3: 16, 4: 9, 5: 7, 6: 3, 7: 5 };
   const TILE_W = 12 * 88 + 11 * 24;
   const TILE_H =  8 * 88 +  7 * 24;
-  const GUTTER = 24;
-  const STRIP_W = (TILE_W + GUTTER) * ARRANGEMENTS.length;
 
   // ---------- DOM build ----------
   const stage = document.getElementById('stage');
@@ -335,7 +359,6 @@
   const speciesLede = speciesEl.querySelector('.line-lede');
   const speciesVitals = speciesEl.querySelector('.line-vitals');
   const speciesFact = speciesEl.querySelector('.line-fact');
-  const speciesMeta = speciesEl.querySelector('.meta');
 
   // HSPAN must stay >= 3: render() pins worldX inside the *middle* strip copy
   // (middleCopyOriginX = one strip in), so a full strip is needed on BOTH sides
@@ -423,7 +446,6 @@
     }
   }
 
-  let entered = 0;
   const allPhotos = tiles.flatMap(t => t.photos);
   allPhotos.forEach((p, i) => {
     const delay = 60 + (i % 32) * 14;
@@ -468,12 +490,10 @@
   let zoom = 1.6;
   let zoom_target = 1.6;
 
-  let lastInteractionAt = 0;
-  // Single entry point for every user interaction: timestamp it, cancel any
-  // in-flight dwell pull (the user is taking over), hide the dwell cue, re-arm
-  // the cue + dwell timers, and make sure the render loop is awake.
+  // Single entry point for every user interaction: cancel any in-flight dwell
+  // pull (the user is taking over), hide the dwell cue, re-arm the cue + dwell
+  // timers, and make sure the render loop is awake.
   function bumpInteraction() {
-    lastInteractionAt = performance.now();
     dwelling = false;
     speciesEl.classList.remove('is-dwell');
     scheduleCue();
@@ -487,33 +507,18 @@
   let lastMoveTime = 0;
 
   // ---------- Tweakables (compiled-in constants; tweaks panel removed for production) ----------
+  // Motion/zoom constants the render loop reads. Anything purely presentational
+  // (ambient dim, focus-fade duration, brand colours) lives in styles.css — this
+  // object used to mirror those into custom properties at boot, which meant two
+  // sources of truth that had quietly drifted apart. Keep it to values JS uses.
   const TWEAKS = {
     lerp: 0.02,
     zoomLerp: 0.02,
     zoomMin: 1.6,
     zoomMax: 4.0,
     dwellDelay: 400,
-    dwellPull: 0.0015,
-    ambientOpacity: 0.9,
-    ambientSaturate: 0,
-    ambientBrightness: 0.81,
-    focusFadeMs: 200,
-    blue: '#1635ee',
-    field: '#f2eee5'
+    dwellPull: 0.0015
   };
-
-  function applyTweaks() {
-    document.documentElement.style.setProperty('--ambient-opacity', TWEAKS.ambientOpacity);
-    document.documentElement.style.setProperty('--ambient-saturate', TWEAKS.ambientSaturate);
-    document.documentElement.style.setProperty('--ambient-brightness', TWEAKS.ambientBrightness);
-    // Black-veil opacity that reproduces the old brightness() dim: brightness(b)
-    // multiplies each channel by b, same as compositing black at (1 - b).
-    document.documentElement.style.setProperty('--veil-ambient', 1 - TWEAKS.ambientBrightness);
-    document.documentElement.style.setProperty('--focus-fade', TWEAKS.focusFadeMs + 'ms');
-    document.documentElement.style.setProperty('--blue', TWEAKS.blue);
-    document.documentElement.style.setProperty('--field', TWEAKS.field);
-  }
-  applyTweaks();
 
   // ---------- Render loop ----------
   function viewport() {
@@ -729,17 +734,11 @@
     speciesNameRest.textContent = sp.vernacular;
     speciesNameBloom.innerHTML =
       `${escapeHtml(sp.vernacular)}<span class="latin">${latinHtml}</span>`;
-    speciesMeta.textContent = `Photo ${sp.id} / ${SPECIES.length} · Arrangement ${ARRANGEMENTS[info.arrIdx].name}`;
 
     const f = BIRD_FACTS[sp.id];
     if (f) {
       speciesLede.textContent = f.lede;
-      speciesVitals.innerHTML = [
-        ['Wingspan', f.wingspan],
-        ['Weight',   f.weight],
-        ['Range',    f.range],
-        ['Habitat',  f.habitat],
-      ].map(([k, v]) =>
+      speciesVitals.innerHTML = vitalRows(f).map(([k, v]) =>
         `<span class="stat"><span class="k">${escapeHtml(k)}</span><span class="v">${escapeHtml(v)}</span></span>`
       ).join('');
       speciesFact.innerHTML = `<span class="fact-body">${escapeHtml(f.fun_fact)}</span>`;
@@ -1137,7 +1136,6 @@
   // re-arm the dwell-cue timer so the cue stays hidden while reading and
   // reappears after closing. The bloom itself animates via CSS transitions.
   function noteUiInteraction() {
-    lastInteractionAt = performance.now();
     scheduleCue();
   }
 

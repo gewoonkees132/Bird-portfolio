@@ -7,14 +7,12 @@
   --field:         #F2EEE5;
   --blue:          #1635EE;
   --charcoal:      #1A1A1A;
-  --field-overlay: rgba(242, 238, 229, 0.95);
   --blue-soft:     rgba(22, 53, 238, 0.6);
 
   /* Spatial — 12x8 cells of an 88px module with a 24px gutter. Must stay in
-     sync with TILE_W / TILE_H in app.js. */
+     sync with TILE_W / TILE_H in app.js; tools/check-arrangements.js asserts it. */
   --tile-width:   1320px;
   --tile-height:   872px;
-  --gutter:         24px;
   --inset-corner:   14px;  /* species plate offset from viewport bottom-left */
   --radius-card:     8px;  /* bloomed species plate corner radius */
 
@@ -22,10 +20,9 @@
   --wm-size-d:    0.95rem;
   --wm-size-m:    0.86rem;
   --label-size-m: 0.78rem;
-  --meta-size-m:  0.62rem;
 
   /* Motion */
-  --focus-fade:      360ms;
+  --focus-fade:      200ms;
   --focus-easing:    cubic-bezier(0.22, 0.61, 0.36, 1);
   --label-in:        200ms;
   --label-out:       150ms;
@@ -34,11 +31,14 @@
   /* Substitute for ABC Diatype */
   --font-stack: 'ABC Diatype', system-ui, -apple-system, 'Segoe UI', sans-serif;
 
-  /* Tweakable */
-  --ambient-opacity: 0.55;
-  --ambient-saturate: 0.65;
-  --ambient-brightness: 0.92;
-  --veil-ambient: 0.08;   /* black-veil opacity ≈ (1 - ambient-brightness); JS sets exact */
+  /* Ambient treatment for out-of-focus photographs. app.js used to mirror these
+     into custom properties at boot; the two copies had drifted, so the bridge
+     was removed on 2026-07-29 and these are now the single source of truth.
+     --veil-ambient stands in for the old brightness(0.81): compositing black at
+     (1 - 0.81) dims each channel the same way, without a filter on every tile. */
+  --ambient-opacity: 0.9;
+  --ambient-saturate: 0;
+  --veil-ambient: 0.19;
 }
 
 * { box-sizing: border-box; }
@@ -109,8 +109,8 @@ html, body {
     opacity var(--focus-fade) var(--focus-easing),
     transform var(--focus-fade) var(--focus-easing);
 }
-/* Brightness veil — black @ (1 - ambient-brightness) reproduces the old
-   brightness() dim exactly; only its opacity transitions (composited). */
+/* Brightness veil — see --veil-ambient. Reproduces the old brightness() dim
+   exactly; only its opacity transitions (composited). */
 .photo::after {
   content: '';
   position: absolute;
@@ -380,7 +380,6 @@ html, body {
 }
 
 .species .latin { display: none; }
-.species .meta  { display: none; }
 .species .line-lede,
 .species .line-vitals,
 .species .line-fact { display: none; }
@@ -395,7 +394,7 @@ html, body {
   top: 50%;
   width: 18px;
   height: 18px;
-  background: url('files/logo/SVG/logo.svg') no-repeat center / contain;
+  background: url('files/logo.svg') no-repeat center / contain;
   filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
   opacity: 0;
   transform: translate(-4px, -50%) scale(0.88);
@@ -482,11 +481,6 @@ html, body {
   font-size: 12px;
   line-height: 1.5;
   color: #2a2a2a;
-}
-
-/* Photo position / arrangement meta is omitted from the bloomed plate. */
-.species.is-blooming .meta {
-  display: none;
 }
 
 /* ============================================================

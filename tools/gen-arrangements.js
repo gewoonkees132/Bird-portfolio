@@ -37,8 +37,9 @@ const SPECIES_OF = {
   3: 'Jay',
   4: 'Dunnock',
   5: 'Bee-eater',
-  7: 'GreatTit', 9: 'GreatTit', 10: 'GreatTit', 11: 'GreatTit', 12: 'GreatTit', 13: 'GreatTit',
-  8: 'Lark',
+  7: 'BlueTit', 9: 'BlueTit', 13: 'BlueTit',
+  10: 'GreatTit', 11: 'GreatTit', 12: 'GreatTit',
+  8: 'Bushlark',
 };
 const KIND_OF = {
   1: 'L', 3: 'L', 5: 'L', 7: 'L', 9: 'L', 10: 'L', 11: 'L', 12: 'L', 14: 'L', 15: 'L',
@@ -49,12 +50,15 @@ const IDS = Object.keys(KIND_OF).map(Number).sort((a, b) => a - b);
 const BY_KIND = { L: [], V: [], P: [] };
 IDS.forEach((id) => BY_KIND[KIND_OF[id]].push(id));
 
-// Species coverage is uneven: Great Tit has 6 photos and Robin 4, while Jay,
-// Dunnock, Bee-eater and Lark have one each. Only 5 of the 7 species own a
+// Species coverage is uneven: Robin has 4 photos, Blue Tit and Great Tit 3
+// each, while Jay, Dunnock, Bee-eater and Bushlark have one each. (Before the
+// 2026-07-28 identification pass the tits were filed as one 6-photo Great Tit
+// group; splitting it tightened the per-tile cap below, so re-check the
+// arrangements after any further relabel.) Only 6 of the 8 species own a
 // non-letterbox photo, so demanding all-distinct species per tile would force a
 // letterbox slot into every single tile. Cap each species at 2 per tile
-// instead — still a long way better than today, where arrangement E shows four
-// Great Tits at once.
+// instead — still a long way better than the old hand-built set, where
+// arrangement E showed four Great Tits at once.
 const MAX_PER_SPECIES_PER_TILE = 2;
 // Slot-kind ceilings per tile, bounded by how many photos of each kind exist.
 const MAX_PER_KIND = { L: 6, V: 4, P: 2 };

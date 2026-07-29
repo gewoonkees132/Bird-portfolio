@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://verticokees.github.io/Bird-portfolio/sitemap.xml
+Sitemap: https://gewoonkees132.github.io/Bird-portfolio/sitemap.xml

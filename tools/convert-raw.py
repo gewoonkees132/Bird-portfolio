@@ -33,14 +33,14 @@ OUT_DIR = os.path.join(ROOT, 'public', 'files')
 LONGEST = 2160
 QUALITY = 80
 
-# (source jpg, output webp, shape)  shape: 'L' landscape 16:9, 'V' portrait 2:3
+# (source jpg, output webp, shape)  shape: 'L' landscape 3:2, 'V' portrait uncropped
 JOBS = [
-    ('Great_Tit (2).jpg',      'P7-Great_Tit.webp',       'L'),  # overwrite retired P7
-    ('Great_Tit (3).jpg',      'P9-Great_Tit.webp',       'L'),
+    ('Great_Tit (2).jpg',      'P7-Eurasian_Blue_Tit.webp',       'L'),  # overwrite retired P7
+    ('Great_Tit (3).jpg',      'P9-Eurasian_Blue_Tit.webp',       'L'),
     ('Great_Tit (4).jpg',      'P10-Great_Tit.webp',      'L'),
     ('Great_Tit (5).jpg',      'P11-Great_Tit.webp',      'L'),
     ('Great_Tit (6).jpg',      'P12-Great_Tit.webp',      'L'),
-    ('Great_Tit (1).jpg',      'P13-Great_Tit.webp',      'V'),
+    ('Great_Tit (1).jpg',      'P13-Eurasian_Blue_Tit.webp',      'V'),
     ('European_Robin (2).jpg', 'P14-European_Robin.webp', 'L'),
     ('European_Robin (3).jpg', 'P15-European_Robin.webp', 'L'),
     ('European_Robin (1).jpg', 'P16-European_Robin.webp', 'V'),

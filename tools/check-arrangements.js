@@ -26,15 +26,23 @@ const tw = src.match(/const TILE_W =\s+(\d+) \* 88 \+\s+(\d+) \* 24/);
 const th = src.match(/const TILE_H =\s+(\d+) \* 88 \+\s+(\d+) \* 24/);
 const COLS = +tw[1], ROWS = +th[1];
 
-const KIND = {
-  1: 'L', 3: 'L', 5: 'L', 7: 'L', 9: 'L', 10: 'L', 11: 'L', 12: 'L', 14: 'L', 15: 'L',
-  2: 'V', 6: 'V', 13: 'V', 16: 'V', 4: 'P', 8: 'P',
-};
-const SPECIES = {
-  1: 'Robin', 14: 'Robin', 15: 'Robin', 16: 'Robin', 2: 'Weaver', 6: 'Weaver',
-  3: 'Jay', 4: 'Dunnock', 5: 'Bee-eater', 8: 'Lark',
-  7: 'GreatTit', 9: 'GreatTit', 10: 'GreatTit', 11: 'GreatTit', 12: 'GreatTit', 13: 'GreatTit',
-};
+// Slot kind and species grouping are DERIVED from the SPECIES table in app.js
+// rather than restated here. They used to be hand-copied, which meant a
+// re-identified photo (the 2026-07-28 tit split) had to be remembered in one
+// more place, and a forgotten edit made this validator quietly wrong.
+// tools/check-species.js checks the remaining copies against the same source.
+const speciesFrom = src.indexOf('const F = (n) =>');
+const speciesTo = src.indexOf('const BIRD_FACTS');
+const SPECIES_TABLE = new Function(
+  src.slice(speciesFrom, speciesTo) + '\nreturn SPECIES;'
+)();
+const KIND_FOR = { L: 'L', V: 'V', W: 'P' };
+const KIND = {};
+const SPECIES = {};
+SPECIES_TABLE.forEach((sp) => {
+  KIND[sp.id] = KIND_FOR[sp.shape];
+  SPECIES[sp.id] = sp.vernacular;
+});
 const PALETTE = { '9x6': 'L', '6x4': 'L', '3x2': 'L', '4x6': 'V', '3x4': 'V', '2x3': 'V', '6x2': 'P' };
 
 const fails = [];
