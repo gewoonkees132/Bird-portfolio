@@ -64,7 +64,7 @@ const KIND_FOR = { L: 'L', V: 'V', W: 'P' };
 // inside a single tile, `maxPerKind` the slot-kind ceiling per tile, and
 // `balance` the global use-count window every photo has to land in.
 //
-//   birds     16 photos over 8 subjects, 2 of them panoramic.
+//   birds     20 photos over 11 subjects, 2 of them panoramic.
 //   events    23 photos over 3 series, none panoramic. Only three series exist,
 //             so a cap of 2 would hold every tile to six slots; 3 lets the
 //             seven- and eight-slot tilings back in. With 23 photos and ~56

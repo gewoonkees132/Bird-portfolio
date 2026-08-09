@@ -25,7 +25,7 @@ public/          ← the deployed site; nothing outside this folder is served
                    full-screen viewer, bloom interaction, collection switching
   styles.css       all styling; :root holds the design tokens
   404.html  robots.txt  sitemap.xml
-  files/           the 16 bird .webp photographs + logo.svg
+  files/           the 20 bird .webp photographs + logo.svg
     events/        23 .webp — and nothing else
     products/      14 .webp — and nothing else
 tools/           ← authoring + validation scripts (Node 18+, Python 3 + Pillow)
@@ -62,7 +62,7 @@ each pairing an inventory, a facts table, an arrangement table and a lead map.
 
 | collection | inventory | facts | arrangements | ids | files |
 | --- | --- | --- | --- | --- | --- |
-| birds | `SPECIES` (16) | `BIRD_FACTS` | `ARR_BIRDS` / `LEAD_BIRDS` | `P1`–`P16` | `public/files/P*.webp` |
+| birds | `SPECIES` (20) | `BIRD_FACTS` | `ARR_BIRDS` / `LEAD_BIRDS` | `P1`–`P20` | `public/files/P*.webp` |
 | events | `EVENTS` (23) | `EVENT_FACTS` | `ARR_EVENTS` / `LEAD_EVENTS` | `E1`–`E23` | `public/files/events/` |
 | products | `PRODUCTS` (14) | `PRODUCT_FACTS` | `ARR_PRODUCTS` / `LEAD_PRODUCTS` | `R1`–`R14` | `public/files/products/` |
 
@@ -121,9 +121,11 @@ its per-collection knobs (`maxPerSeries`, `maxPerKind`, the balance window) are
 the only thing to touch there. A collection with no panoramic photograph drops
 the 6x2 letterbox span from the palette automatically.
 
-Note: regenerating birds does **not** reproduce the `ARR_BIRDS` currently in
-app.js — that table predates a later generator tweak. Leave it alone unless the
-bird layout is deliberately being changed.
+Note: `ARR_BIRDS` was hand-preserved from an older generator for a long time.
+That ended on 2026-08-09, when four photographs took the collection from 16 to
+20 and the table was regenerated — so all three `ARR_*` tables are now plain
+generator output and re-running reproduces them. Still leave a table alone
+unless its layout is deliberately being changed.
 
 ## Photo data lives in several places
 

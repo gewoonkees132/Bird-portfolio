@@ -6,18 +6,18 @@
 (function () {
   'use strict';
 
-  // ---------- Species data (16 photos) ----------
-  // Shapes: L landscape (1,3,5,7,9,10,11,12,14,15) · V portrait 2:3
-  //   (2,6,13,16) · W super-wide letterbox (4,8). Repeats are intentional —
+  // ---------- Species data (20 photos) ----------
+  // Shapes: L landscape (1,3,5,7,9,10,11,12,14,15,17,20) · V portrait 2:3
+  //   (2,6,13,16,18,19) · W super-wide letterbox (4,8). Repeats are intentional —
   //   Baya Weaver appears twice (2 nest / 6 display) and the Raw-todo batch
   //   adds Blue Tit, Great Tit and Robin tiles. The shape decides which slots a
   //   photo can occupy; tools/gen-arrangements.js reads the same mapping when it
   //   builds ARRANGEMENTS, so the two must agree — tools/check-species.js
   //   asserts it, along with the copies in index.html and the native manifest.
-  //   Note the L files are currently 16:9 (2160x1215), not 3:2 — they were
-  //   cropped that way by tools/convert-raw.py. Slots now target 3:2, so an L
-  //   photo loses a sliver of its sides to object-fit: cover until the batch is
-  //   re-exported at 3:2 from the originals.
+  //   Note the L files are a mix: 1-15 are the old 16:9 exports (2160x1215) and
+  //   lose a sliver of their sides to object-fit: cover, because the slots now
+  //   target 3:2. The 2026-08-09 batch (17, 20) is exported at 3:2 (2160x1440)
+  //   and fills its slot. The older ones follow when the originals resurface.
   const F = (n) => 'files/' + encodeURI(n);
   const SPECIES = [
     { id: 1, vernacular: 'European Robin',        latin: 'Erithacus rubecula',     shape: 'L',
@@ -73,6 +73,22 @@
     { id: 16, vernacular: 'European Robin',       latin: 'Erithacus rubecula',     shape: 'V',
       band_a: '#3d6b8a', band_b: '#4a7c9a',
       image: F('P16-European_Robin.webp') },
+    // TEMP batch (2026-08-09). Four frames: three from a May 2026 outing on the
+    // 500 mm (17-19) and one city gull from July 2024 on a 50 mm (20). Three
+    // species new to the collection; 17 is another Blue Tit and shares 7's
+    // prose. Band colours sampled from each converted file.
+    { id: 17, vernacular: 'Eurasian Blue Tit',    latin: 'Cyanistes caeruleus',    shape: 'L',
+      band_a: '#796d2c', band_b: '#897d3c',
+      image: F('P17-Eurasian_Blue_Tit.webp') },
+    { id: 18, vernacular: 'Great Spotted Woodpecker', latin: 'Dendrocopos major',  shape: 'V',
+      band_a: '#504734', band_b: '#605744',
+      image: F('P18-Great_Spotted_Woodpecker.webp') },
+    { id: 19, vernacular: 'House Sparrow',        latin: 'Passer domesticus',      shape: 'V',
+      band_a: '#605e39', band_b: '#706e49',
+      image: F('P19-House_Sparrow.webp') },
+    { id: 20, vernacular: 'Lesser Black-backed Gull', latin: 'Larus fuscus',       shape: 'L',
+      band_a: '#978887', band_b: '#a79897',
+      image: F('P20-Lesser_Black-backed_Gull.webp') },
   ];
 
   // ---------- Bird facts (per-species lede + vitals + fun fact) ----------
@@ -88,9 +104,14 @@
   //   7 Blue Tit    — Petit et al. (2002, Ecology Letters 5: 585) aromatic herbs.
   //   8 Bushlark    — Alström (1998, Forktail 13: 97) four-way species split.
   //  10 Great Tit   — Estók, Zsebok & Siemers (2010, Biol Letters) bat predation.
-  // Keyed by SPECIES.id. Bespoke prose for ids 1–8 and 10; the remaining
-  // Raw-todo tiles share per-species prose via the alias assignments after the
-  // literal (Blue Tit 9, 13 → 7, Great Tit 11, 12 → 10, Robin 14–16 → 1). The
+  //  18 Woodpecker  — Van Wassenbergh et al. (2022, Curr Biol 32: 3189) the head
+  //                   is a stiff hammer, not a shock absorber.
+  //  19 Sparrow     — Summers-Smith (1988); BTO/RSPB UK decline since the 1970s.
+  //  20 Gull        — Liebers, de Knijff & Helbig (2004, Proc R Soc B 271: 893)
+  //                   the herring gull complex is not a ring species.
+  // Keyed by SPECIES.id. Bespoke prose for ids 1–8, 10 and 18–20; the remaining
+  // tiles share per-species prose via the alias assignments after the literal
+  // (Blue Tit 9, 13, 17 → 7, Great Tit 11, 12 → 10, Robin 14–16 → 1). The
   // two Baya Weaver entries stay distinct (2 nest-building / 6 display).
   // A species with no published wingspan carries `length` instead, and the
   // vitals row relabels itself — see vitalRows().
@@ -148,14 +169,32 @@
       range: 'Europe, Asia, N Africa', habitat: 'Woodland, gardens',
       lede: 'The Great Tit is the loud yellow bird at the garden feeder, with a black cap and a black stripe down its belly. It is bold and clever, and will pull the lid off a milk bottle or work out a puzzle box in a few tries.',
       fun_fact: 'In a Hungarian cave one winter, great tits were filmed flying in to find sleeping bats. They pecked them on the head, killed them, and ate them. Eighteen times in two winters. The bird-table cutie hunts mammals.'
+    },
+    18: {
+      wingspan: '34–39 cm', weight: '70–98 g',
+      range: 'Europe, Asia, N Africa', habitat: 'Woodland, parks',
+      lede: 'The Great Spotted Woodpecker is a pied bird about the size of a blackbird, black and white with a red patch under the tail. It climbs a trunk in short hops, propped on its stiff tail feathers. In spring it drums on a dead branch — not to feed, but to be heard, more than ten strikes in a second. Only the male carries the small red patch on the back of the head.',
+      fun_fact: 'Woodpeckers are often said to have a shock absorber built into the skull. High-speed film of birds mid-drum shows the opposite. The head is held stiff, like the head of a hammer, because a cushion would soften the very blow the bird is trying to land. The brain is simply small and light enough to take it.'
+    },
+    19: {
+      wingspan: '21–25.5 cm', weight: '24–38 g',
+      range: 'Worldwide; native Eurasia', habitat: 'Towns, farmland',
+      lede: 'The House Sparrow lives wherever people do — under a roof tile, in a hedge, on a café table. The male has a grey cap and a black bib. The female and the young bird are quieter, plain brown above with dark streaks and a pale stripe behind the eye. They feed on the ground in noisy groups and rarely go far from a building.',
+      fun_fact: 'The sparrow travelled with us. A few dozen released in Brooklyn in the 1850s had reached the Pacific coast within about fifty years. The same closeness cuts both ways: in Britain the bird has lost roughly seven in every ten since the late 1970s, and is now on the red list.'
+    },
+    20: {
+      wingspan: '128–148 cm', weight: '650–1000 g',
+      range: 'Europe, W Africa', habitat: 'Coasts, cities',
+      lede: 'The Lesser Black-backed Gull is a large slate-grey gull with yellow legs and a red spot near the tip of the bill. It breeds on the coast and, more and more, on flat city roofs, and it will walk along a wall beside you without much concern. The red spot has a job: a chick pecks at it and the parent brings up food.',
+      fun_fact: 'This gull and the Herring Gull were the textbook ring species — a chain of forms circling the Arctic, each breeding with its neighbour, until the two ends met again over Europe and behaved like separate birds. DNA published in 2004 broke the ring. The chain is real; the birds did not spread the way the story needed them to.'
     }
   };
 
-  // Repeated Raw-todo species reuse the existing per-species prose (shared
-  // object reference — facts are read-only). Blue Tit ids point at the Blue Tit
+  // Repeated species reuse the existing per-species prose (shared object
+  // reference — facts are read-only). Blue Tit ids point at the Blue Tit
   // entry (7), the remaining Great Tit ids at the Great Tit entry (10), and all
   // Robin ids at the Robin entry (1).
-  BIRD_FACTS[9] = BIRD_FACTS[13] = BIRD_FACTS[7];
+  BIRD_FACTS[9] = BIRD_FACTS[13] = BIRD_FACTS[17] = BIRD_FACTS[7];
   BIRD_FACTS[11] = BIRD_FACTS[12] = BIRD_FACTS[10];
   BIRD_FACTS[14] = BIRD_FACTS[15] = BIRD_FACTS[16] = BIRD_FACTS[1];
 
@@ -479,102 +518,103 @@
     {
       name: 'A',
       slots: [
-        { c: 0, r:0, cw: 3, ch:2, id:  5 },
-        { c: 3, r:0, cw: 3, ch:2, id:  3 },
-        { c: 6, r:0, cw: 6, ch:4, id:  9 },
-        { c: 0, r:2, cw: 2, ch:3, id:  6 },  // V
-        { c: 2, r:2, cw: 4, ch:6, id: 13 },  // V
-        { c: 6, r:4, cw: 6, ch:4, id:  1 },
-        { c: 0, r:5, cw: 2, ch:3, id: 16 },  // V
+        { c: 0, r:0, cw: 3, ch:2, id: 14 },
+        { c: 3, r:0, cw: 3, ch:2, id: 17 },
+        { c: 6, r:0, cw: 6, ch:4, id:  3 },
+        { c: 0, r:2, cw: 2, ch:3, id: 18 },  // V
+        { c: 2, r:2, cw: 4, ch:6, id:  2 },  // V
+        { c: 6, r:4, cw: 6, ch:4, id: 10 },
+        { c: 0, r:5, cw: 2, ch:3, id: 19 },  // V
       ]
     },
     {
       name: 'B',
       slots: [
-        { c: 0, r:0, cw: 4, ch:6, id:  2 },  // V
-        { c: 4, r:0, cw: 4, ch:6, id: 13 },  // V
-        { c: 8, r:0, cw: 4, ch:6, id: 16 },  // V
-        { c: 0, r:6, cw: 3, ch:2, id: 14 },
+        { c: 0, r:0, cw: 4, ch:6, id: 13 },  // V
+        { c: 4, r:0, cw: 4, ch:6, id: 16 },  // V
+        { c: 8, r:0, cw: 4, ch:6, id:  6 },  // V
+        { c: 0, r:6, cw: 3, ch:2, id:  5 },
         { c: 3, r:6, cw: 3, ch:2, id: 11 },
-        { c: 6, r:6, cw: 3, ch:2, id:  5 },
-        { c: 9, r:6, cw: 3, ch:2, id:  3 },
+        { c: 6, r:6, cw: 3, ch:2, id: 20 },
+        { c: 9, r:6, cw: 3, ch:2, id:  9 },
       ]
     },
     {
       name: 'C',
       slots: [
-        { c: 0, r:0, cw: 3, ch:2, id: 15 },
-        { c: 3, r:0, cw: 3, ch:2, id:  7 },
+        { c: 0, r:0, cw: 6, ch:2, id:  4 },  // letterbox
         { c: 6, r:0, cw: 6, ch:2, id:  8 },  // letterbox
-        { c: 0, r:2, cw: 6, ch:2, id:  4 },  // letterbox
-        { c: 6, r:2, cw: 2, ch:3, id:  6 },  // V
-        { c: 8, r:2, cw: 4, ch:6, id:  2 },  // V
-        { c: 0, r:4, cw: 6, ch:4, id:  1 },
-        { c: 6, r:5, cw: 2, ch:3, id: 13 },  // V
+        { c: 0, r:2, cw: 3, ch:2, id: 15 },
+        { c: 3, r:2, cw: 3, ch:2, id:  7 },
+        { c: 6, r:2, cw: 2, ch:3, id:  2 },  // V
+        { c: 8, r:2, cw: 4, ch:6, id: 18 },  // V
+        { c: 0, r:4, cw: 6, ch:4, id: 12 },
+        { c: 6, r:5, cw: 2, ch:3, id: 19 },  // V
       ]
     },
     {
       name: 'D',
       slots: [
-        { c: 0, r:0, cw: 3, ch:2, id: 12 },
-        { c: 3, r:0, cw: 3, ch:2, id: 10 },
-        { c: 6, r:0, cw: 6, ch:2, id:  8 },  // letterbox
-        { c: 0, r:2, cw: 4, ch:6, id: 16 },  // V
-        { c: 4, r:2, cw: 4, ch:6, id:  2 },  // V
-        { c: 8, r:2, cw: 4, ch:6, id:  6 },  // V
+        { c: 0, r:0, cw: 6, ch:2, id:  8 },  // letterbox
+        { c: 6, r:0, cw: 3, ch:2, id:  1 },
+        { c: 9, r:0, cw: 3, ch:2, id:  5 },
+        { c: 0, r:2, cw: 4, ch:6, id: 13 },  // V
+        { c: 4, r:2, cw: 4, ch:6, id:  6 },  // V
+        { c: 8, r:2, cw: 4, ch:6, id: 16 },  // V
       ]
     },
     {
       name: 'E',
       slots: [
-        { c: 0, r:0, cw: 3, ch:2, id: 15 },
-        { c: 3, r:0, cw: 3, ch:4, id: 13 },  // V
-        { c: 6, r:0, cw: 6, ch:4, id:  9 },
-        { c: 0, r:2, cw: 3, ch:2, id: 14 },
-        { c: 0, r:4, cw: 6, ch:4, id:  5 },
-        { c: 6, r:4, cw: 6, ch:2, id:  4 },  // letterbox
-        { c: 6, r:6, cw: 6, ch:2, id:  8 },  // letterbox
+        { c: 0, r:0, cw: 6, ch:2, id:  4 },  // letterbox
+        { c: 6, r:0, cw: 6, ch:4, id: 20 },
+        { c: 0, r:2, cw: 4, ch:6, id: 19 },  // V
+        { c: 4, r:2, cw: 2, ch:3, id: 18 },  // V
+        { c: 6, r:4, cw: 6, ch:4, id: 15 },
+        { c: 4, r:5, cw: 2, ch:3, id:  2 },  // V
       ]
     },
     {
       name: 'F',
       slots: [
-        { c: 0, r:0, cw: 6, ch:4, id:  7 },
-        { c: 6, r:0, cw: 6, ch:4, id: 11 },
-        { c: 0, r:4, cw: 6, ch:4, id:  1 },
+        { c: 0, r:0, cw: 4, ch:6, id: 13 },  // V
+        { c: 4, r:0, cw: 2, ch:3, id: 16 },  // V
+        { c: 6, r:0, cw: 6, ch:4, id: 12 },
+        { c: 4, r:3, cw: 2, ch:3, id:  6 },  // V
         { c: 6, r:4, cw: 3, ch:2, id:  3 },
-        { c: 9, r:4, cw: 3, ch:4, id:  6 },  // V
-        { c: 6, r:6, cw: 3, ch:2, id: 15 },
+        { c: 9, r:4, cw: 3, ch:4, id: 19 },  // V
+        { c: 0, r:6, cw: 3, ch:2, id:  1 },
+        { c: 3, r:6, cw: 6, ch:2, id:  8 },  // letterbox
       ]
     },
     {
       name: 'G',
       slots: [
-        { c: 0, r:0, cw: 3, ch:2, id: 10 },
-        { c: 3, r:0, cw: 3, ch:2, id: 12 },
-        { c: 6, r:0, cw: 3, ch:2, id: 14 },
-        { c: 9, r:0, cw: 3, ch:2, id:  5 },
-        { c: 0, r:2, cw: 3, ch:4, id:  2 },  // V
-        { c: 3, r:2, cw: 9, ch:6, id:  3 },
-        { c: 0, r:6, cw: 3, ch:2, id:  1 },
+        { c: 0, r:0, cw: 3, ch:4, id:  2 },  // V
+        { c: 3, r:0, cw: 3, ch:2, id:  9 },
+        { c: 6, r:0, cw: 3, ch:2, id: 11 },
+        { c: 9, r:0, cw: 3, ch:2, id: 14 },
+        { c: 3, r:2, cw: 9, ch:6, id: 10 },
+        { c: 0, r:4, cw: 3, ch:2, id: 17 },
+        { c: 0, r:6, cw: 3, ch:2, id: 20 },
       ]
     },
     {
       name: 'H',
       slots: [
-        { c: 0, r:0, cw: 3, ch:2, id: 11 },
-        { c: 3, r:0, cw: 3, ch:4, id:  6 },  // V
-        { c: 6, r:0, cw: 3, ch:2, id:  9 },
-        { c: 9, r:0, cw: 3, ch:4, id:  2 },  // V
-        { c: 0, r:2, cw: 3, ch:2, id: 15 },
-        { c: 6, r:2, cw: 3, ch:2, id: 14 },
-        { c: 0, r:4, cw: 6, ch:4, id:  5 },
-        { c: 6, r:4, cw: 6, ch:4, id:  3 },
+        { c: 0, r:0, cw: 3, ch:2, id:  7 },
+        { c: 3, r:0, cw: 3, ch:4, id: 13 },  // V
+        { c: 6, r:0, cw: 3, ch:4, id: 18 },  // V
+        { c: 9, r:0, cw: 3, ch:2, id:  5 },
+        { c: 0, r:2, cw: 3, ch:2, id:  3 },
+        { c: 9, r:2, cw: 3, ch:2, id: 12 },
+        { c: 0, r:4, cw: 6, ch:4, id: 15 },
+        { c: 6, r:4, cw: 6, ch:4, id:  1 },
       ]
     },
   ];
 
-  const LEAD_BIRDS = { 0: 9, 1: 2, 2: 2, 3: 16, 4: 9, 5: 7, 6: 3, 7: 5 };
+  const LEAD_BIRDS = { 0: 3, 1: 13, 2: 18, 3: 13, 4: 20, 5: 13, 6: 10, 7: 15 };
 
   // Events: 23 photographs over 3 series, no panorama, so no letterbox slot
   // appears here. A series may take up to 3 slots in one tile — with only three
