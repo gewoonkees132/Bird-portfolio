@@ -884,7 +884,8 @@ html, body {
 .mobile-edition[data-set="birds"]    [data-cat]:not([data-cat="birds"]),
 .mobile-edition[data-set="products"] [data-cat]:not([data-cat="products"]),
 .mobile-edition[data-set="events"]   [data-cat]:not([data-cat="events"]),
-.mobile-edition[data-set="portraits"] [data-cat]:not([data-cat="portraits"]) {
+.mobile-edition[data-set="portraits"] [data-cat]:not([data-cat="portraits"]),
+.mobile-edition[data-set="lifestyle"] [data-cat]:not([data-cat="lifestyle"]) {
   display: none;
 }
 
