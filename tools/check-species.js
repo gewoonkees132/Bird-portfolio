@@ -47,9 +47,10 @@ if (from < 0 || to < 0 || to < from) {
   console.error('FAILURE: could not locate the inventory block in public/app.js');
   process.exit(1);
 }
-const { SPECIES, BIRD_FACTS, EVENTS, EVENT_FACTS, PRODUCTS, PRODUCT_FACTS } = new Function(
+const { SPECIES, BIRD_FACTS, EVENTS, EVENT_FACTS, PRODUCTS, PRODUCT_FACTS,
+        PORTRAITS, PORTRAIT_FACTS, LIFESTYLE, LIFESTYLE_FACTS } = new Function(
   appJs.slice(from, to) +
-  '\nreturn { SPECIES, BIRD_FACTS, EVENTS, EVENT_FACTS, PRODUCTS, PRODUCT_FACTS };'
+  '\nreturn { SPECIES, BIRD_FACTS, EVENTS, EVENT_FACTS, PRODUCTS, PRODUCT_FACTS, PORTRAITS, PORTRAIT_FACTS, LIFESTYLE, LIFESTYLE_FACTS };'
 )();
 
 // The two later collections share the record shape but not the bird-specific
@@ -59,6 +60,8 @@ const { SPECIES, BIRD_FACTS, EVENTS, EVENT_FACTS, PRODUCTS, PRODUCT_FACTS } = ne
 const EXTRA = [
   { key: 'events',   label: 'Events',   dir: 'events',   prefix: 'E', items: EVENTS,   facts: EVENT_FACTS },
   { key: 'products', label: 'Products', dir: 'products', prefix: 'R', items: PRODUCTS, facts: PRODUCT_FACTS },
+  { key: 'portraits', label: 'Portraits', dir: 'portraits', prefix: 'T', items: PORTRAITS, facts: PORTRAIT_FACTS },
+  { key: 'lifestyle', label: 'Lifestyle', dir: 'lifestyle', prefix: 'L', items: LIFESTYLE, facts: LIFESTYLE_FACTS },
 ];
 
 // Typographic variants are allowed to differ between platforms (the JSON
