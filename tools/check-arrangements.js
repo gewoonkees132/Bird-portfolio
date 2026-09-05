@@ -34,7 +34,7 @@ const COLS = +tw[1], ROWS = +th[1];
 const invFrom = src.indexOf('const F = (n) =>');
 const invTo = src.indexOf('const vitalRows');
 const inventory = new Function(
-  src.slice(invFrom, invTo) + '\nreturn { SPECIES, EVENTS, PRODUCTS };'
+  src.slice(invFrom, invTo) + '\nreturn { SPECIES, EVENTS, PRODUCTS, PORTRAITS, LIFESTYLE };'
 )();
 
 // maxPerSeries mirrors tools/gen-arrangements.js. Events has only three series
@@ -44,6 +44,8 @@ const SETS = [
   { key: 'birds',    arrVar: 'ARR_BIRDS',    leadVar: 'LEAD_BIRDS',    items: inventory.SPECIES,  maxPerSeries: 2 },
   { key: 'events',   arrVar: 'ARR_EVENTS',   leadVar: 'LEAD_EVENTS',   items: inventory.EVENTS,   maxPerSeries: 3 },
   { key: 'products', arrVar: 'ARR_PRODUCTS', leadVar: 'LEAD_PRODUCTS', items: inventory.PRODUCTS, maxPerSeries: 3 },
+  { key: 'portraits', arrVar: 'ARR_PORTRAITS', leadVar: 'LEAD_PORTRAITS', items: inventory.PORTRAITS, maxPerSeries: 3 },
+  { key: 'lifestyle', arrVar: 'ARR_LIFESTYLE', leadVar: 'LEAD_LIFESTYLE', items: inventory.LIFESTYLE, maxPerSeries: 3 },
 ];
 
 const KIND_FOR = { L: 'L', V: 'V', W: 'P' };

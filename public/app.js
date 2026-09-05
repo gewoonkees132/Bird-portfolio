@@ -6,18 +6,18 @@
 (function () {
   'use strict';
 
-  // ---------- Species data (16 photos) ----------
-  // Shapes: L landscape (1,3,5,7,9,10,11,12,14,15) · V portrait 2:3
-  //   (2,6,13,16) · W super-wide letterbox (4,8). Repeats are intentional —
+  // ---------- Species data (19 photos) ----------
+  // Shapes: L landscape (1,5,7,9,10,11,12,14,15,17,20) · V portrait 2:3
+  //   (2,6,13,16,18,19) · W super-wide letterbox (4,8). Repeats are intentional —
   //   Baya Weaver appears twice (2 nest / 6 display) and the Raw-todo batch
   //   adds Blue Tit, Great Tit and Robin tiles. The shape decides which slots a
   //   photo can occupy; tools/gen-arrangements.js reads the same mapping when it
   //   builds ARRANGEMENTS, so the two must agree — tools/check-species.js
   //   asserts it, along with the copies in index.html and the native manifest.
-  //   Note the L files are currently 16:9 (2160x1215), not 3:2 — they were
-  //   cropped that way by tools/convert-raw.py. Slots now target 3:2, so an L
-  //   photo loses a sliver of its sides to object-fit: cover until the batch is
-  //   re-exported at 3:2 from the originals.
+  //   Note the L files are a mix: 1-15 are the old 16:9 exports (2160x1215) and
+  //   lose a sliver of their sides to object-fit: cover, because the slots now
+  //   target 3:2. The 2026-08-09 batch (17, 20) is exported at 3:2 (2160x1440)
+  //   and fills its slot. The older ones follow when the originals resurface.
   const F = (n) => 'files/' + encodeURI(n);
   const SPECIES = [
     { id: 1, vernacular: 'European Robin',        latin: 'Erithacus rubecula',     shape: 'L',
@@ -26,9 +26,6 @@
     { id: 2, vernacular: 'Baya Weaver',           latin: 'Ploceus philippinus',    shape: 'V',
       band_a: '#c79e6e', band_b: '#b88c5e',
       image: F('P2-Baya_Weaver.webp') },
-    { id: 3, vernacular: 'Eurasian Jay',          latin: 'Garrulus glandarius',    shape: 'L',
-      band_a: '#7a8b76', band_b: '#8a9c86',
-      image: F('P3-Eurasian_Jay.webp') },
     { id: 4, vernacular: 'Dunnock',               latin: 'Prunella modularis',     shape: 'W',
       band_a: '#3a4a3e', band_b: '#48584c',
       image: F('P4-Dunnock.webp') },
@@ -73,6 +70,22 @@
     { id: 16, vernacular: 'European Robin',       latin: 'Erithacus rubecula',     shape: 'V',
       band_a: '#3d6b8a', band_b: '#4a7c9a',
       image: F('P16-European_Robin.webp') },
+    // TEMP batch (2026-08-09). Four frames: three from a May 2026 outing on the
+    // 500 mm (17-19) and one city gull from July 2024 on a 50 mm (20). Three
+    // species new to the collection; 17 is another Blue Tit and shares 7's
+    // prose. Band colours sampled from each converted file.
+    { id: 17, vernacular: 'Eurasian Blue Tit',    latin: 'Cyanistes caeruleus',    shape: 'L',
+      band_a: '#796d2c', band_b: '#897d3c',
+      image: F('P17-Eurasian_Blue_Tit.webp') },
+    { id: 18, vernacular: 'Great Spotted Woodpecker', latin: 'Dendrocopos major',  shape: 'V',
+      band_a: '#504734', band_b: '#605744',
+      image: F('P18-Great_Spotted_Woodpecker.webp') },
+    { id: 19, vernacular: 'House Sparrow',        latin: 'Passer domesticus',      shape: 'V',
+      band_a: '#605e39', band_b: '#706e49',
+      image: F('P19-House_Sparrow.webp') },
+    { id: 20, vernacular: 'Lesser Black-backed Gull', latin: 'Larus fuscus',       shape: 'L',
+      band_a: '#978887', band_b: '#a79897',
+      image: F('P20-Lesser_Black-backed_Gull.webp') },
   ];
 
   // ---------- Bird facts (per-species lede + vitals + fun fact) ----------
@@ -81,16 +94,20 @@
   //   1 Robin       — Lack (1943) territorial decoy experiments.
   //   2 Weaver nest — Davis (1973, JBNHS) and Pandian (2022, J Threat Taxa
   //                   14(5): 20970) mud plastering, 90% of helmet-stage nests.
-  //   3 Jay         — Parnell et al. (2015, Sci Reports) structural-blue feathers.
   //   4 Dunnock     — Davies, ~600-year cuckoo-host evolutionary lag.
   //   5 Bee-eater   — Watve et al. (2002, Anim Cognition) gaze-sensitivity.
   //   6 Weaver dsp  — Quader (2006, The Auk 123: 475) nest site beats structure.
   //   7 Blue Tit    — Petit et al. (2002, Ecology Letters 5: 585) aromatic herbs.
   //   8 Bushlark    — Alström (1998, Forktail 13: 97) four-way species split.
   //  10 Great Tit   — Estók, Zsebok & Siemers (2010, Biol Letters) bat predation.
-  // Keyed by SPECIES.id. Bespoke prose for ids 1–8 and 10; the remaining
-  // Raw-todo tiles share per-species prose via the alias assignments after the
-  // literal (Blue Tit 9, 13 → 7, Great Tit 11, 12 → 10, Robin 14–16 → 1). The
+  //  18 Woodpecker  — Van Wassenbergh et al. (2022, Curr Biol 32: 3189) the head
+  //                   is a stiff hammer, not a shock absorber.
+  //  19 Sparrow     — Summers-Smith (1988); BTO/RSPB UK decline since the 1970s.
+  //  20 Gull        — Liebers, de Knijff & Helbig (2004, Proc R Soc B 271: 893)
+  //                   the herring gull complex is not a ring species.
+  // Keyed by SPECIES.id. Bespoke prose for ids 1–8, 10 and 18–20; the remaining
+  // tiles share per-species prose via the alias assignments after the literal
+  // (Blue Tit 9, 13, 17 → 7, Great Tit 11, 12 → 10, Robin 14–16 → 1). The
   // two Baya Weaver entries stay distinct (2 nest-building / 6 display).
   // A species with no published wingspan carries `length` instead, and the
   // vitals row relabels itself — see vitalRows().
@@ -106,12 +123,6 @@
       range: 'S & SE Asia', habitat: 'Grassland, farmland',
       lede: 'The male Baya Weaver weaves the nest alone, tearing long strips from grass and palm leaves and knotting them into a hanging flask. He works at one nest for over two weeks, flying hundreds of trips to a single branch. The bright yellow crown appears only for the breeding season.',
       fun_fact: 'Male Bayas plaster wet mud and dung onto the inside walls of the unfinished nest. It is not decoration. In one survey of Tamil Nadu colonies, nine in ten half-built nests carried clay on the inner wall, and the weight is thought to steady the nest in wind.'
-    },
-    3: {
-      wingspan: '52–58 cm', weight: '140–190 g',
-      range: 'Europe, Asia', habitat: 'Oak woodland',
-      lede: 'The Eurasian Jay is a shy crow of the oak woods, easier to hear than to see. The give-away is the wing flash, a panel of bright sky-blue barred with black, lit up for a second as the bird crosses a clearing.',
-      fun_fact: 'There is no blue paint in that wing. The colour comes from tiny sponge-like structures in the feather, about 150 nanometres across, sitting over a layer of black. Crush the feather and the blue is gone.'
     },
     4: {
       wingspan: '19–21 cm', weight: '19–24 g',
@@ -148,14 +159,32 @@
       range: 'Europe, Asia, N Africa', habitat: 'Woodland, gardens',
       lede: 'The Great Tit is the loud yellow bird at the garden feeder, with a black cap and a black stripe down its belly. It is bold and clever, and will pull the lid off a milk bottle or work out a puzzle box in a few tries.',
       fun_fact: 'In a Hungarian cave one winter, great tits were filmed flying in to find sleeping bats. They pecked them on the head, killed them, and ate them. Eighteen times in two winters. The bird-table cutie hunts mammals.'
+    },
+    18: {
+      wingspan: '34–39 cm', weight: '70–98 g',
+      range: 'Europe, Asia, N Africa', habitat: 'Woodland, parks',
+      lede: 'The Great Spotted Woodpecker is a pied bird about the size of a blackbird, black and white with a red patch under the tail. It climbs a trunk in short hops, propped on its stiff tail feathers. In spring it drums on a dead branch — not to feed, but to be heard, more than ten strikes in a second. Only the male carries the small red patch on the back of the head.',
+      fun_fact: 'Woodpeckers are often said to have a shock absorber built into the skull. High-speed film of birds mid-drum shows the opposite. The head is held stiff, like the head of a hammer, because a cushion would soften the very blow the bird is trying to land. The brain is simply small and light enough to take it.'
+    },
+    19: {
+      wingspan: '21–25.5 cm', weight: '24–38 g',
+      range: 'Worldwide; native Eurasia', habitat: 'Towns, farmland',
+      lede: 'The House Sparrow lives wherever people do — under a roof tile, in a hedge, on a café table. The male has a grey cap and a black bib. The female and the young bird are quieter, plain brown above with dark streaks and a pale stripe behind the eye. They feed on the ground in noisy groups and rarely go far from a building.',
+      fun_fact: 'The sparrow travelled with us. A few dozen released in Brooklyn in the 1850s had reached the Pacific coast within about fifty years. The same closeness cuts both ways: in Britain the bird has lost roughly seven in every ten since the late 1970s, and is now on the red list.'
+    },
+    20: {
+      wingspan: '128–148 cm', weight: '650–1000 g',
+      range: 'Europe, W Africa', habitat: 'Coasts, cities',
+      lede: 'The Lesser Black-backed Gull is a large slate-grey gull with yellow legs and a red spot near the tip of the bill. It breeds on the coast and, more and more, on flat city roofs, and it will walk along a wall beside you without much concern. The red spot has a job: a chick pecks at it and the parent brings up food.',
+      fun_fact: 'This gull and the Herring Gull were the textbook ring species — a chain of forms circling the Arctic, each breeding with its neighbour, until the two ends met again over Europe and behaved like separate birds. DNA published in 2004 broke the ring. The chain is real; the birds did not spread the way the story needed them to.'
     }
   };
 
-  // Repeated Raw-todo species reuse the existing per-species prose (shared
-  // object reference — facts are read-only). Blue Tit ids point at the Blue Tit
+  // Repeated species reuse the existing per-species prose (shared object
+  // reference — facts are read-only). Blue Tit ids point at the Blue Tit
   // entry (7), the remaining Great Tit ids at the Great Tit entry (10), and all
   // Robin ids at the Robin entry (1).
-  BIRD_FACTS[9] = BIRD_FACTS[13] = BIRD_FACTS[7];
+  BIRD_FACTS[9] = BIRD_FACTS[13] = BIRD_FACTS[17] = BIRD_FACTS[7];
   BIRD_FACTS[11] = BIRD_FACTS[12] = BIRD_FACTS[10];
   BIRD_FACTS[14] = BIRD_FACTS[15] = BIRD_FACTS[16] = BIRD_FACTS[1];
 
@@ -424,6 +453,182 @@
   PRODUCT_FACTS[19] = PRODUCT_FACTS[20] = PRODUCT_FACTS[21] = PRODUCT_FACTS[22] = PRODUCT_FACTS[15];
   PRODUCT_FACTS[23] = PRODUCT_FACTS[24] = PRODUCT_FACTS[15];
 
+  const PORTRAITS = [
+    // Portraits of people, added 2026-08-15. The sitters are deliberately not
+    // named — a portrait can be published, a name is the sitter's to give — so
+    // the series split follows what the EXIF records instead: three eras of
+    // lens and body. Series I is the 85 mm years (α7, then α7 III, 2021–2024),
+    // II the 50 mm on the α7 III (2024 – New Year 2025), III the 50 mm on the
+    // α7R V (2025). Ordered chronologically inside each series.
+    { id: 1, vernacular: 'Portraits I',    latin: '85 mm · 2021–2024',  shape: 'L',
+      band_a: '#767945', band_b: '#67693c',
+      image: F('portraits/T1-Portraits_I.webp') },
+    { id: 2, vernacular: 'Portraits I',    latin: '85 mm · 2021–2024',  shape: 'V',
+      band_a: '#6b5751', band_b: '#5d4c46',
+      image: F('portraits/T2-Portraits_I.webp') },
+    { id: 3, vernacular: 'Portraits I',    latin: '85 mm · 2021–2024',  shape: 'L',
+      band_a: '#6c5853', band_b: '#5e4d48',
+      image: F('portraits/T3-Portraits_I.webp') },
+    { id: 4, vernacular: 'Portraits I',    latin: '85 mm · 2021–2024',  shape: 'L',
+      band_a: '#6a5c59', band_b: '#5c504d',
+      image: F('portraits/T4-Portraits_I.webp') },
+    { id: 5, vernacular: 'Portraits I',    latin: '85 mm · 2021–2024',  shape: 'V',
+      band_a: '#845748', band_b: '#734c3f',
+      image: F('portraits/T5-Portraits_I.webp') },
+    { id: 6, vernacular: 'Portraits I',    latin: '85 mm · 2021–2024',  shape: 'L',
+      band_a: '#a9aeb5', band_b: '#93989e',
+      image: F('portraits/T6-Portraits_I.webp') },
+    { id: 7, vernacular: 'Portraits I',    latin: '85 mm · 2021–2024',  shape: 'V',
+      band_a: '#7a7878', band_b: '#6a6969',
+      image: F('portraits/T7-Portraits_I.webp') },
+    { id: 8, vernacular: 'Portraits II',   latin: '50 mm · 2024–2025',  shape: 'L',
+      band_a: '#5f4340', band_b: '#533a38',
+      image: F('portraits/T8-Portraits_II.webp') },
+    { id: 9, vernacular: 'Portraits II',   latin: '50 mm · 2024–2025',  shape: 'V',
+      band_a: '#ac9997', band_b: '#968584',
+      image: F('portraits/T9-Portraits_II.webp') },
+    { id: 10, vernacular: 'Portraits II',  latin: '50 mm · 2024–2025',  shape: 'V',
+      band_a: '#bca7a4', band_b: '#a4928f',
+      image: F('portraits/T10-Portraits_II.webp') },
+    { id: 11, vernacular: 'Portraits II',  latin: '50 mm · 2024–2025',  shape: 'V',
+      band_a: '#938276', band_b: '#807167',
+      image: F('portraits/T11-Portraits_II.webp') },
+    { id: 12, vernacular: 'Portraits II',  latin: '50 mm · 2024–2025',  shape: 'V',
+      band_a: '#aa8f87', band_b: '#947d76',
+      image: F('portraits/T12-Portraits_II.webp') },
+    { id: 13, vernacular: 'Portraits II',  latin: '50 mm · 2024–2025',  shape: 'V',
+      band_a: '#9e4232', band_b: '#8a392b',
+      image: F('portraits/T13-Portraits_II.webp') },
+    { id: 14, vernacular: 'Portraits III', latin: '50 mm · 2025',       shape: 'V',
+      band_a: '#8d8376', band_b: '#7b7267',
+      image: F('portraits/T14-Portraits_III.webp') },
+    { id: 15, vernacular: 'Portraits III', latin: '50 mm · 2025',       shape: 'L',
+      band_a: '#857576', band_b: '#746667',
+      image: F('portraits/T15-Portraits_III.webp') },
+    { id: 16, vernacular: 'Portraits III', latin: '50 mm · 2025',       shape: 'L',
+      band_a: '#4e453d', band_b: '#443c35',
+      image: F('portraits/T16-Portraits_III.webp') },
+    { id: 17, vernacular: 'Portraits III', latin: '50 mm · 2025',       shape: 'V',
+      band_a: '#6f6a67', band_b: '#615c5a',
+      image: F('portraits/T17-Portraits_III.webp') },
+  ];
+
+  // Same four labels, same order, same voice as the events and products facts.
+  // The prose is placeholder in the same sense theirs is: written from what the
+  // files record, with the one thing a visitor can see for themselves — that no
+  // sitter is named — stated plainly and once.
+  const PORTRAIT_FACTS = {
+    1: {
+      vitals: [['Frames', '7'], ['Shot', '2021 – 2024'],
+               ['Format', '3:2 · 2:3'], ['Camera', 'Sony α7 · α7 III · 85 mm']],
+      lede: 'Portraits on an 85 mm across four years, from a spring evening in 2021 to midsummer 2024 — the same lens carried from the original α7 body to the α7 III. The sitters are not named here: a photograph can be published, a name is the sitter’s to give.',
+      fun_fact: 'Every frame in this series is between f/1.4 and f/1.8 on a lens that opens to f/1.4. An 85 mm is the classic portrait length because it lets the photographer stand back far enough that the face keeps its true proportions.'
+    },
+    8: {
+      vitals: [['Frames', '6'], ['Shot', '2024 – 2025'],
+               ['Format', '3:2 · 2:3'], ['Camera', 'Sony α7 III · 50 mm']],
+      lede: 'Six portraits on a 50 mm, from high summer 2024 into the first hours of 2025. Five of the six are upright — the natural way to hold a camera at a person. The sitters stay anonymous by choice, the same choice running through all three series.',
+      fun_fact: 'The last frame of the series is timestamped 04:29 on the morning of the 1st of January 2025, at f/2 and 1/125 of a second — a portrait made while a new year was four and a half hours old.'
+    },
+    14: {
+      vitals: [['Frames', '4'], ['Shot', 'Aug – Dec 2025'],
+               ['Format', '3:2 · 2:3'], ['Camera', 'Sony α7R V · 50 mm']],
+      lede: 'The most recent portraits, four frames from late August to mid-December 2025 on the α7R V — a late-summer evening, an autumn afternoon and a pair taken nine minutes apart in December. Unnamed like the rest: the faces are the work, the names are private.',
+      fun_fact: 'Three of the four sit at exactly f/2, in light ranging from 1/3200 of a second to 1/125 — the aperture held as the constant while everything else moved, which is one way to make four separate days read as one series.'
+    }
+  };
+  PORTRAIT_FACTS[2] = PORTRAIT_FACTS[3] = PORTRAIT_FACTS[4] = PORTRAIT_FACTS[1];
+  PORTRAIT_FACTS[5] = PORTRAIT_FACTS[6] = PORTRAIT_FACTS[7] = PORTRAIT_FACTS[1];
+  PORTRAIT_FACTS[9] = PORTRAIT_FACTS[10] = PORTRAIT_FACTS[11] = PORTRAIT_FACTS[8];
+  PORTRAIT_FACTS[12] = PORTRAIT_FACTS[13] = PORTRAIT_FACTS[8];
+  PORTRAIT_FACTS[15] = PORTRAIT_FACTS[16] = PORTRAIT_FACTS[17] = PORTRAIT_FACTS[14];
+
+  const LIFESTYLE = [
+    // Life around the work, added 2026-08-15: fourteen frames from 2022 to
+    // 2025 whose filenames name most of the occasions — a tournament called
+    // archicup, an afternoon in Lisbon, a summer in Albania, a bouldering
+    // hall. The series split is three chronological eras, portraits-style:
+    // I the α7 years into 2023, II the year 2024, III the year 2025.
+    // Ordered chronologically inside each series.
+    { id: 1, vernacular: 'Lifestyle I',    latin: '2022–2023',  shape: 'L',
+      band_a: '#5d5750', band_b: '#514c46',
+      image: F('lifestyle/L1-Lifestyle_I.webp') },
+    { id: 2, vernacular: 'Lifestyle I',    latin: '2022–2023',  shape: 'V',
+      band_a: '#838c8b', band_b: '#727a79',
+      image: F('lifestyle/L2-Lifestyle_I.webp') },
+    { id: 3, vernacular: 'Lifestyle I',    latin: '2022–2023',  shape: 'L',
+      band_a: '#6f7b6b', band_b: '#616b5d',
+      image: F('lifestyle/L3-Lifestyle_I.webp') },
+    { id: 4, vernacular: 'Lifestyle I',    latin: '2022–2023',  shape: 'V',
+      band_a: '#535274', band_b: '#484765',
+      image: F('lifestyle/L4-Lifestyle_I.webp') },
+    { id: 5, vernacular: 'Lifestyle II',   latin: '2024',       shape: 'L',
+      band_a: '#95776b', band_b: '#82685d',
+      image: F('lifestyle/L5-Lifestyle_II.webp') },
+    { id: 6, vernacular: 'Lifestyle II',   latin: '2024',       shape: 'V',
+      band_a: '#846155', band_b: '#73544a',
+      image: F('lifestyle/L6-Lifestyle_II.webp') },
+    { id: 7, vernacular: 'Lifestyle II',   latin: '2024',       shape: 'V',
+      band_a: '#97b3d3', band_b: '#839cb8',
+      image: F('lifestyle/L7-Lifestyle_II.webp') },
+    { id: 8, vernacular: 'Lifestyle II',   latin: '2024',       shape: 'L',
+      band_a: '#82aecf', band_b: '#7197b4',
+      image: F('lifestyle/L8-Lifestyle_II.webp') },
+    { id: 9, vernacular: 'Lifestyle II',   latin: '2024',       shape: 'V',
+      band_a: '#ac9997', band_b: '#968583',
+      image: F('lifestyle/L9-Lifestyle_II.webp') },
+    { id: 10, vernacular: 'Lifestyle III', latin: '2025',       shape: 'L',
+      band_a: '#42393d', band_b: '#393235',
+      image: F('lifestyle/L10-Lifestyle_III.webp') },
+    { id: 11, vernacular: 'Lifestyle III', latin: '2025',       shape: 'L',
+      band_a: '#1d181a', band_b: '#191517',
+      image: F('lifestyle/L11-Lifestyle_III.webp') },
+    { id: 12, vernacular: 'Lifestyle III', latin: '2025',       shape: 'V',
+      band_a: '#818286', band_b: '#707175',
+      image: F('lifestyle/L12-Lifestyle_III.webp') },
+    { id: 13, vernacular: 'Lifestyle III', latin: '2025',       shape: 'L',
+      band_a: '#6a6b6b', band_b: '#5c5d5d',
+      image: F('lifestyle/L13-Lifestyle_III.webp') },
+    { id: 14, vernacular: 'Lifestyle III', latin: '2025',       shape: 'L',
+      band_a: '#747471', band_b: '#656562',
+      image: F('lifestyle/L14-Lifestyle_III.webp') },
+    { id: 15, vernacular: 'Lifestyle III', latin: '2025',       shape: 'L',
+      band_a: '#cbb0a0', band_b: '#b1998b',
+      image: F('lifestyle/L15-Lifestyle_III.webp') },
+    { id: 16, vernacular: 'Lifestyle III', latin: '2025',       shape: 'V',
+      band_a: '#847a6d', band_b: '#736a5f',
+      image: F('lifestyle/L16-Lifestyle_III.webp') },
+  ];
+
+  // Same four labels, same order, same voice as the other later collections.
+  // Written from what the files record — dates, lenses and the tallies the
+  // filenames carry — with the occasion names taken from the filenames too.
+  const LIFESTYLE_FACTS = {
+    1: {
+      vitals: [['Frames', '4'], ['Shot', '2022 – 2023'],
+               ['Format', '3:2 · 2:3'], ['Camera', 'Sony α7 · α7 III']],
+      lede: 'Four frames from the first years of carrying a camera everywhere: two evenings in the summer of 2022 on the original α7, then a tournament the files call archicup, photographed twice in twenty-three minutes on an August evening in 2023 as the light fell.',
+      fun_fact: 'The oldest frame here is 1/8000 of a second at f/1.4 — the fastest shutter the α7 carries, spent so an 85 mm could stay wide open in full evening sun.'
+    },
+    5: {
+      vitals: [['Frames', '5'], ['Shot', 'Jun – Aug 2024'],
+               ['Format', '3:2 · 2:3'], ['Camera', 'Sony α7 III · 50 & 85 mm']],
+      lede: 'The year 2024 in five frames: a June evening shoot the files call Nudus, a game of chess at carnival in July, and an August afternoon in Lisbon that kept three frames — two from the streets at quarter past three, one portrait at five to five.',
+      fun_fact: 'The Lisbon filenames keep their own tally — frames 12 and 19 “van 76”, Dutch for “of 76”: an afternoon that produced seventy-six frames and kept three.'
+    },
+    10: {
+      vitals: [['Frames', '7'], ['Shot', 'Jun – Sep 2025'],
+               ['Format', '3:2 · 2:3'], ['Camera', 'Sony α7 III · α7R V · 50 mm']],
+      lede: 'The most recent year, June to September 2025, all on the same 50 mm: a set spread over two June days, a dinner among friends photographed twice — once at the table, once later that evening for a gif — a day in Albania, a murder dinner doubling as a birthday, and an afternoon of bouldering.',
+      fun_fact: 'Most of these frames name their day’s count — Albania is frame 103 of 175, the bouldering hall frame 40 of 91 — and all seven sit between f/1.2 and f/2.8, the lens left to do the sorting.'
+    }
+  };
+  LIFESTYLE_FACTS[2] = LIFESTYLE_FACTS[3] = LIFESTYLE_FACTS[4] = LIFESTYLE_FACTS[1];
+  LIFESTYLE_FACTS[6] = LIFESTYLE_FACTS[7] = LIFESTYLE_FACTS[8] = LIFESTYLE_FACTS[5];
+  LIFESTYLE_FACTS[9] = LIFESTYLE_FACTS[5];
+  LIFESTYLE_FACTS[11] = LIFESTYLE_FACTS[12] = LIFESTYLE_FACTS[13] = LIFESTYLE_FACTS[10];
+  LIFESTYLE_FACTS[14] = LIFESTYLE_FACTS[15] = LIFESTYLE_FACTS[16] = LIFESTYLE_FACTS[10];
+
   // Wingspan is the first vitals row for every European species here, but no
   // wingspan has ever been published for Baya Weaver or for any Asian bushlark
   // — the literature records body length and wing chord only. Those entries
@@ -505,102 +710,108 @@
     {
       name: 'A',
       slots: [
-        { c: 0, r:0, cw: 3, ch:2, id:  5 },
-        { c: 3, r:0, cw: 3, ch:2, id:  3 },
-        { c: 6, r:0, cw: 6, ch:4, id:  9 },
-        { c: 0, r:2, cw: 2, ch:3, id:  6 },  // V
-        { c: 2, r:2, cw: 4, ch:6, id: 13 },  // V
-        { c: 6, r:4, cw: 6, ch:4, id:  1 },
-        { c: 0, r:5, cw: 2, ch:3, id: 16 },  // V
+        { c: 0, r:0, cw: 3, ch:2, id: 15 },
+        { c: 3, r:0, cw: 3, ch:2, id: 11 },
+        { c: 6, r:0, cw: 6, ch:4, id:  5 },  // opening slot — see LEAD_BIRDS
+        { c: 0, r:2, cw: 2, ch:3, id: 18 },  // V
+        { c: 2, r:2, cw: 4, ch:6, id:  2 },  // V
+        { c: 6, r:4, cw: 6, ch:4, id: 17 },
+        { c: 0, r:5, cw: 2, ch:3, id: 19 },  // V
       ]
     },
     {
       name: 'B',
       slots: [
-        { c: 0, r:0, cw: 4, ch:6, id:  2 },  // V
-        { c: 4, r:0, cw: 4, ch:6, id: 13 },  // V
-        { c: 8, r:0, cw: 4, ch:6, id: 16 },  // V
-        { c: 0, r:6, cw: 3, ch:2, id: 14 },
-        { c: 3, r:6, cw: 3, ch:2, id: 11 },
-        { c: 6, r:6, cw: 3, ch:2, id:  5 },
-        { c: 9, r:6, cw: 3, ch:2, id:  3 },
+        { c: 0, r:0, cw: 4, ch:6, id:  6 },  // V
+        { c: 4, r:0, cw: 4, ch:6, id: 16 },  // V
+        { c: 8, r:0, cw: 4, ch:6, id: 13 },  // V
+        { c: 0, r:6, cw: 3, ch:2, id: 10 },
+        { c: 3, r:6, cw: 3, ch:2, id: 20 },
+        { c: 6, r:6, cw: 3, ch:2, id:  1 },
+        { c: 9, r:6, cw: 3, ch:2, id: 12 },
       ]
     },
     {
       name: 'C',
       slots: [
-        { c: 0, r:0, cw: 3, ch:2, id: 15 },
-        { c: 3, r:0, cw: 3, ch:2, id:  7 },
-        { c: 6, r:0, cw: 6, ch:2, id:  8 },  // letterbox
-        { c: 0, r:2, cw: 6, ch:2, id:  4 },  // letterbox
-        { c: 6, r:2, cw: 2, ch:3, id:  6 },  // V
-        { c: 8, r:2, cw: 4, ch:6, id:  2 },  // V
-        { c: 0, r:4, cw: 6, ch:4, id:  1 },
-        { c: 6, r:5, cw: 2, ch:3, id: 13 },  // V
+        { c: 0, r:0, cw: 6, ch:2, id:  8 },  // letterbox
+        { c: 6, r:0, cw: 6, ch:2, id:  4 },  // letterbox
+        { c: 0, r:2, cw: 3, ch:2, id:  7 },
+        { c: 3, r:2, cw: 3, ch:2, id: 14 },
+        { c: 6, r:2, cw: 2, ch:3, id: 19 },  // V
+        { c: 8, r:2, cw: 4, ch:6, id: 18 },  // V
+        { c: 0, r:4, cw: 6, ch:4, id:  9 },
+        { c: 6, r:5, cw: 2, ch:3, id:  2 },  // V
       ]
     },
     {
       name: 'D',
       slots: [
-        { c: 0, r:0, cw: 3, ch:2, id: 12 },
-        { c: 3, r:0, cw: 3, ch:2, id: 10 },
-        { c: 6, r:0, cw: 6, ch:2, id:  8 },  // letterbox
+        { c: 0, r:0, cw: 6, ch:2, id:  8 },  // letterbox
+        { c: 6, r:0, cw: 3, ch:2, id: 10 },
+        { c: 9, r:0, cw: 3, ch:2, id:  5 },
         { c: 0, r:2, cw: 4, ch:6, id: 16 },  // V
-        { c: 4, r:2, cw: 4, ch:6, id:  2 },  // V
+        { c: 4, r:2, cw: 4, ch:6, id: 13 },  // V
         { c: 8, r:2, cw: 4, ch:6, id:  6 },  // V
       ]
     },
     {
       name: 'E',
       slots: [
-        { c: 0, r:0, cw: 3, ch:2, id: 15 },
-        { c: 3, r:0, cw: 3, ch:4, id: 13 },  // V
-        { c: 6, r:0, cw: 6, ch:4, id:  9 },
-        { c: 0, r:2, cw: 3, ch:2, id: 14 },
-        { c: 0, r:4, cw: 6, ch:4, id:  5 },
-        { c: 6, r:4, cw: 6, ch:2, id:  4 },  // letterbox
-        { c: 6, r:6, cw: 6, ch:2, id:  8 },  // letterbox
+        { c: 0, r:0, cw: 6, ch:2, id:  4 },  // letterbox
+        { c: 6, r:0, cw: 6, ch:4, id: 12 },
+        { c: 0, r:2, cw: 4, ch:6, id: 18 },  // V
+        { c: 4, r:2, cw: 2, ch:3, id:  2 },  // V
+        { c: 6, r:4, cw: 6, ch:4, id:  7 },
+        { c: 4, r:5, cw: 2, ch:3, id: 19 },  // V
       ]
     },
     {
       name: 'F',
       slots: [
-        { c: 0, r:0, cw: 6, ch:4, id:  7 },
-        { c: 6, r:0, cw: 6, ch:4, id: 11 },
-        { c: 0, r:4, cw: 6, ch:4, id:  1 },
-        { c: 6, r:4, cw: 3, ch:2, id:  3 },
-        { c: 9, r:4, cw: 3, ch:4, id:  6 },  // V
-        { c: 6, r:6, cw: 3, ch:2, id: 15 },
+        { c: 0, r:0, cw: 4, ch:6, id: 16 },  // V
+        { c: 4, r:0, cw: 2, ch:3, id: 13 },  // V
+        { c: 6, r:0, cw: 6, ch:4, id: 20 },
+        { c: 4, r:3, cw: 2, ch:3, id:  6 },  // V
+        { c: 6, r:4, cw: 3, ch:2, id: 11 },
+        { c: 9, r:4, cw: 3, ch:4, id: 19 },  // V
+        { c: 0, r:6, cw: 3, ch:2, id: 15 },
+        { c: 3, r:6, cw: 6, ch:2, id:  8 },  // letterbox
       ]
     },
     {
       name: 'G',
       slots: [
-        { c: 0, r:0, cw: 3, ch:2, id: 10 },
-        { c: 3, r:0, cw: 3, ch:2, id: 12 },
-        { c: 6, r:0, cw: 3, ch:2, id: 14 },
-        { c: 9, r:0, cw: 3, ch:2, id:  5 },
-        { c: 0, r:2, cw: 3, ch:4, id:  2 },  // V
-        { c: 3, r:2, cw: 9, ch:6, id:  3 },
-        { c: 0, r:6, cw: 3, ch:2, id:  1 },
+        { c: 0, r:0, cw: 3, ch:4, id: 18 },  // V
+        { c: 3, r:0, cw: 3, ch:2, id:  1 },
+        { c: 6, r:0, cw: 3, ch:2, id:  9 },
+        { c: 9, r:0, cw: 3, ch:2, id: 14 },
+        { c: 3, r:2, cw: 9, ch:6, id: 17 },
+        { c: 0, r:4, cw: 3, ch:2, id:  5 },
+        { c: 0, r:6, cw: 3, ch:2, id: 10 },
       ]
     },
     {
       name: 'H',
       slots: [
-        { c: 0, r:0, cw: 3, ch:2, id: 11 },
-        { c: 3, r:0, cw: 3, ch:4, id:  6 },  // V
-        { c: 6, r:0, cw: 3, ch:2, id:  9 },
-        { c: 9, r:0, cw: 3, ch:4, id:  2 },  // V
+        { c: 0, r:0, cw: 3, ch:2, id: 12 },
+        { c: 3, r:0, cw: 3, ch:4, id: 13 },  // V
+        { c: 6, r:0, cw: 3, ch:4, id:  2 },  // V
+        { c: 9, r:0, cw: 3, ch:2, id: 20 },
         { c: 0, r:2, cw: 3, ch:2, id: 15 },
-        { c: 6, r:2, cw: 3, ch:2, id: 14 },
-        { c: 0, r:4, cw: 6, ch:4, id:  5 },
-        { c: 6, r:4, cw: 6, ch:4, id:  3 },
+        { c: 9, r:2, cw: 3, ch:2, id:  7 },
+        { c: 0, r:4, cw: 6, ch:4, id: 11 },
+        { c: 6, r:4, cw: 6, ch:4, id: 14 },
       ]
     },
   ];
 
-  const LEAD_BIRDS = { 0: 9, 1: 2, 2: 2, 3: 16, 4: 9, 5: 7, 6: 3, 7: 5 };
+  // Hand-edit over generator output: in arrangement A the Bee-eater (5) was
+  // swapped into the 6x4 slot (with the Great Tit, 11, taking its 3x2) and
+  // made the lead, so birds opens full on it. Survives a re-run of
+  // gen-arrangements only if re-applied.
+  const LEAD_BIRDS = { 0: 5, 1: 6, 2: 18, 3: 16, 4: 12, 5: 16, 6: 17, 7: 11 };
+
 
   // Events: 23 photographs over 3 series, no panorama, so no letterbox slot
   // appears here. A series may take up to 3 slots in one tile — with only three
@@ -806,6 +1017,210 @@
 
   const LEAD_PRODUCTS = { 0: 7, 1: 17, 2: 11, 3: 8, 4: 18, 5: 4, 6: 22, 7: 8 };
 
+  // Portraits: 17 photographs over 3 series, no panorama. Ten of the seventeen
+  // are upright, so the seven landscape frames carry the wide slots and the
+  // balance window is a step wider than the events' — see gen-arrangements.js.
+  const ARR_PORTRAITS = [
+    {
+      name: 'A',
+      slots: [
+        { c: 0, r:0, cw: 3, ch:2, id:  6 },
+        { c: 3, r:0, cw: 3, ch:2, id: 15 },
+        { c: 6, r:0, cw: 3, ch:2, id:  8 },
+        { c: 9, r:0, cw: 3, ch:2, id:  1 },
+        { c: 0, r:2, cw: 4, ch:6, id:  2 },  // V
+        { c: 4, r:2, cw: 4, ch:6, id: 17 },  // V
+        { c: 8, r:2, cw: 4, ch:6, id:  9 },  // V
+      ]
+    },
+    {
+      name: 'B',
+      slots: [
+        { c: 0, r:0, cw: 3, ch:2, id:  4 },
+        { c: 3, r:0, cw: 3, ch:2, id: 16 },
+        { c: 6, r:0, cw: 6, ch:4, id:  3 },
+        { c: 0, r:2, cw: 4, ch:6, id:  5 },  // V
+        { c: 4, r:2, cw: 2, ch:3, id: 10 },  // V
+        { c: 6, r:4, cw: 6, ch:4, id:  8 },
+        { c: 4, r:5, cw: 2, ch:3, id: 14 },  // V
+      ]
+    },
+    {
+      name: 'C',
+      slots: [
+        { c: 0, r:0, cw: 3, ch:2, id: 15 },
+        { c: 3, r:0, cw: 3, ch:2, id:  1 },
+        { c: 6, r:0, cw: 3, ch:2, id:  6 },
+        { c: 9, r:0, cw: 3, ch:4, id: 13 },  // V
+        { c: 0, r:2, cw: 9, ch:6, id: 16 },
+        { c: 9, r:4, cw: 3, ch:2, id:  4 },
+        { c: 9, r:6, cw: 3, ch:2, id:  8 },
+      ]
+    },
+    {
+      name: 'D',
+      slots: [
+        { c: 0, r:0, cw: 6, ch:4, id:  3 },
+        { c: 6, r:0, cw: 6, ch:4, id: 15 },
+        { c: 0, r:4, cw: 6, ch:4, id:  1 },
+        { c: 6, r:4, cw: 3, ch:4, id: 11 },  // V
+        { c: 9, r:4, cw: 3, ch:2, id: 16 },
+        { c: 9, r:6, cw: 3, ch:2, id:  4 },
+      ]
+    },
+    {
+      name: 'E',
+      slots: [
+        { c: 0, r:0, cw: 3, ch:4, id: 12 },  // V
+        { c: 3, r:0, cw: 3, ch:4, id: 17 },  // V
+        { c: 6, r:0, cw: 3, ch:2, id:  6 },
+        { c: 9, r:0, cw: 3, ch:2, id:  3 },
+        { c: 6, r:2, cw: 6, ch:4, id:  8 },
+        { c: 0, r:4, cw: 6, ch:4, id: 16 },
+        { c: 6, r:6, cw: 3, ch:2, id:  4 },
+        { c: 9, r:6, cw: 3, ch:2, id: 15 },
+      ]
+    },
+    {
+      name: 'F',
+      slots: [
+        { c: 0, r:0, cw: 3, ch:4, id:  7 },  // V
+        { c: 3, r:0, cw: 3, ch:2, id:  1 },
+        { c: 6, r:0, cw: 3, ch:4, id: 13 },  // V
+        { c: 9, r:0, cw: 3, ch:4, id: 14 },  // V
+        { c: 3, r:2, cw: 3, ch:2, id:  6 },
+        { c: 0, r:4, cw: 6, ch:4, id:  8 },
+        { c: 6, r:4, cw: 6, ch:4, id: 15 },
+      ]
+    },
+    {
+      name: 'G',
+      slots: [
+        { c: 0, r:0, cw: 3, ch:4, id:  9 },  // V
+        { c: 3, r:0, cw: 3, ch:4, id:  2 },  // V
+        { c: 6, r:0, cw: 6, ch:4, id:  3 },
+        { c: 0, r:4, cw: 3, ch:4, id: 12 },  // V
+        { c: 3, r:4, cw: 3, ch:4, id:  5 },  // V
+        { c: 6, r:4, cw: 6, ch:4, id: 16 },
+      ]
+    },
+    {
+      name: 'H',
+      slots: [
+        { c: 0, r:0, cw: 4, ch:6, id: 11 },  // V
+        { c: 4, r:0, cw: 2, ch:3, id:  7 },  // V
+        { c: 6, r:0, cw: 6, ch:4, id:  1 },
+        { c: 4, r:3, cw: 2, ch:3, id: 10 },  // V
+        { c: 6, r:4, cw: 6, ch:4, id:  6 },
+        { c: 0, r:6, cw: 3, ch:2, id: 15 },
+        { c: 3, r:6, cw: 3, ch:2, id: 16 },
+      ]
+    },
+  ];
+
+  const LEAD_PORTRAITS = { 0: 2, 1: 3, 2: 16, 3: 3, 4: 8, 5: 8, 6: 3, 7: 11 };
+
+  // Lifestyle: 14 photographs over 3 series, no panorama, an even 7/7 split
+  // of landscape and upright frames - generator output, portraits knobs.
+  const ARR_LIFESTYLE = [
+    {
+      name: 'A',
+      slots: [
+        { c: 0, r:0, cw: 6, ch:4, id: 11 },
+        { c: 6, r:0, cw: 3, ch:2, id:  1 },
+        { c: 9, r:0, cw: 3, ch:2, id:  8 },
+        { c: 6, r:2, cw: 2, ch:3, id:  2 },  // V
+        { c: 8, r:2, cw: 4, ch:6, id:  6 },  // V
+        { c: 0, r:4, cw: 6, ch:4, id: 15 },
+        { c: 6, r:5, cw: 2, ch:3, id: 16 },  // V
+      ]
+    },
+    {
+      name: 'B',
+      slots: [
+        { c: 0, r:0, cw: 4, ch:6, id:  7 },  // V
+        { c: 4, r:0, cw: 4, ch:6, id:  4 },  // V
+        { c: 8, r:0, cw: 4, ch:6, id: 12 },  // V
+        { c: 0, r:6, cw: 3, ch:2, id:  3 },
+        { c: 3, r:6, cw: 3, ch:2, id: 10 },
+        { c: 6, r:6, cw: 3, ch:2, id:  5 },
+        { c: 9, r:6, cw: 3, ch:2, id: 14 },
+      ]
+    },
+    {
+      name: 'C',
+      slots: [
+        { c: 0, r:0, cw: 3, ch:2, id: 13 },
+        { c: 3, r:0, cw: 9, ch:6, id:  1 },
+        { c: 0, r:2, cw: 3, ch:4, id:  9 },  // V
+        { c: 0, r:6, cw: 3, ch:2, id:  8 },
+        { c: 3, r:6, cw: 3, ch:2, id: 15 },
+        { c: 6, r:6, cw: 3, ch:2, id:  3 },
+        { c: 9, r:6, cw: 3, ch:2, id: 11 },
+      ]
+    },
+    {
+      name: 'D',
+      slots: [
+        { c: 0, r:0, cw: 3, ch:4, id:  2 },  // V
+        { c: 3, r:0, cw: 3, ch:2, id:  5 },
+        { c: 6, r:0, cw: 6, ch:4, id: 14 },
+        { c: 3, r:2, cw: 3, ch:2, id: 10 },
+        { c: 0, r:4, cw: 6, ch:4, id: 13 },
+        { c: 6, r:4, cw: 6, ch:4, id:  1 },
+      ]
+    },
+    {
+      name: 'E',
+      slots: [
+        { c: 0, r:0, cw: 3, ch:2, id: 11 },
+        { c: 3, r:0, cw: 3, ch:4, id:  7 },  // V
+        { c: 6, r:0, cw: 3, ch:4, id: 12 },  // V
+        { c: 9, r:0, cw: 3, ch:4, id:  4 },  // V
+        { c: 0, r:2, cw: 3, ch:2, id:  3 },
+        { c: 0, r:4, cw: 6, ch:4, id:  8 },
+        { c: 6, r:4, cw: 6, ch:4, id: 15 },
+      ]
+    },
+    {
+      name: 'F',
+      slots: [
+        { c: 0, r:0, cw: 6, ch:4, id:  5 },
+        { c: 6, r:0, cw: 6, ch:4, id: 13 },
+        { c: 0, r:4, cw: 3, ch:2, id: 14 },
+        { c: 3, r:4, cw: 3, ch:2, id:  1 },
+        { c: 6, r:4, cw: 3, ch:4, id:  9 },  // V
+        { c: 9, r:4, cw: 3, ch:4, id: 16 },  // V
+        { c: 0, r:6, cw: 3, ch:2, id:  3 },
+        { c: 3, r:6, cw: 3, ch:2, id:  8 },
+      ]
+    },
+    {
+      name: 'G',
+      slots: [
+        { c: 0, r:0, cw: 3, ch:4, id:  6 },  // V
+        { c: 3, r:0, cw: 3, ch:2, id: 10 },
+        { c: 6, r:0, cw: 3, ch:2, id: 11 },
+        { c: 9, r:0, cw: 3, ch:2, id:  5 },
+        { c: 3, r:2, cw: 9, ch:6, id: 15 },
+        { c: 0, r:4, cw: 3, ch:4, id:  2 },  // V
+      ]
+    },
+    {
+      name: 'H',
+      slots: [
+        { c: 0, r:0, cw: 3, ch:4, id:  4 },  // V
+        { c: 3, r:0, cw: 3, ch:4, id: 16 },  // V
+        { c: 6, r:0, cw: 6, ch:4, id: 14 },
+        { c: 0, r:4, cw: 3, ch:4, id:  9 },  // V
+        { c: 3, r:4, cw: 6, ch:4, id: 13 },
+        { c: 9, r:4, cw: 3, ch:4, id:  7 },  // V
+      ]
+    },
+  ];
+
+  const LEAD_LIFESTYLE = { 0: 11, 1: 7, 2: 1, 3: 14, 4: 8, 5: 5, 6: 15, 7: 14 };
+
   // The 88px module and 24px gutter of the cell grid. TILE_W / TILE_H restate
   // them as literals rather than referencing the constants because
   // tools/check-arrangements.js parses that exact form out of this file to
@@ -816,7 +1231,7 @@
   const TILE_H =  8 * 88 +  7 * 24;
 
   // ---------- Collections ----------
-  // Three bodies of work on one plane. The engine below is written against the
+  // Four bodies of work on one plane. The engine below is written against the
   // ACTIVE collection only — it reads ITEMS / FACTS / ARRANGEMENTS / LEAD, which
   // the switcher rebinds — so the pan, focus, viewer and label code has no idea
   // there is more than one. Order here is the order of the buttons top-right.
@@ -829,6 +1244,10 @@
       items: EVENTS,   facts: EVENT_FACTS,   arrangements: ARR_EVENTS,   lead: LEAD_EVENTS },
     { key: 'products', label: 'Products', prefix: 'R',
       items: PRODUCTS, facts: PRODUCT_FACTS, arrangements: ARR_PRODUCTS, lead: LEAD_PRODUCTS },
+    { key: 'portraits', label: 'Portraits', prefix: 'T',
+      items: PORTRAITS, facts: PORTRAIT_FACTS, arrangements: ARR_PORTRAITS, lead: LEAD_PORTRAITS },
+    { key: 'lifestyle', label: 'Lifestyle', prefix: 'L',
+      items: LIFESTYLE, facts: LIFESTYLE_FACTS, arrangements: ARR_LIFESTYLE, lead: LEAD_LIFESTYLE },
   ];
 
   // Pixel geometry is derived once for every slot in every collection, so a
@@ -2055,7 +2474,7 @@
   //
   // Header and menu read that same attribute, so "where am I" and "where can I
   // go" cannot contradict each other.
-  const SET_LABELS = { birds: 'Birds', products: 'Products', events: 'Events' };
+  const SET_LABELS = { birds: 'Birds', products: 'Products', events: 'Events', portraits: 'Portraits' };
 
   const mobileEdition = document.getElementById('mobile-edition');
   const setToggle     = document.getElementById('set-toggle');
@@ -2297,7 +2716,7 @@
   });
 
   // Kick off
-  // A #events / #products fragment opens straight into that collection; the
+  // A #events / #products / #portraits / #lifestyle fragment opens straight into that collection; the
   // switcher is bound before the first plane is built so there is only ever one
   // build on load, not one per collection visited.
   const fromHash = (location.hash || '').replace(/^#/, '');

@@ -9,7 +9,8 @@
  *   node tools/gen-arrangements.js                        # birds (default)
  *   node tools/gen-arrangements.js --collection=events
  *   node tools/gen-arrangements.js --collection=products
- *   node tools/gen-arrangements.js --collection=all       # all three blocks
+ *   node tools/gen-arrangements.js --collection=portraits
+ *   node tools/gen-arrangements.js --collection=all       # every block
  *   node tools/gen-arrangements.js --report               # + per-slot aspects
  *
  * The photo inventory is READ OUT OF public/app.js — SPECIES, EVENTS and
@@ -54,7 +55,7 @@ if (from < 0 || to < 0 || to < from) {
   process.exit(1);
 }
 const inventory = new Function(
-  appJs.slice(from, to) + '\nreturn { SPECIES, EVENTS, PRODUCTS };'
+  appJs.slice(from, to) + '\nreturn { SPECIES, EVENTS, PRODUCTS, PORTRAITS, LIFESTYLE };'
 )();
 
 // app.js writes the letterbox shape as W; the tiling code calls that kind P.
@@ -64,7 +65,7 @@ const KIND_FOR = { L: 'L', V: 'V', W: 'P' };
 // inside a single tile, `maxPerKind` the slot-kind ceiling per tile, and
 // `balance` the global use-count window every photo has to land in.
 //
-//   birds     16 photos over 8 subjects, 2 of them panoramic.
+//   birds     20 photos over 11 subjects, 2 of them panoramic.
 //   events    23 photos over 3 series, none panoramic. Only three series exist,
 //             so a cap of 2 would hold every tile to six slots; 3 lets the
 //             seven- and eight-slot tilings back in. With 23 photos and ~56
@@ -76,6 +77,11 @@ const KIND_FOR = { L: 'L', V: 'V', W: 'P' };
 //             At 19 photos and ~54 slots the average use is under 3, so like
 //             events the floor drops to one appearance: a couple of frames
 //             show up once across the whole plane rather than never.
+//   lifestyle 16 photos over 3 series, none panoramic, 9 landscape / 7 upright
+//             — the portraits knobs carry over unchanged.
+//   portraits 17 photos over 3 series, none panoramic. Ten of the seventeen are
+//             upright, so the seven landscape frames have to carry every wide
+//             slot — the busiest of them reach 6 uses, hence the wider window.
 const SETS = {
   birds: {
     varName: 'ARR_BIRDS', leadName: 'LEAD_BIRDS', items: inventory.SPECIES,
@@ -91,6 +97,16 @@ const SETS = {
     varName: 'ARR_PRODUCTS', leadName: 'LEAD_PRODUCTS', items: inventory.PRODUCTS,
     maxPerSeries: 3, maxPerKind: { L: 6, V: 4, P: 0 }, panoTarget: 0,
     balance: { min: 1, max: 4, spread: 3 },
+  },
+  portraits: {
+    varName: 'ARR_PORTRAITS', leadName: 'LEAD_PORTRAITS', items: inventory.PORTRAITS,
+    maxPerSeries: 3, maxPerKind: { L: 6, V: 4, P: 0 }, panoTarget: 0,
+    balance: { min: 2, max: 6, spread: 4 },
+  },
+  lifestyle: {
+    varName: 'ARR_LIFESTYLE', leadName: 'LEAD_LIFESTYLE', items: inventory.LIFESTYLE,
+    maxPerSeries: 3, maxPerKind: { L: 6, V: 4, P: 0 }, panoTarget: 0,
+    balance: { min: 2, max: 6, spread: 4 },
   },
 };
 

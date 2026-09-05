@@ -7,6 +7,7 @@ subfolder of public/files and never upscales.
 
   py -3.13 tools/convert-collection.py events
   py -3.13 tools/convert-collection.py products
+  py -3.13 tools/convert-collection.py portraits
   py -3.13 tools/convert-collection.py events --dry-run
 
 Output spec:
@@ -99,6 +100,67 @@ COLLECTIONS = {
             # first eight — appended, so these two sit out of shooting order.
             ('DSC07214.jpg',                               'R23-Studio_Session.webp',    'V'),
             ('DSC07222.jpg',                               'R24-Studio_Session.webp',    'V'),
+        ],
+    },
+    # The portraits batch arrived 2026-08-15 as "Portrait (n).jpg". Like the
+    # 2026-07-29 run, the actual conversion was done with what the machine had —
+    # ImageMagick this time, same output spec — and this table is the record.
+    # Series follow the EXIF eras: I = 85 mm (α7 / α7 III, 2021–2024),
+    # II = 50 mm on the α7 III (2024 – New Year 2025), III = 50 mm on the
+    # α7R V (2025). Ids run chronologically inside each series.
+    'portraits': {
+        'src': 'Portraits',
+        'out': 'portraits',
+        'jobs': [
+            ('Portrait (7).jpg',  'T1-Portraits_I.webp',    'L'),
+            ('Portrait (5).jpg',  'T2-Portraits_I.webp',    'V'),
+            ('Portrait (6).jpg',  'T3-Portraits_I.webp',    'L'),
+            ('Portrait (17).jpg', 'T4-Portraits_I.webp',    'L'),
+            ('Portrait (1).jpg',  'T5-Portraits_I.webp',    'V'),
+            ('Portrait (3).jpg',  'T6-Portraits_I.webp',    'L'),
+            ('Portrait (2).jpg',  'T7-Portraits_I.webp',    'V'),
+            ('Portrait (4).jpg',  'T8-Portraits_II.webp',   'L'),
+            ('Portrait (14).jpg', 'T9-Portraits_II.webp',   'V'),
+            ('Portrait (10).jpg', 'T10-Portraits_II.webp',  'V'),
+            ('Portrait (16).jpg', 'T11-Portraits_II.webp',  'V'),
+            ('Portrait (15).jpg', 'T12-Portraits_II.webp',  'V'),
+            ('Portrait (11).jpg', 'T13-Portraits_II.webp',  'V'),
+            ('Portrait (13).jpg', 'T14-Portraits_III.webp', 'V'),
+            ('Portrait (12).jpg', 'T15-Portraits_III.webp', 'L'),
+            ('Portrait (8).jpg',  'T16-Portraits_III.webp', 'L'),
+            ('Portrait (9).jpg',  'T17-Portraits_III.webp', 'V'),
+        ],
+    },
+    # The lifestyle batch arrived 2026-08-15 as a Lifestyle/ folder of 14 JPGs,
+    # joined the same day by two more series-III frames (a second "set 1" day
+    # and the dinner's gif session), which renumbered L10–L14 to keep the
+    # chronological order — filenames below are the current truth.
+    # whose filenames name most of the occasions (archicup, Lissabon, Albania,
+    # bouldering …). Series are three chronological eras, portraits-style:
+    # I = the α7 years into 2023, II = 2024, III = 2025. "Portrait (14).jpg"
+    # is not a stray portrait — its EXIF places it in Lisbon on the same
+    # afternoon as the two Lissabon frames, so it travels with series II.
+    # Ids run chronologically inside each series.
+    'lifestyle': {
+        'src': 'Lifestyle',
+        'out': 'lifestyle',
+        'jobs': [
+            ('DSC08832.jpg',                             'L1-Lifestyle_I.webp',    'L'),
+            ('DSC00531.jpg',                             'L2-Lifestyle_I.webp',    'V'),
+            ('DMA05238_archicup.jpg',                    'L3-Lifestyle_I.webp',    'L'),
+            ('DMA05338_archicup.jpg',                    'L4-Lifestyle_I.webp',    'V'),
+            ('2024_06__0624_KeesLeemeijer_Nudus-17.jpg', 'L5-Lifestyle_II.webp',   'L'),
+            ('2024_07__Day2_Chess_Carnaval_Cat.jpg',     'L6-Lifestyle_II.webp',   'V'),
+            ('Lissabon (12 van 76).jpg',                 'L7-Lifestyle_II.webp',   'V'),
+            ('Lissabon (19 van 76).jpg',                 'L8-Lifestyle_II.webp',   'L'),
+            ('Portrait (14).jpg',                        'L9-Lifestyle_II.webp',   'V'),
+            ('set 1 (7 van 32).jpg',                     'L10-Lifestyle_III.webp', 'L'),
+            ('set 1 (1 van 2).jpg',                      'L11-Lifestyle_III.webp', 'L'),
+            ('Het dinner (48 van 85).jpg',               'L12-Lifestyle_III.webp', 'V'),
+            ('Het dinner gif (1 van 5).jpg',             'L13-Lifestyle_III.webp', 'L'),
+            ('Albania2025 (103 van 175).jpg',            'L14-Lifestyle_III.webp', 'L'),
+            ('Murderdinnerandbirthday (86 van 87).jpg',  'L15-Lifestyle_III.webp', 'L'),
+            ('bouldering (40 van 91).jpg',               'L16-Lifestyle_III.webp', 'V'),
         ],
     },
     'events': {
