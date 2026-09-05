@@ -70,10 +70,12 @@ const KIND_FOR = { L: 'L', V: 'V', W: 'P' };
 //             seven- and eight-slot tilings back in. With 23 photos and ~56
 //             slots the floor drops to one appearance — a few frames show up
 //             once across the whole plane rather than never.
-//   products  14 photos over 5 series, none panoramic. Two of those series hold
+//   products  19 photos over 5 series, none panoramic. Two of those series hold
 //             a single photo each, so a cap of 2 leaves them carrying ~7 tiles
-//             apiece while the seven-photo series is held to 16 appearances —
-//             the balance window is unreachable. 3 fixes it, at 3-5 uses each.
+//             apiece while the well-stocked series are starved — 3 fixes it.
+//             At 19 photos and ~54 slots the average use is under 3, so like
+//             events the floor drops to one appearance: a couple of frames
+//             show up once across the whole plane rather than never.
 const SETS = {
   birds: {
     varName: 'ARR_BIRDS', leadName: 'LEAD_BIRDS', items: inventory.SPECIES,
@@ -88,7 +90,7 @@ const SETS = {
   products: {
     varName: 'ARR_PRODUCTS', leadName: 'LEAD_PRODUCTS', items: inventory.PRODUCTS,
     maxPerSeries: 3, maxPerKind: { L: 6, V: 4, P: 0 }, panoTarget: 0,
-    balance: { min: 2, max: 5, spread: 4 },
+    balance: { min: 1, max: 4, spread: 3 },
   },
 };
 

@@ -27,7 +27,7 @@ public/          ← the deployed site; nothing outside this folder is served
   404.html  robots.txt  sitemap.xml
   files/           the 16 bird .webp photographs + logo.svg
     events/        23 .webp — and nothing else
-    products/      14 .webp — and nothing else
+    products/      19 .webp — and nothing else
 tools/           ← authoring + validation scripts (Node 18+, Python 3 + Pillow)
 docs/            ← designguideline.md (normative) + superpowers/ plans & specs
 design/          ← standalone design experiments; not part of any build
@@ -64,10 +64,11 @@ each pairing an inventory, a facts table, an arrangement table and a lead map.
 | --- | --- | --- | --- | --- | --- |
 | birds | `SPECIES` (16) | `BIRD_FACTS` | `ARR_BIRDS` / `LEAD_BIRDS` | `P1`–`P16` | `public/files/P*.webp` |
 | events | `EVENTS` (23) | `EVENT_FACTS` | `ARR_EVENTS` / `LEAD_EVENTS` | `E1`–`E23` | `public/files/events/` |
-| products | `PRODUCTS` (14) | `PRODUCT_FACTS` | `ARR_PRODUCTS` / `LEAD_PRODUCTS` | `R1`–`R14` | `public/files/products/` |
+| products | `PRODUCTS` (19) | `PRODUCT_FACTS` | `ARR_PRODUCTS` / `LEAD_PRODUCTS` | `R4`–`R24`, gapped | `public/files/products/` |
 
 Ids restart at 1 in each collection — the focus key is scoped to the active
-table, so they never collide.
+table, so they never collide. Retired ids are never reused: the 2026-07-30
+products cull removed R1–R3 and R12–R13, so that collection's ids carry gaps.
 
 The engine reads four rebindable bindings (`ITEMS`, `FACTS`, `ARRANGEMENTS`,
 `ARRANGEMENT_LEAD`) and knows nothing else about collections; `setCollection()`
@@ -158,10 +159,19 @@ series maps from `app.js` for the same reason, so they need no hand-syncing.
 
 Events are three bodies of work: **Bouwen met Aarde** (building with earth),
 **Addidex 2026**, and a **wedding in Italy**. Products are pieces that were
-designed and then printed; the seven that arrived nameless are titled `Printed
+designed and then printed; the frames that arrived nameless are titled `Printed
 Piece` for that reason. The photographer named all of this on 2026-07-29 — the
 two series that used to read `Untitled Event` / `Untitled Piece` were renamed
 then, along with their files under `public/files/`.
+
+On 2026-07-30 the photographer retired the Sika 2K Column series (R1–R3) and
+two printed pieces (R12–R13) and dropped ten new frames — eight, then two more
+the same day — all shot in one sitting on the afternoon of 2026-07-29 (α7R V,
+50 mm f/1.2). They arrived as bare DSC numbers and are held as **Studio
+Session** (R15–R24; 15–22 in shooting order, 23–24 appended late) until the
+pieces are individually named; the originals are parked in
+`local-scratch/source-sets/Fourthset_Product/` and the mapping is recorded in
+`tools/convert-collection.py`.
 
 Beyond those names, the prose is still written from what the *files* record —
 frame counts, dates and the EXIF that survived the export — because the token

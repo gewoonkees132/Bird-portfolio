@@ -308,16 +308,11 @@
   EVENT_FACTS[21] = EVENT_FACTS[22] = EVENT_FACTS[23] = EVENT_FACTS[17];
 
   const PRODUCTS = [
-    // Sika 2K column production — 26 June 2024, a7 III, 85 mm f/1.4 throughout.
-    { id: 1, vernacular: 'Sika 2K Column',    latin: 'Two-component mortar · 2024', shape: 'L',
-      band_a: '#483838', band_b: '#3f3131',
-      image: F('products/R1-Sika_2K_Column.webp') },
-    { id: 2, vernacular: 'Sika 2K Column',    latin: 'Two-component mortar · 2024', shape: 'V',
-      band_a: '#181818', band_b: '#151515',
-      image: F('products/R2-Sika_2K_Column.webp') },
-    { id: 3, vernacular: 'Sika 2K Column',    latin: 'Two-component mortar · 2024', shape: 'V',
-      band_a: '#888878', band_b: '#78786a',
-      image: F('products/R3-Sika_2K_Column.webp') },
+    // The Sika 2K Column series (ids 1-3) and two of the printed pieces (ids
+    // 12-13) were retired by the photographer on 2026-07-30, the same drop
+    // that brought the Studio Session frames (ids 15-22). Retired ids are not
+    // reused, so the surviving files keep their names and the mapping recorded
+    // in tools/convert-collection.py stays true.
     { id: 4, vernacular: 'Colour Printing',   latin: 'Reference sheet',             shape: 'L',
       band_a: '#181818', band_b: '#151515',
       image: F('products/R4-Colour_Printing.webp') },
@@ -330,10 +325,10 @@
     { id: 7, vernacular: 'Studio Piece',      latin: 'Studio frame · 2021',         shape: 'L',
       band_a: '#583838', band_b: '#4d3131',
       image: F('products/R7-Studio_Piece.webp') },
-    // Seven frames that arrived numbered 1, 3, 4, 5, 10, 14, 15 and nothing
-    // else. The photographer confirmed on 2026-07-29 that the pieces are
-    // designed and printed, which is what they are named for until the
-    // individual captions exist.
+    // Five frames that arrived numbered 1, 3, 4, 5, 15 and nothing else (two
+    // more, 10 and 14, were retired in the 2026-07-30 cull). The photographer
+    // confirmed on 2026-07-29 that the pieces are designed and printed, which
+    // is what they are named for until the individual captions exist.
     { id: 8, vernacular: 'Printed Piece',     latin: 'Designed and printed',        shape: 'L',
       band_a: '#281818', band_b: '#231515',
       image: F('products/R8-Printed_Piece.webp') },
@@ -346,15 +341,44 @@
     { id: 11, vernacular: 'Printed Piece',    latin: 'Designed and printed',        shape: 'L',
       band_a: '#181818', band_b: '#151515',
       image: F('products/R11-Printed_Piece.webp') },
-    { id: 12, vernacular: 'Printed Piece',    latin: 'Designed and printed',        shape: 'L',
-      band_a: '#483838', band_b: '#3f3131',
-      image: F('products/R12-Printed_Piece.webp') },
-    { id: 13, vernacular: 'Printed Piece',    latin: 'Designed and printed',        shape: 'V',
-      band_a: '#483838', band_b: '#3f3131',
-      image: F('products/R13-Printed_Piece.webp') },
     { id: 14, vernacular: 'Printed Piece',    latin: 'Designed and printed',        shape: 'V',
       band_a: '#585858', band_b: '#4d4d4d',
       image: F('products/R14-Printed_Piece.webp') },
+    // Ten frames from one sitting on the afternoon of 2026-07-29 — Sony α7R V,
+    // the 50 mm f/1.2 Art throughout. They arrived as bare DSC numbers, so the
+    // session holds the series title until the pieces are named. Ids 15-22 run
+    // in shooting order; 23-24 arrived a day after the rest and are appended,
+    // though they were shot mid-sitting.
+    { id: 15, vernacular: 'Studio Session',   latin: 'Printed pieces · July 2026',  shape: 'V',
+      band_a: '#583838', band_b: '#4d3131',
+      image: F('products/R15-Studio_Session.webp') },
+    { id: 16, vernacular: 'Studio Session',   latin: 'Printed pieces · July 2026',  shape: 'V',
+      band_a: '#b8b8b8', band_b: '#a2a2a2',
+      image: F('products/R16-Studio_Session.webp') },
+    { id: 17, vernacular: 'Studio Session',   latin: 'Printed pieces · July 2026',  shape: 'V',
+      band_a: '#182828', band_b: '#152323',
+      image: F('products/R17-Studio_Session.webp') },
+    { id: 18, vernacular: 'Studio Session',   latin: 'Printed pieces · July 2026',  shape: 'L',
+      band_a: '#b89888', band_b: '#a28678',
+      image: F('products/R18-Studio_Session.webp') },
+    { id: 19, vernacular: 'Studio Session',   latin: 'Printed pieces · July 2026',  shape: 'V',
+      band_a: '#f8f8f8', band_b: '#dadada',
+      image: F('products/R19-Studio_Session.webp') },
+    { id: 20, vernacular: 'Studio Session',   latin: 'Printed pieces · July 2026',  shape: 'V',
+      band_a: '#e8e8e8', band_b: '#cccccc',
+      image: F('products/R20-Studio_Session.webp') },
+    { id: 21, vernacular: 'Studio Session',   latin: 'Printed pieces · July 2026',  shape: 'V',
+      band_a: '#e8e8e8', band_b: '#cccccc',
+      image: F('products/R21-Studio_Session.webp') },
+    { id: 22, vernacular: 'Studio Session',   latin: 'Printed pieces · July 2026',  shape: 'L',
+      band_a: '#f8f8f8', band_b: '#dadada',
+      image: F('products/R22-Studio_Session.webp') },
+    { id: 23, vernacular: 'Studio Session',   latin: 'Printed pieces · July 2026',  shape: 'V',
+      band_a: '#f8f8f8', band_b: '#dadada',
+      image: F('products/R23-Studio_Session.webp') },
+    { id: 24, vernacular: 'Studio Session',   latin: 'Printed pieces · July 2026',  shape: 'V',
+      band_a: '#e8e8e8', band_b: '#cccccc',
+      image: F('products/R24-Studio_Session.webp') },
   ];
 
   // Same four labels, same order, same voice as EVENT_FACTS above — see the
@@ -362,12 +386,6 @@
   // photographed; the fun fact takes one thing further, either from the shoot
   // or from how the piece was made.
   const PRODUCT_FACTS = {
-    1: {
-      vitals: [['Frames', '3'], ['Shot', '26 Jun 2024'],
-               ['Format', '3:2 · 2:3'], ['Camera', 'Sony α7 III · 85 mm']],
-      lede: 'A column in Sika’s two-component mortar, photographed on the afternoon of 26 June 2024 while the run was still going. Thirty-nine frames were shot that day; three are held here, taken either side of half past two.',
-      fun_fact: 'Two-component means the mortar meets its accelerator at the nozzle, a second or two before it is laid down — loose enough to pump along the hose, stiff enough to carry the next layer as soon as it arrives.'
-    },
     4: {
       vitals: [['Frames', '1'], ['Shot', 'Not recorded'],
                ['Format', '3:2 landscape'], ['Camera', 'Not recorded']],
@@ -387,16 +405,24 @@
       fun_fact: 'ISO 500 at f/1.4 and 1/160 of a second puts this indoors under mixed light: a working room with whatever was already switched on, rather than a lit set.'
     },
     8: {
-      vitals: [['Frames', '7'], ['Shot', 'Not recorded'],
+      vitals: [['Frames', '5'], ['Shot', 'Not recorded'],
                ['Format', '3:2 · 2:3'], ['Camera', 'Not recorded']],
-      lede: 'Seven frames of pieces that were designed first and printed second — five landscape, two upright, held in the order they arrived. No names, dates or camera data came with them, so the work stands on its own until each one is captioned.',
+      lede: 'Five frames of pieces that were designed first and printed second — four landscape, one upright, held in the order they arrived. No names, dates or camera data came with them, so the work stands on its own until each one is captioned.',
       fun_fact: 'What they have in common is the order of things: the drawing exists before the object does, and the object is made straight from the drawing, at the size it will be used.'
+    },
+    15: {
+      vitals: [['Frames', '10'], ['Shot', '29 Jul 2026'],
+               ['Format', '3:2 · 2:3'], ['Camera', 'Sony α7R V · 50 mm']],
+      lede: 'Ten frames of printed pieces, photographed in one sitting on the afternoon of 29 July 2026 — eight upright, two landscape, ninety-six minutes from first frame to last. The files carry a full camera record but no names yet, so the session holds the title until each piece is captioned.',
+      fun_fact: 'After the opening frame the lens was left at f/2 and the ISO at 320 for the rest of the sitting — only the shutter moved, between 1/80 and 1/400 of a second, following the light rather than the pieces.'
     }
   };
-  PRODUCT_FACTS[2] = PRODUCT_FACTS[3] = PRODUCT_FACTS[1];
   PRODUCT_FACTS[6] = PRODUCT_FACTS[5];
   PRODUCT_FACTS[9] = PRODUCT_FACTS[10] = PRODUCT_FACTS[11] = PRODUCT_FACTS[8];
-  PRODUCT_FACTS[12] = PRODUCT_FACTS[13] = PRODUCT_FACTS[14] = PRODUCT_FACTS[8];
+  PRODUCT_FACTS[14] = PRODUCT_FACTS[8];
+  PRODUCT_FACTS[16] = PRODUCT_FACTS[17] = PRODUCT_FACTS[18] = PRODUCT_FACTS[15];
+  PRODUCT_FACTS[19] = PRODUCT_FACTS[20] = PRODUCT_FACTS[21] = PRODUCT_FACTS[22] = PRODUCT_FACTS[15];
+  PRODUCT_FACTS[23] = PRODUCT_FACTS[24] = PRODUCT_FACTS[15];
 
   // Wingspan is the first vitals row for every European species here, but no
   // wingspan has ever been published for Baya Weaver or for any Asian bushlark
@@ -678,107 +704,107 @@
 
   const LEAD_EVENTS = { 0: 19, 1: 20, 2: 8, 3: 13, 4: 12, 5: 14, 6: 1, 7: 9 };
 
-  // Products: 14 photographs over 5 series, no panorama. Two of those series
+  // Products: 19 photographs over 5 series, no panorama. Two of those series
   // hold one photo each, which is why the per-tile cap is 3 rather than 2 —
   // see the note in tools/gen-arrangements.js.
   const ARR_PRODUCTS = [
     {
       name: 'A',
       slots: [
-        { c: 0, r:0, cw: 6, ch:4, id:  4 },
-        { c: 6, r:0, cw: 3, ch:2, id:  7 },
-        { c: 9, r:0, cw: 3, ch:2, id:  1 },
-        { c: 6, r:2, cw: 2, ch:3, id:  2 },  // V
-        { c: 8, r:2, cw: 4, ch:6, id:  6 },  // V
-        { c: 0, r:4, cw: 6, ch:4, id: 10 },
-        { c: 6, r:5, cw: 2, ch:3, id: 14 },  // V
+        { c: 0, r:0, cw: 6, ch:4, id:  7 },
+        { c: 6, r:0, cw: 2, ch:3, id: 16 },  // V
+        { c: 8, r:0, cw: 4, ch:6, id:  6 },  // V
+        { c: 6, r:3, cw: 2, ch:3, id: 14 },  // V
+        { c: 0, r:4, cw: 6, ch:4, id:  4 },
+        { c: 6, r:6, cw: 3, ch:2, id:  9 },
+        { c: 9, r:6, cw: 3, ch:2, id: 22 },
       ]
     },
     {
       name: 'B',
       slots: [
-        { c: 0, r:0, cw: 4, ch:6, id:  3 },  // V
-        { c: 4, r:0, cw: 4, ch:6, id: 13 },  // V
-        { c: 8, r:0, cw: 4, ch:6, id:  6 },  // V
-        { c: 0, r:6, cw: 3, ch:2, id:  9 },
-        { c: 3, r:6, cw: 3, ch:2, id:  5 },
+        { c: 0, r:0, cw: 4, ch:6, id: 17 },  // V
+        { c: 4, r:0, cw: 4, ch:6, id: 21 },  // V
+        { c: 8, r:0, cw: 4, ch:6, id: 15 },  // V
+        { c: 0, r:6, cw: 3, ch:2, id:  5 },
+        { c: 3, r:6, cw: 3, ch:2, id: 11 },
         { c: 6, r:6, cw: 3, ch:2, id:  8 },
-        { c: 9, r:6, cw: 3, ch:2, id:  4 },
+        { c: 9, r:6, cw: 3, ch:2, id: 10 },
       ]
     },
     {
       name: 'C',
       slots: [
-        { c: 0, r:0, cw: 3, ch:2, id: 11 },
-        { c: 3, r:0, cw: 9, ch:6, id: 12 },
-        { c: 0, r:2, cw: 3, ch:4, id: 14 },  // V
-        { c: 0, r:6, cw: 3, ch:2, id:  1 },
-        { c: 3, r:6, cw: 3, ch:2, id:  7 },
-        { c: 6, r:6, cw: 3, ch:2, id:  5 },
-        { c: 9, r:6, cw: 3, ch:2, id:  4 },
+        { c: 0, r:0, cw: 3, ch:2, id: 18 },
+        { c: 3, r:0, cw: 3, ch:2, id:  4 },
+        { c: 6, r:0, cw: 3, ch:2, id:  9 },
+        { c: 9, r:0, cw: 3, ch:2, id:  7 },
+        { c: 0, r:2, cw: 3, ch:2, id:  5 },
+        { c: 3, r:2, cw: 9, ch:6, id: 11 },
+        { c: 0, r:4, cw: 3, ch:4, id: 19 },  // V
       ]
     },
     {
       name: 'D',
       slots: [
-        { c: 0, r:0, cw: 3, ch:4, id:  2 },  // V
+        { c: 0, r:0, cw: 3, ch:4, id: 20 },  // V
         { c: 3, r:0, cw: 3, ch:2, id: 10 },
         { c: 6, r:0, cw: 6, ch:4, id:  8 },
-        { c: 3, r:2, cw: 3, ch:2, id:  9 },
-        { c: 0, r:4, cw: 6, ch:4, id:  7 },
-        { c: 6, r:4, cw: 6, ch:4, id:  5 },
+        { c: 3, r:2, cw: 3, ch:2, id: 22 },
+        { c: 0, r:4, cw: 3, ch:4, id: 24 },  // V
+        { c: 3, r:4, cw: 6, ch:4, id:  4 },
+        { c: 9, r:4, cw: 3, ch:2, id:  7 },
+        { c: 9, r:6, cw: 3, ch:2, id:  5 },
       ]
     },
     {
       name: 'E',
       slots: [
-        { c: 0, r:0, cw: 3, ch:2, id: 11 },
-        { c: 3, r:0, cw: 3, ch:4, id: 13 },  // V
-        { c: 6, r:0, cw: 3, ch:4, id:  3 },  // V
-        { c: 9, r:0, cw: 3, ch:4, id:  6 },  // V
-        { c: 0, r:2, cw: 3, ch:2, id: 12 },
-        { c: 0, r:4, cw: 6, ch:4, id:  1 },
-        { c: 6, r:4, cw: 6, ch:4, id:  4 },
+        { c: 0, r:0, cw: 6, ch:4, id: 18 },
+        { c: 6, r:0, cw: 6, ch:4, id:  9 },
+        { c: 0, r:4, cw: 6, ch:4, id: 11 },
+        { c: 6, r:4, cw: 3, ch:2, id: 10 },
+        { c: 9, r:4, cw: 3, ch:4, id: 23 },  // V
+        { c: 6, r:6, cw: 3, ch:2, id: 22 },
       ]
     },
     {
       name: 'F',
       slots: [
-        { c: 0, r:0, cw: 6, ch:4, id: 10 },
-        { c: 6, r:0, cw: 6, ch:4, id:  8 },
-        { c: 0, r:4, cw: 3, ch:2, id:  7 },
-        { c: 3, r:4, cw: 3, ch:2, id:  5 },
-        { c: 6, r:4, cw: 3, ch:4, id: 14 },  // V
-        { c: 9, r:4, cw: 3, ch:4, id:  2 },  // V
-        { c: 0, r:6, cw: 3, ch:2, id:  1 },
-        { c: 3, r:6, cw: 3, ch:2, id:  4 },
+        { c: 0, r:0, cw: 3, ch:4, id: 16 },  // V
+        { c: 3, r:0, cw: 3, ch:4, id: 14 },  // V
+        { c: 6, r:0, cw: 3, ch:2, id:  8 },
+        { c: 9, r:0, cw: 3, ch:4, id:  6 },  // V
+        { c: 6, r:2, cw: 3, ch:2, id: 18 },
+        { c: 0, r:4, cw: 6, ch:4, id:  4 },
+        { c: 6, r:4, cw: 6, ch:4, id:  7 },
       ]
     },
     {
       name: 'G',
       slots: [
-        { c: 0, r:0, cw: 3, ch:4, id:  3 },  // V
+        { c: 0, r:0, cw: 3, ch:4, id: 20 },  // V
         { c: 3, r:0, cw: 3, ch:2, id: 11 },
-        { c: 6, r:0, cw: 3, ch:2, id:  9 },
-        { c: 9, r:0, cw: 3, ch:2, id:  7 },
-        { c: 3, r:2, cw: 9, ch:6, id:  5 },
-        { c: 0, r:4, cw: 3, ch:4, id: 13 },  // V
+        { c: 6, r:0, cw: 3, ch:2, id:  5 },
+        { c: 9, r:0, cw: 3, ch:2, id:  9 },
+        { c: 3, r:2, cw: 9, ch:6, id: 22 },
+        { c: 0, r:4, cw: 3, ch:4, id: 21 },  // V
       ]
     },
     {
       name: 'H',
       slots: [
-        { c: 0, r:0, cw: 3, ch:4, id:  2 },  // V
-        { c: 3, r:0, cw: 3, ch:4, id:  6 },  // V
-        { c: 6, r:0, cw: 6, ch:4, id: 12 },
-        { c: 0, r:4, cw: 3, ch:4, id: 14 },  // V
-        { c: 3, r:4, cw: 6, ch:4, id:  1 },
-        { c: 9, r:4, cw: 3, ch:4, id: 13 },  // V
+        { c: 0, r:0, cw: 3, ch:4, id: 19 },  // V
+        { c: 3, r:0, cw: 3, ch:4, id: 17 },  // V
+        { c: 6, r:0, cw: 6, ch:4, id:  8 },
+        { c: 0, r:4, cw: 6, ch:4, id: 10 },
+        { c: 6, r:4, cw: 3, ch:4, id: 15 },  // V
+        { c: 9, r:4, cw: 3, ch:4, id: 14 },  // V
       ]
     },
   ];
 
-  const LEAD_PRODUCTS = { 0: 4, 1: 3, 2: 12, 3: 8, 4: 1, 5: 10, 6: 5, 7: 12 };
+  const LEAD_PRODUCTS = { 0: 7, 1: 17, 2: 11, 3: 8, 4: 18, 5: 4, 6: 22, 7: 8 };
 
   // The 88px module and 24px gutter of the cell grid. TILE_W / TILE_H restate
   // them as literals rather than referencing the constants because
@@ -891,6 +917,11 @@
     enterTimers = [];
     plane.textContent = '';
     tiles = [];
+    // The old plane's arrivals and warm map go with it — a held reveal or a
+    // warm chain fired against removed elements would be wasted work.
+    pendingReveals = [];
+    warmTargets = new Map();
+    openingImg = null;
 
     for (let row = 0; row < VSPAN; row++) {
       for (let col = 0; col < ARRANGEMENTS.length * HSPAN; col++) {
@@ -930,7 +961,16 @@
             img.decoding = 'async';
             img.draggable = false;
             img.src = sp.image;
-            img.addEventListener('load', () => pEl.classList.add('has-image'), { once: true });
+            // Every item appears somewhere in the middle strip (all N_ARR
+            // arrangements), so one copy per src from there is a complete warm
+            // map — and the middle strip is where the viewport lives.
+            if (row === MIDROW && col >= ARRANGEMENTS.length && col < 2 * ARRANGEMENTS.length) {
+              if (!warmTargets.has(sp.image)) warmTargets.set(sp.image, img);
+              // The copy the boot viewport is pinned to: arrangement A's lead
+              // slot in the middle tile. The warmer waits for this one to paint.
+              if (col === ARRANGEMENTS.length && slot.id === ARRANGEMENT_LEAD[0]) openingImg = img;
+            }
+            img.addEventListener('load', () => revealWhenCalm(pEl), { once: true });
             img.addEventListener('error', () => {
               pEl.classList.add('img-failed');
               console.warn('[portfolio] Image failed to load:', sp.image);
@@ -1163,6 +1203,143 @@
 
     if (atRest) { rafId = 0; return; }
     rafId = requestAnimationFrame(render);
+  }
+
+  // ---------- Background image warming + motion-aware reveal ----------
+  // The plane's <img>s are lazy, so left alone a photograph is fetched and
+  // decoded at the moment the visitor pans it toward the viewport — mid-motion.
+  // Traced (headless Chrome, throttled network + CPU): every long frame during
+  // a pan into cold plane coincided with a cluster of image arrivals, and the
+  // same pan over warm plane showed neither the arrivals nor the long frames.
+  // Two counters, neither of which touches the render loop:
+  //   · the warmer walks every image of the active collection during browser
+  //     idle time, nearest to the viewport first, forcing fetch + decode on one
+  //     off-screen copy per file at low concurrency — the same decode-before-
+  //     reveal idea as showInViewer, applied to the whole collection;
+  //   · an arrival that lands while the plane is moving fast holds its fade-in
+  //     until the motion has settled for a beat, so decode/first-paint of fresh
+  //     photos never coincides with fast motion.
+  // First paint is untouched: everything stays lazy at build, the placeholder
+  // field remains the designed partial-load state, and the warmer only starts
+  // once the opening photograph has painted.
+  const WARM_CONCURRENCY = 2;      // never competes with the opener or fills the pipe
+  const REVEAL_HOLD_SPEED = 2.5;   // screen px/frame of plane motion that holds arrivals
+  const REVEAL_SETTLE_MS = 160;    // the beat of calm before held arrivals fade in
+
+  let warmToken = 0;             // bumped to strand every in-flight warm chain
+  let warmTargets = new Map();   // src → the one middle-strip <img> warmed for it
+  let openingImg = null;         // the boot viewport's own copy of the opening photo
+  let warmedSrcs = new Set();    // decoded already this collection — skipped on restart
+  let pendingReveals = [];       // photo wrappers loaded mid-motion, awaiting calm
+  let revealTimer = null;
+
+  // How fast the plane is moving on screen, in px per frame. The render loop
+  // steps pan by (target − pan) · lerp each frame — during a drag that gap
+  // tracks the pointer, during momentum it rides vx — so the one expression
+  // covers both without reading a velocity that can go stale mid-gesture.
+  function planeSpeed() {
+    return Math.hypot(panX_target - panX, panY_target - panY) * TWEAKS.lerp * zoom;
+  }
+  function movingFast() {
+    return pinching || planeSpeed() > REVEAL_HOLD_SPEED;
+  }
+
+  function revealWhenCalm(pEl) {
+    if (!movingFast()) { pEl.classList.add('has-image'); return; }
+    pendingReveals.push(pEl);
+    scheduleRevealFlush();
+  }
+
+  // A timer poll rather than a hook in render(): the frame path stays untouched,
+  // and a check every REVEAL_SETTLE_MS only exists while something is held.
+  function scheduleRevealFlush() {
+    if (revealTimer) return;
+    revealTimer = setTimeout(() => {
+      revealTimer = null;
+      if (!pendingReveals.length) return;
+      if (movingFast()) { scheduleRevealFlush(); return; }
+      pendingReveals.forEach(el => el.classList.add('has-image'));
+      pendingReveals = [];
+    }, REVEAL_SETTLE_MS);
+  }
+
+  // The collection's images, nearest copy first from where the visitor is now,
+  // so the warm order matches the order a pan is likely to reach them.
+  function warmQueue() {
+    const { wx, wy } = wrapWorld(panX_target, panY_target);
+    const dist = new Map();  // item id → nearest-copy distance²
+    for (let arrIdx = 0; arrIdx < ARRANGEMENTS.length; arrIdx++) {
+      const arr = ARRANGEMENTS[arrIdx];
+      const arrOriginX = arrIdx * (TILE_W + GUTTER);
+      for (const slot of arr.slots) {
+        const cy0 = slot.y + slot.h / 2;
+        const cx0 = arrOriginX + slot.x + slot.w / 2;
+        for (let b = -1; b <= 1; b++) {
+          const dy = cy0 + b * PERIOD_Y - wy;
+          let dx = cx0 - b * SHEAR_X - wx;
+          dx -= Math.round(dx / PERIOD_X) * PERIOD_X;
+          const d = dx * dx + dy * dy;
+          if (d < (dist.get(slot.id) ?? Infinity)) dist.set(slot.id, d);
+        }
+      }
+    }
+    return ITEMS
+      .filter(s => s.image && !warmedSrcs.has(s.image) && warmTargets.has(s.image))
+      .sort((a, b) => (dist.get(a.id) ?? Infinity) - (dist.get(b.id) ?? Infinity))
+      .map(s => s.image);
+  }
+
+  const requestIdle = window.requestIdleCallback
+    ? (cb) => window.requestIdleCallback(cb, { timeout: 1000 })
+    : (cb) => setTimeout(cb, 120);
+
+  // One warm chain: take the next src, wait for idle, force its plane copy to
+  // fetch + decode, repeat. WARM_CONCURRENCY chains share one queue. A stale
+  // token (collection switched, warm restarted) or a hidden page ends the chain;
+  // the visibility handler starts a fresh one on return.
+  function pumpWarm(token, queue) {
+    if (token !== warmToken || document.hidden) return;
+    const src = queue.shift();
+    if (!src) return;
+    requestIdle(() => {
+      if (token !== warmToken || document.hidden) return;
+      const img = warmTargets.get(src);
+      if (!img) { pumpWarm(token, queue); return; }
+      const done = () => {
+        if (token === warmToken) warmedSrcs.add(src);
+        pumpWarm(token, queue);
+      };
+      img.loading = 'eager';   // the one thing that makes a lazy off-screen copy fetch
+      if (img.decode) {
+        img.decode().then(done, done);
+      } else if (img.complete) {
+        done();
+      } else {
+        img.addEventListener('load', done, { once: true });
+        img.addEventListener('error', done, { once: true });
+      }
+    });
+  }
+
+  // (Re)start warming for the current plane. Gated on the opening photograph:
+  // its load, then one painted frame, then idle — so the opener always wins the
+  // network and LCP is exactly what it was without the warmer.
+  function armWarmer() {
+    const token = ++warmToken;
+    const begin = () => {
+      if (token !== warmToken) return;
+      requestAnimationFrame(() => {
+        if (token !== warmToken) return;
+        const queue = warmQueue();
+        for (let i = 0; i < WARM_CONCURRENCY; i++) pumpWarm(token, queue);
+      });
+    };
+    if (openingImg && !openingImg.complete) {
+      openingImg.addEventListener('load', begin, { once: true });
+      openingImg.addEventListener('error', begin, { once: true });
+    } else {
+      begin();
+    }
   }
 
   // ---------- Focus tracking ----------
@@ -2015,13 +2192,17 @@
 
   // ---------- Visibility pause ----------
   // Stop all RAF loops while the tab is hidden so the page does not burn
-  // CPU/GPU on a backgrounded plane. Resume on focus.
+  // CPU/GPU on a backgrounded plane. Resume on focus. Warming pauses the same
+  // way: the token strands whatever was in flight, and the restart on return
+  // skips everything already in warmedSrcs, so only the remainder is walked.
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
       if (rafId) cancelAnimationFrame(rafId);
       rafId = 0;
+      warmToken++;
     } else {
       wake();   // repaint once and re-settle; the loop sleeps again if at rest
+      armWarmer();
     }
   });
 
@@ -2097,6 +2278,11 @@
         history.replaceState(null, '', key === COLLECTIONS[0].key ? location.pathname : '#' + key);
       } catch (_) { /* file:// and sandboxed frames refuse this; the switch still works */ }
     }
+    // Warm the new collection from scratch — armWarmer's token bump strands any
+    // chain still walking the one just left, and the fresh plane's opening
+    // photograph gates the start exactly as it does at boot.
+    warmedSrcs = new Set();
+    armWarmer();
     bumpInteraction();
   }
 
@@ -2130,5 +2316,6 @@
   scheduleCue();
   scheduleDwell();
   wake();
+  armWarmer();
 
 })();

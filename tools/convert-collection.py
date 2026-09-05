@@ -62,9 +62,10 @@ COLLECTIONS = {
         'src': 'Secondset_Product',
         'out': 'products',
         'jobs': [
-            ('SIKA 2K column production (23 of 39).jpg',   'R1-Sika_2K_Column.webp',     'L'),
-            ('SIKA 2K column production (24 of 39).jpg',   'R2-Sika_2K_Column.webp',     'V'),
-            ('SIKA 2K column production (33 of 39).jpg',   'R3-Sika_2K_Column.webp',     'V'),
+            # The 2026-07-30 cull: the photographer retired R1-R3 (the SIKA 2K
+            # column series) and R12-R13 (sources 10.webp and 14.webp) when the
+            # Fourthset batch below arrived. Their ids are not reused; a re-run
+            # must not resurrect them.
             ('References Colour printing Vertico (5).jpg', 'R4-Colour_Printing.webp',    'L'),
             ('Addidex2026-033.jpg',                        'R5-Addidex_Showpiece.webp',  'L'),
             ('Addidex2026-089.jpg',                        'R6-Addidex_Showpiece.webp',  'V'),
@@ -73,9 +74,31 @@ COLLECTIONS = {
             ('3.webp',                                     'R9-Printed_Piece.webp',      'L'),
             ('4.webp',                                     'R10-Printed_Piece.webp',     'L'),
             ('5.webp',                                     'R11-Printed_Piece.webp',     'L'),
-            ('10.webp',                                    'R12-Printed_Piece.webp',     'L'),  # square source
-            ('14.webp',                                    'R13-Printed_Piece.webp',     'V'),
             ('15.webp',                                    'R14-Printed_Piece.webp',     'V'),
+        ],
+    },
+    # The 2026-07-30 products drop: eight frames from one sitting on the
+    # afternoon of 2026-07-29 (Sony α7R V, 50 mm f/1.2 Art), delivered as bare
+    # DSC numbers. Converted that day with a sharp equivalent under
+    # local-scratch/imgtools/ (convert-fourthset.js) for the same no-Python
+    # reason as the 2026-07-29 run. Ids continue after the retired ones; order
+    # is shooting order.
+    'products-2026-07': {
+        'src': 'Fourthset_Product',
+        'out': 'products',
+        'jobs': [
+            ('DSC07063.jpg',                               'R15-Studio_Session.webp',    'V'),
+            ('DSC07107.jpg',                               'R16-Studio_Session.webp',    'V'),
+            ('DSC07189.jpg',                               'R17-Studio_Session.webp',    'V'),
+            ('DSC07193.jpg',                               'R18-Studio_Session.webp',    'L'),
+            ('DSC07220.jpg',                               'R19-Studio_Session.webp',    'V'),
+            ('DSC07251.jpg',                               'R20-Studio_Session.webp',    'V'),
+            ('DSC07252.jpg',                               'R21-Studio_Session.webp',    'V'),
+            ('DSC07260.jpg',                               'R22-Studio_Session.webp',    'L'),
+            # Two more frames from the same sitting, dropped a day after the
+            # first eight — appended, so these two sit out of shooting order.
+            ('DSC07214.jpg',                               'R23-Studio_Session.webp',    'V'),
+            ('DSC07222.jpg',                               'R24-Studio_Session.webp',    'V'),
         ],
     },
     'events': {
